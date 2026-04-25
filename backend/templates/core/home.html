@@ -1,0 +1,30 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RetailStart</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+  </head>
+  <body>
+    <main class="container">
+      <header class="header">
+        <h1 class="title">RetailStart</h1>
+        <p class="subtitle">Django + Postgres + Nginx (Docker)</p>
+      </header>
+
+      <section class="card">
+        <h2>Data Lake (carpetas)</h2>
+        <ul>
+          <li><code>/data_lake/raw/</code>: datos brutos</li>
+          <li><code>/data_lake/processed/</code>: datos preprocesados</li>
+        </ul>
+        <button id="pingBtn" class="btn" type="button">Probar JS</button>
+        <p id="pingResult" class="muted"></p>
+      </section>
+    </main>
+
+    <script src="{% static 'js/main.js' %}"></script>
+  </body>
+</html>

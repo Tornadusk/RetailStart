@@ -1,0 +1,67 @@
+:root {
+  --bg: #0b1220;
+  --card: #121b2f;
+  --text: #eaf0ff;
+  --muted: #a7b2d6;
+  --accent: #69d2ff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial,
+    "Noto Sans", "Liberation Sans", sans-serif;
+  background: radial-gradient(1200px 800px at 15% 10%, #142347 0%, var(--bg) 55%)
+    fixed;
+  color: var(--text);
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 32px 16px;
+}
+
+.header {
+  margin-bottom: 20px;
+}
+
+.title {
+  margin: 0;
+  font-size: 40px;
+  letter-spacing: 0.4px;
+}
+
+.subtitle {
+  margin: 8px 0 0;
+  color: var(--muted);
+}
+
+.card {
+  background: color-mix(in srgb, var(--card) 88%, black);
+  border: 1px solid rgba(105, 210, 255, 0.18);
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+.btn {
+  margin-top: 10px;
+  background: rgba(105, 210, 255, 0.14);
+  border: 1px solid rgba(105, 210, 255, 0.35);
+  color: var(--text);
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  border-color: rgba(105, 210, 255, 0.6);
+}
+
+.muted {
+  color: var(--muted);
+}
