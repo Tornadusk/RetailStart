@@ -1,0 +1,115 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Evidencia - RetailStart</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+  </head>
+  <body>
+    <main class="container">
+      <header class="header">
+        <h1 class="title">Evidencia</h1>
+        <p class="subtitle">
+          Salidas del flujo: ETL (processed) → DW (Postgres) → gráficos
+        </p>
+        <p class="muted">
+          Volver: <a class="link" href="/">inicio</a>
+        </p>
+      </header>
+
+      <section class="layout">
+        <aside class="card">
+          <h2>Estado del flujo</h2>
+
+          <div class="kpiGrid">
+            <div class="kpi">
+              <div class="kpiLabel">DW FactVentas</div>
+              <div class="kpiValue">{{ dw_counts.fact_ventas }}</div>
+            </div>
+            <div class="kpi">
+              <div class="kpiLabel">DimCliente</div>
+              <div class="kpiValue">{{ dw_counts.dim_cliente }}</div>
+            </div>
+            <div class="kpi">
+              <div class="kpiLabel">DimProducto</div>
+              <div class="kpiValue">{{ dw_counts.dim_producto }}</div>
+            </div>
+            <div class="kpi">
+              <div class="kpiLabel">DimTiempo</div>
+              <div class="kpiValue">{{ dw_counts.dim_tiempo }}</div>
+            </div>
+            <div class="kpi">
+              <div class="kpiLabel">DimCanal</div>
+              <div class="kpiValue">{{ dw_counts.dim_canal }}</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <h3 class="h3">Comandos (orden recomendado)</h3>
+          <ol class="steps">
+            <li><code>python manage.py run_etl</code> (raw → processed)</li>
+            <li><code>python manage.py load_dw</code> (processed → Postgres DW)</li>
+            <li><code>python manage.py analyze_dw</code> (DW → gráficos)</li>
+          </ol>
+
+          <p class="muted">
+            Último CSV: <span class="badge">{% if latest_processed %}{{ latest_processed }}{% else %}—{% endif %}</span>
+          </p>
+          <p class="muted" style="margin-top: 8px">
+            Último gráfico: <span class="badge">{% if latest_chart %}{{ latest_chart }}{% else %}—{% endif %}</span>
+          </p>
+        </aside>
+
+        <div class="stack">
+          <section class="card">
+            <h2>Gráficos (PNG)</h2>
+            {% if images %}
+              <div class="grid">
+                {% for img in images %}
+                  <figure class="tile">
+                    <a class="link" href="{{ img.url }}">
+                      <img class="img" src="{{ img.url }}" alt="{{ img.name }}" />
+                    </a>
+                    <figcaption class="muted">{{ img.name }}</figcaption>
+                  </figure>
+                {% endfor %}
+              </div>
+            {% else %}
+              <p class="muted">No hay gráficos aún. Ejecuta: <code>python manage.py analyze_dw</code></p>
+            {% endif %}
+          </section>
+
+          <section class="card" style="margin-top: 16px">
+            <h2>Archivos procesados (CSV)</h2>
+            {% if files %}
+              <div class="tableWrap">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Archivo</th>
+                      <th class="right">Tamaño</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for f in files %}
+                      <tr>
+                        <td><a class="link" href="{{ f.url }}">{{ f.name }}</a></td>
+                        <td class="right muted">{{ f.size_kb }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            {% else %}
+              <p class="muted">No hay CSV procesados aún. Ejecuta: <code>python manage.py run_etl</code></p>
+            {% endif %}
+          </section>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
+

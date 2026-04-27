@@ -20,7 +20,16 @@
           <li><code>/data_lake/raw/</code>: datos brutos</li>
           <li><code>/data_lake/processed/</code>: datos preprocesados</li>
         </ul>
+        <p class="muted">
+          Ver evidencia (CSVs + gráficos): <a class="link" href="/evidence/">/evidence/</a>
+        </p>
+        <p class="muted">
+          Ver flujo completo (Origen → Consumo): <a class="link" href="/flow/">/flow/</a>
+        </p>
         <button id="pingBtn" class="btn" type="button">Probar JS</button>
+        <p class="muted" style="margin-top: 8px">
+          “Probar JS” solo valida que el frontend carga JS/CSS. No ejecuta ETL.
+        </p>
         <p id="pingResult" class="muted"></p>
       </section>
     </main>

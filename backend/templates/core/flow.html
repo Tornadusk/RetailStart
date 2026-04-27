@@ -1,0 +1,59 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Flujo - RetailStart</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+  </head>
+  <body>
+    <main class="container">
+      <header class="header">
+        <h1 class="title">Flujo completo</h1>
+        <p class="subtitle">
+          Origen → Ingesta → Almacenamiento → Procesamiento → Consumo
+        </p>
+        <p class="muted">
+          Volver: <a class="link" href="/">inicio</a> · Evidencia: <a class="link" href="/evidence/">/evidence/</a>
+        </p>
+      </header>
+
+      <section class="card">
+        <h2>Checklist (lo que pide la guía)</h2>
+        <p class="muted">
+          Esta pantalla demuestra en la plataforma los 5 bloques solicitados, con estado y tecnologías simuladas.
+        </p>
+      </section>
+
+      <section class="card" style="margin-top: 16px">
+        <h2>Flujo</h2>
+        <div class="flow">
+          {% for s in steps %}
+            <div class="flowRow">
+              <div class="flowStep">{{ s.name }}</div>
+              <div>
+                <p style="margin: 0">{{ s.desc }}</p>
+                <div>
+                  {% if s.status_ok %}
+                    <span class="pill"><span class="okDot"></span>OK</span>
+                  {% else %}
+                    <span class="pill"><span class="warnDot"></span>Pendiente</span>
+                  {% endif %}
+                  {% for t in s.tech %}
+                    <span class="pill">{{ t }}</span>
+                  {% endfor %}
+                </div>
+                <p class="muted" style="margin: 10px 0 0">{{ s.details }}</p>
+              </div>
+            </div>
+            {% if not forloop.last %}
+              <div class="divider"></div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
+

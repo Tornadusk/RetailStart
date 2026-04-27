@@ -21,5 +21,8 @@ from core import views
 
 urlpatterns = [
     path("", views.home, name="home"),
+    path("flow/", views.flow, name="flow"),
+    path("evidence/", views.evidence, name="evidence"),
+    path("evidence/file/<str:filename>", views.evidence_file, name="evidence_file"),
     path('admin/', admin.site.urls),
 ]
