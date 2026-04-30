@@ -1,0 +1,156 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Analytics (DW) - RetailStart</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+  </head>
+  <body>
+    <main class="container">
+      <header class="header">
+        <h1 class="title">Analytics (Data Warehouse)</h1>
+        <p class="subtitle">Consultas/tablas sobre Postgres (modelo estrella)</p>
+        <p class="muted">
+          Inicio: <a class="link" href="/">/</a> · Flujo: <a class="link" href="/flow/">/flow/</a> · Evidencia PNG/CSV:
+          <a class="link" href="/evidence/">/evidence/</a>
+        </p>
+      </header>
+
+      <section class="card">
+        <h2>Preguntas de negocio (Parte 5)</h2>
+        <p class="muted">
+          Este tablero complementa los gráficos en Python: aquí verás las mismas agregaciones en formato tabla (consumo/consultas).
+        </p>
+      </section>
+
+      <section class="card" style="margin-top: 16px">
+        <h2>Mejores clientes</h2>
+        <div class="tableWrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Segmento</th>
+                <th class="right">Total ($)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for r in top_clientes %}
+                <tr>
+                  <td>{{ r.cliente__id_cliente }}</td>
+                  <td>{{ r.cliente__nombre }} {{ r.cliente__apellido }}</td>
+                  <td>{{ r.cliente__segmento }}</td>
+                  <td class="right">{{ r.total }}</td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="4" class="muted">Sin datos. Ejecuta <code>load_dw</code> después del ETL.</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card" style="margin-top: 16px">
+        <h2>Rendimiento por canal</h2>
+        <div class="tableWrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Canal</th>
+                <th class="right">Total ($)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for r in top_canales %}
+                <tr>
+                  <td>{{ r.canal__canal }}</td>
+                  <td class="right">{{ r.total }}</td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="2" class="muted">Sin datos. Ejecuta <code>load_dw</code> después del ETL.</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card" style="margin-top: 16px">
+        <h2>Productos líderes</h2>
+        <p class="muted">Nota: ventas online sin producto pueden quedar agrupadas sin producto (null).</p>
+        <div class="tableWrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Producto</th>
+                <th>Categoría</th>
+                <th class="right">Total ($)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for r in top_productos %}
+                <tr>
+                  <td>{{ r.producto__id_producto }}</td>
+                  <td>{{ r.producto__nombre_producto }}</td>
+                  <td>{{ r.producto__categoria }}</td>
+                  <td class="right">{{ r.total }}</td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="4" class="muted">Sin datos. Ejecuta <code>load_dw</code> después del ETL.</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card" style="margin-top: 16px">
+        <h2>Vista rápida (FactVentas, últimos 50)</h2>
+        <div class="tableWrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>ID cliente</th>
+                <th>Cliente</th>
+                <th>Segmento</th>
+                <th>Canal</th>
+                <th>ID prod</th>
+                <th>Producto</th>
+                <th class="right">Cant</th>
+                <th class="right">Monto ($)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for r in preview %}
+                <tr>
+                  <td>{{ r.fecha }}</td>
+                  <td>{{ r.id_cliente }}</td>
+                  <td>{{ r.cliente }}</td>
+                  <td>{{ r.segmento }}</td>
+                  <td>{{ r.canal }}</td>
+                  <td>{{ r.id_producto }}</td>
+                  <td>{{ r.producto }}</td>
+                  <td class="right">{{ r.cantidad }}</td>
+                  <td class="right">{{ r.monto }}</td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="9" class="muted">Sin datos.</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

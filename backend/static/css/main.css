@@ -17,6 +17,7 @@ body {
   background: radial-gradient(1200px 800px at 15% 10%, #142347 0%, var(--bg) 55%)
     fixed;
   color: var(--text);
+  overflow-x: clip;
 }
 
 .container {
@@ -56,10 +57,23 @@ body {
   padding: 10px 14px;
   border-radius: 12px;
   cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  line-height: 1;
 }
 
 .btn:hover {
   border-color: rgba(105, 210, 255, 0.6);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 12px;
 }
 
 .muted {
@@ -80,6 +94,49 @@ body {
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 12px;
   margin-top: 10px;
+}
+
+.charts {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+  margin-top: 10px;
+  min-width: 0;
+}
+
+.chartTile {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.chartLink {
+  display: block;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.chartFrame {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  line-height: 0;
+}
+
+.chartImg {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  max-height: min(48vh, 520px);
+  display: block;
+  margin: 0 auto;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(0, 0, 0, 0.12);
+  object-fit: contain;
+  object-position: center top;
 }
 
 .tile {
@@ -106,14 +163,14 @@ body {
 
 .layout {
   display: grid;
-  grid-template-columns: 340px 1fr;
+  grid-template-columns: 340px minmax(0, 1fr);
   gap: 16px;
   align-items: start;
 }
 
 @media (max-width: 920px) {
   .layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 

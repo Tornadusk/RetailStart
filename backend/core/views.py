@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
+from django.db.models import Sum
 from django.http import FileResponse, Http404, HttpRequest, HttpResponse
 from django.shortcuts import render
 
@@ -19,12 +20,24 @@ def evidence(request: HttpRequest) -> HttpResponse:
 
     images: list[dict[str, str]] = []
     if evidence_dir.exists():
-        for p in sorted(evidence_dir.glob("*.png")):
-            images.append({"name": p.name, "url": f"/evidence/file/{p.name}"})
+        # Deduplicar por nombre de archivo: si existen copias antiguas, quedarse con el PNG más reciente.
+        latest_png: dict[str, Path] = {}
+        for p in evidence_dir.glob("*.png"):
+            prev = latest_png.get(p.name)
+            if prev is None or p.stat().st_mtime >= prev.stat().st_mtime:
+                latest_png[p.name] = p
+
+        for name in sorted(latest_png.keys()):
+            p = latest_png[name]
+            v = int(p.stat().st_mtime)
+            images.append({"name": name, "url": f"/evidence/file/{name}?v={v}"})
 
     file_rows: list[dict[str, str]] = []
     if processed_dir.exists():
+        # Solo CSV en la raíz de processed (no mezclar con evidence/).
         for p in sorted(processed_dir.glob("*.csv"), key=lambda x: x.stat().st_mtime, reverse=True)[:40]:
+            if p.parent != processed_dir:
+                continue
             st = p.stat()
             file_rows.append(
                 {
@@ -74,6 +87,7 @@ def flow(request: HttpRequest) -> HttpResponse:
 
     processed_csv_count = len(list(processed_dir.glob("*.csv"))) if processed_dir.exists() else 0
     evidence_png_count = len(list(evidence_dir.glob("*.png"))) if evidence_dir.exists() else 0
+    dw_fact_count = FactVentas.objects.count()
 
     dw_counts = {
         "dim_cliente": DimCliente.objects.count(),
@@ -114,10 +128,10 @@ def flow(request: HttpRequest) -> HttpResponse:
         },
         {
             "name": "Consumo",
-            "desc": "Dashboard/consultas: gráficos y descargas desde la web.",
-            "tech": ["Django", "Nginx", "matplotlib"],
-            "status_ok": evidence_png_count > 0,
-            "details": f"evidence: {evidence_png_count} PNG (ver /evidence/)",
+            "desc": "Dashboard/consultas: PNG + KPIs (/evidence/) y tablas SQL (/analytics/).",
+            "tech": ["Django", "Nginx", "matplotlib", "SQL/JDBC-like (ORM)"],
+            "status_ok": evidence_png_count > 0 and dw_fact_count > 0,
+            "details": f"PNG: {evidence_png_count} (ver /evidence/) · DW cargado: FactVentas={dw_fact_count} (ver /analytics/)",
         },
     ]
 
@@ -127,6 +141,75 @@ def flow(request: HttpRequest) -> HttpResponse:
         {
             "steps": steps,
             "dw_counts": dw_counts,
+        },
+    )
+
+
+def analytics(request: HttpRequest) -> HttpResponse:
+    """
+    Consumo tipo BI (tablas navegables) sobre el Data Warehouse (Postgres).
+
+    Responde las preguntas típicas de la actividad:
+    - mejores clientes
+    - rendimiento por canal
+    - productos líderes
+    """
+
+    top_clientes = (
+        FactVentas.objects.values(
+            "cliente__id_cliente",
+            "cliente__nombre",
+            "cliente__apellido",
+            "cliente__segmento",
+        )
+        .annotate(total=Sum("monto"))
+        .order_by("-total")[:15]
+    )
+
+    top_canales = (
+        FactVentas.objects.values("canal__canal").annotate(total=Sum("monto")).order_by("-total")
+    )
+
+    top_productos = (
+        FactVentas.objects.values(
+            "producto__id_producto",
+            "producto__nombre_producto",
+            "producto__categoria",
+        )
+        .annotate(total=Sum("monto"))
+        .order_by("-total")[:15]
+    )
+
+    preview_rows = (
+        FactVentas.objects.select_related("cliente", "producto", "canal", "fecha")
+        .order_by("-fecha__fecha", "-id")[:50]
+        .iterator()
+    )
+
+    preview = []
+    for fv in preview_rows:
+        preview.append(
+            {
+                "fecha": fv.fecha.fecha.isoformat(),
+                "id_cliente": fv.cliente.id_cliente,
+                "cliente": f'{fv.cliente.nombre} {fv.cliente.apellido}',
+                "segmento": fv.cliente.segmento,
+                "canal": fv.canal.canal,
+                "id_producto": "" if fv.producto is None else fv.producto.id_producto,
+                "producto": "" if fv.producto is None else fv.producto.nombre_producto,
+                "cantidad": fv.cantidad,
+                "monto": fv.monto,
+            }
+        )
+
+    return render(
+        request,
+        "core/analytics.html",
+        {
+            "top_clientes": list(top_clientes),
+            "top_canales": list(top_canales),
+            "top_productos": list(top_productos),
+            "preview": preview,
         },
     )
 

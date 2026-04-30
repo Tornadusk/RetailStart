@@ -24,13 +24,15 @@
           Ver evidencia (CSVs + gráficos): <a class="link" href="/evidence/">/evidence/</a>
         </p>
         <p class="muted">
+          Ver analytics (consultas/tablas desde el DW): <a class="link" href="/analytics/">/analytics/</a>
+        </p>
+        <p class="muted">
           Ver flujo completo (Origen → Consumo): <a class="link" href="/flow/">/flow/</a>
         </p>
-        <button id="pingBtn" class="btn" type="button">Probar JS</button>
-        <p class="muted" style="margin-top: 8px">
-          “Probar JS” solo valida que el frontend carga JS/CSS. No ejecuta ETL.
-        </p>
-        <p id="pingResult" class="muted"></p>
+        <div class="actions">
+          <a class="btn" href="/analytics/">Abrir Analytics (consultas desde el DW)</a>
+          <a class="btn" href="/evidence/">Abrir Evidencia (PNGs + CSV)</a>
+        </div>
       </section>
     </main>
 
