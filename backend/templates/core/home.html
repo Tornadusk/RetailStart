@@ -33,14 +33,12 @@
 
         <h3 class="h3">Comandos (orden recomendado)</h3>
         <ol class="steps">
-          <li><code>python manage.py run_elt_ingest</code></li>
-          <li><code>python manage.py run_etl</code></li>
-          <li><code>python manage.py load_dw</code></li>
-          <li><code>python manage.py analyze_dw</code></li>
+          <li><code>docker compose exec backend python manage.py run_elt_ingest</code></li>
+          <li><code>docker compose exec backend python manage.py run_etl</code></li>
+          <li><code>docker compose exec backend python manage.py load_dw</code></li>
+          <li><code>docker compose exec backend python manage.py analyze_dw</code></li>
         </ol>
-        <p class="muted">
-          Con Docker: <code>docker compose exec backend python manage.py …</code>
-        </p>
+        <p class="muted">Ejecuta estos comandos desde la raíz del proyecto (donde está <code>docker-compose.yml</code>).</p>
 
         <div class="actions">
           <a class="btn" href="/analytics/">Abrir Analytics (consultas desde el DW)</a>
