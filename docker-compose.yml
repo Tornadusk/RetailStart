@@ -29,6 +29,7 @@ services:
         condition: service_healthy
     volumes:
       - ./data_lake:/data_lake
+      - ./data_sources:/data_sources
       - staticfiles:/app/staticfiles
     command: >
       sh -c "python manage.py migrate &&
