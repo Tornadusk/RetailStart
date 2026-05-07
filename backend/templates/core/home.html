@@ -32,6 +32,17 @@
         </p>
 
         <h3 class="h3">Comandos (orden recomendado)</h3>
+        <p class="muted">Puedes ejecutarlos “local” (sin Docker) o dentro de Docker.</p>
+
+        <h4 class="h3">Local (sin Docker)</h4>
+        <ol class="steps">
+          <li><code>python manage.py run_elt_ingest</code></li>
+          <li><code>python manage.py run_etl</code></li>
+          <li><code>python manage.py load_dw</code></li>
+          <li><code>python manage.py analyze_dw</code></li>
+        </ol>
+
+        <h4 class="h3">Con Docker</h4>
         <ol class="steps">
           <li><code>docker compose exec backend python manage.py run_elt_ingest</code></li>
           <li><code>docker compose exec backend python manage.py run_etl</code></li>
