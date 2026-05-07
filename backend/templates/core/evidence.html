@@ -12,7 +12,7 @@
       <header class="header">
         <h1 class="title">Evidencia</h1>
         <p class="subtitle">
-          Salidas del flujo: ETL (processed) → DW (Postgres) → gráficos
+          Pipeline: ELT (<code>data_sources</code> → raw) → ETL (raw → processed) → DW → gráficos
         </p>
         <p class="muted">
           Volver: <a class="link" href="/">inicio</a>
@@ -50,10 +50,14 @@
 
           <h3 class="h3">Comandos (orden recomendado)</h3>
           <ol class="steps">
+            <li><code>python manage.py run_elt_ingest</code> (<code>data_sources/</code> → <code>data_lake/raw/</code>, sin transformar)</li>
             <li><code>python manage.py run_etl</code> (raw → processed)</li>
             <li><code>python manage.py load_dw</code> (processed → Postgres DW)</li>
-            <li><code>python manage.py analyze_dw</code> (DW → gráficos)</li>
+            <li><code>python manage.py analyze_dw</code> (DW → gráficos PNG en evidence)</li>
           </ol>
+          <p class="muted">
+            En Docker (desde la raíz del repo): anteponé <code>docker compose exec backend</code> a cada comando.
+          </p>
 
           <p class="muted">
             Último CSV: <span class="badge">{% if latest_processed %}{{ latest_processed }}{% else %}—{% endif %}</span>
@@ -106,7 +110,7 @@
                 </table>
               </div>
             {% else %}
-              <p class="muted">No hay CSV procesados aún. Ejecuta: <code>python manage.py run_etl</code></p>
+              <p class="muted">No hay CSV procesados aún. Ejecutá <code>run_elt_ingest</code> si usás <code>data_sources/</code>, luego <code>run_etl</code>.</p>
             {% endif %}
           </section>
         </div>

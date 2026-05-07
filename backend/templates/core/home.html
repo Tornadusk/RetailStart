@@ -17,8 +17,9 @@
       <section class="card">
         <h2>Data Lake (carpetas)</h2>
         <ul>
-          <li><code>/data_lake/raw/</code>: datos brutos</li>
-          <li><code>/data_lake/processed/</code>: datos preprocesados</li>
+          <li><code>/data_sources/</code>: datos “sueltos” por sistema (entrada del ELT)</li>
+          <li><code>/data_lake/raw/</code>: landing único tras <code>run_elt_ingest</code></li>
+          <li><code>/data_lake/processed/</code>: salida de <code>run_etl</code></li>
         </ul>
         <p class="muted">
           Ver evidencia (CSVs + gráficos): <a class="link" href="/evidence/">/evidence/</a>
@@ -29,6 +30,18 @@
         <p class="muted">
           Ver flujo completo (Origen → Consumo): <a class="link" href="/flow/">/flow/</a>
         </p>
+
+        <h3 class="h3">Comandos (orden recomendado)</h3>
+        <ol class="steps">
+          <li><code>python manage.py run_elt_ingest</code></li>
+          <li><code>python manage.py run_etl</code></li>
+          <li><code>python manage.py load_dw</code></li>
+          <li><code>python manage.py analyze_dw</code></li>
+        </ol>
+        <p class="muted">
+          Con Docker: <code>docker compose exec backend python manage.py …</code>
+        </p>
+
         <div class="actions">
           <a class="btn" href="/analytics/">Abrir Analytics (consultas desde el DW)</a>
           <a class="btn" href="/evidence/">Abrir Evidencia (PNGs + CSV)</a>

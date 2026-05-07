@@ -71,11 +71,19 @@ def evidence(request: HttpRequest) -> HttpResponse:
     )
 
 
+def _count_files_recursive(root: Path) -> int:
+    if not root.exists():
+        return 0
+    return sum(1 for p in root.rglob("*") if p.is_file())
+
+
 def flow(request: HttpRequest) -> HttpResponse:
     raw_dir = Path("/data_lake/raw")
+    sources_dir = Path("/data_sources")
     processed_dir = Path("/data_lake/processed")
     evidence_dir = processed_dir / "evidence"
 
+    scattered_count = _count_files_recursive(sources_dir)
     raw_files = sorted(raw_dir.glob("*")) if raw_dir.exists() else []
     raw_summary: dict[str, int] = {"csv": 0, "json": 0, "xml": 0, "txt": 0, "otros": 0}
     for p in raw_files:
@@ -97,20 +105,28 @@ def flow(request: HttpRequest) -> HttpResponse:
         "fact_ventas": FactVentas.objects.count(),
     }
 
+    raw_total = sum(raw_summary.values())
     steps: list[dict[str, Any]] = [
         {
             "name": "Origen",
-            "desc": "Fuentes simuladas (anexo) en archivos planos.",
+            "desc": "Fuentes del anexo repartidas en varias carpetas (`/data_sources/`) que simulan CRM, ERP, POS, etc.",
             "tech": ["CSV", "JSON", "XML", "TXT"],
-            "status_ok": sum(raw_summary.values()) > 0,
-            "details": f"raw: {sum(raw_summary.values())} archivos (csv {raw_summary['csv']}, json {raw_summary['json']}, xml {raw_summary['xml']}, txt {raw_summary['txt']})",
+            "status_ok": scattered_count > 0 or raw_total > 0,
+            "details": (
+                f"data_sources: {scattered_count} archivos (dispersos) · "
+                f"raw: {raw_total} (csv {raw_summary['csv']}, json {raw_summary['json']}, "
+                f"xml {raw_summary['xml']}, txt {raw_summary['txt']})"
+            ),
         },
         {
             "name": "Ingesta",
-            "desc": "Lectura desde Data Lake (carpetas) hacia pandas.",
-            "tech": ["Python", "pandas"],
-            "status_ok": True,
-            "details": "Comando: python manage.py run_etl",
+            "desc": "ELT (E+L): copiar todo al landing `raw/` sin transformar. Luego ETL batch con pandas.",
+            "tech": ["ELT: run_elt_ingest", "ETL: run_etl", "pandas"],
+            "status_ok": raw_total > 0,
+            "details": (
+                "1) python manage.py run_elt_ingest → consolida `data_sources/` en `data_lake/raw/`. "
+                "2) python manage.py run_etl → escribe `data_lake/processed/`."
+            ),
         },
         {
             "name": "Almacenamiento",
@@ -121,7 +137,7 @@ def flow(request: HttpRequest) -> HttpResponse:
         },
         {
             "name": "Procesamiento",
-            "desc": "ETL/ELT: limpieza, unificación omnicanal y modelo estrella.",
+            "desc": "Transformación (batch) + carga del modelo estrella en el DW.",
             "tech": ["Scripts Python", "Django commands"],
             "status_ok": processed_csv_count > 0 and dw_counts["fact_ventas"] > 0,
             "details": "Comandos: run_etl → load_dw",
