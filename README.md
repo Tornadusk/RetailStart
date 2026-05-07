@@ -46,8 +46,9 @@ Abrir en el navegador:
 
 - `backend/`: proyecto Django
 - `nginx/`: configuración del reverse proxy y estáticos
-- `data_lake/raw/`: datos brutos (CSV/JSON/XML/TXT, etc.)
-- `data_lake/processed/`: datos preprocesados (salida del ETL)
+- `data_sources/`: datos “sueltos” simulando orígenes en carpetas distintas (entrada del **ELT**)
+- `data_lake/raw/`: landing zone única del lago (CSV/JSON/XML/TXT; lo rellena `run_elt_ingest` y/o manual)
+- `data_lake/processed/`: datos preprocesados (salida del ETL batch)
 - `data_lake/processed/evidence/`: gráficos de evidencia (análisis)
 
 ## Árbol del proyecto (tree)
@@ -60,6 +61,7 @@ RetailStart/
 │  │  ├─ etl/
 │  │  │  └─ ingest_transform.py   # lee raw → limpia/unifica → escribe processed
 │  │  ├─ management/commands/
+│  │  │  ├─ run_elt_ingest.py      # comando: python manage.py run_elt_ingest (ELT: E+L → raw)
 │  │  │  ├─ run_etl.py            # comando: python manage.py run_etl
 │  │  │  ├─ load_dw.py            # comando: python manage.py load_dw
 │  │  │  └─ analyze_dw.py         # comando: python manage.py analyze_dw
@@ -68,8 +70,9 @@ RetailStart/
 │  └─ static/                     # CSS y JS separados
 │     ├─ css/main.css
 │     └─ js/main.js
+├─ data_sources/                  # orígenes dispersos (ERP, CRM, POS, etc.)
 ├─ data_lake/
-│  ├─ raw/                        # fuentes originales (anexo)
+│  ├─ raw/                        # consolidado desde data_sources u origen único (anexo)
 │  └─ processed/                  # salidas del ETL + evidence/
 ├─ nginx/default.conf             # reverse proxy + servir /static/
 ├─ docker-compose.yml             # orquestación (db + backend + nginx)
@@ -88,6 +91,10 @@ RetailStart/
 3) **Backend** (Gunicorn + Django) resuelve rutas en `backend/retailstart/urls.py` y renderiza templates.
 
 ### Flujo de datos (Actividad 2)
+
+0) `python manage.py run_elt_ingest` (**ELT**: Extract + Load al lago)
+   - Copia archivos desde varias carpetas bajo `data_sources/` hacia `data_lake/raw/`
+   - **Sin transformar**: solo lleva todo al landing zone del data lake
 
 1) `python manage.py run_etl`
    - Ejecuta `core.management.commands.run_etl`
@@ -148,10 +155,26 @@ docker compose down -v
 
 La actividad pide simular un flujo moderno:
 
-- **Ingesta**: leer fuentes heterogéneas (CSV/JSON/XML/TXT) desde `data_lake/raw/`
+- **ELT (fase ingest)**: reunionar datos desde carpetas/orígenes dispersos (`data_sources/`) en el data lake (`data_lake/raw/`) sin cambiar el contenido
+- **Ingesta / ETL**: leer desde `data_lake/raw/` y procesar batch (pandas) hacia `data_lake/processed/`
 - **Procesamiento batch**: limpieza/unificación y salida a `data_lake/processed/`
 - **Data Warehouse**: cargar a Postgres un **modelo estrella** (dimensiones + hechos)
 - **Consumo**: responder preguntas con agregaciones y gráficos
+
+### 0) ELT: llevar datos sueltos al Data Lake (`raw/`)
+
+Útil cuando los archivos del anexo están repartidos en varias carpetas (simula CRM, ERP, POS, logs, etc.):
+
+```powershell
+cd "v:\Base de datos\Almacenamientos de datos\RetailStart"
+docker compose exec backend python manage.py run_elt_ingest
+```
+
+Sin Docker (desde `backend/`, rutas relativas al repo):
+
+```powershell
+python manage.py run_elt_ingest --sources-root "..\data_sources" --lake-root "..\data_lake"
+```
 
 ### 1) Ejecutar el ETL (batch)
 
