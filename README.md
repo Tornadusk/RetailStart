@@ -11,6 +11,37 @@ Este proyecto levanta una web en **Django** dentro de Docker, usando **Postgres*
 - Docker Desktop (con `docker compose`)
 - Python (solo si quieres correr local sin Docker)
 
+## Instalación (Windows / PowerShell)
+
+### 1) Clonar el repositorio
+
+```powershell
+cd "C:\Users\Acer\Desktop"
+git clone https://github.com/Tornadusk/RetailStart.git
+cd .\RetailStart
+```
+
+> Si ya tienes la carpeta descargada, solo entra a la raíz del proyecto:
+>
+> `cd "C:\ruta\a\RetailStart"`
+
+### 2) Crear el archivo `.env`
+
+```powershell
+Copy-Item .\backend\.env.example .\backend\.env
+```
+
+### 3) Levantar con Docker (recomendado)
+
+```powershell
+docker compose up --build
+```
+
+Abrir en el navegador:
+
+- **App**: `http://localhost:8080/`
+- **Admin Django**: `http://localhost:8080/admin/`
+
 ## Estructura clave
 
 - `backend/`: proyecto Django
@@ -79,7 +110,7 @@ RetailStart/
 1) Copia el ejemplo y crea el archivo real:
 
 ```powershell
-cd "v:\Base de datos\Almacenamientos de datos\RetailStart"
+cd "C:\ruta\a\RetailStart"
 Copy-Item .\backend\.env.example .\backend\.env
 ```
 
@@ -90,7 +121,7 @@ Copy-Item .\backend\.env.example .\backend\.env
 Desde la raíz del proyecto:
 
 ```powershell
-cd "v:\Base de datos\Almacenamientos de datos\RetailStart"
+cd "C:\ruta\a\RetailStart"
 docker compose up --build
 ```
 
@@ -127,7 +158,7 @@ La actividad pide simular un flujo moderno:
 Esto genera datasets “limpios” en `data_lake/processed/`.
 
 ```powershell
-cd "v:\Base de datos\Almacenamientos de datos\RetailStart"
+cd "C:\ruta\a\RetailStart"
 docker compose exec backend python manage.py run_etl
 ```
 
@@ -138,7 +169,7 @@ Carga en Postgres:
 - `FactVentas`
 
 ```powershell
-cd "v:\Base de datos\Almacenamientos de datos\RetailStart"
+cd "C:\ruta\a\RetailStart"
 docker compose exec backend python manage.py load_dw
 ```
 
@@ -150,7 +181,7 @@ Crea gráficos PNG en `data_lake/processed/evidence/`:
 - productos con más ventas
 
 ```powershell
-cd "v:\Base de datos\Almacenamientos de datos\RetailStart"
+cd "C:\ruta\a\RetailStart"
 docker compose exec backend python manage.py analyze_dw
 ```
 
@@ -173,7 +204,7 @@ Esto es un patrón común para despliegue y cumple con “front y backend por do
 ## Correr sin Docker (opcional)
 
 ```powershell
-cd "v:\Base de datos\Almacenamientos de datos\RetailStart"
+cd "C:\ruta\a\RetailStart"
 python -m venv .venv
 .\.venv\Scripts\python -m pip install -r .\requirements.txt
 Copy-Item .\backend\.env.example .\backend\.env
@@ -187,7 +218,7 @@ En este modo debes tener Postgres disponible y ajustar `backend/.env` (por defec
 Si quieres usar **Postgres via Docker** pero correr Django local, levanta solo la BD y apunta a `localhost`:
 
 ```powershell
-cd "v:\Base de datos\Almacenamientos de datos\RetailStart"
+cd "C:\ruta\a\RetailStart"
 docker compose up -d db
 ```
 
