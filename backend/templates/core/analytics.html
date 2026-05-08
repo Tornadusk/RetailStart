@@ -26,6 +26,20 @@
       </section>
 
       <section class="card" style="margin-top: 16px">
+        <h2>Ejemplo con dimensión tiempo (consulta SQL)</h2>
+        <p class="muted">
+          <code>DimTiempo</code> se precarga día a día (<code>id_tiempo</code> en formato AAAAMMDD). <code>FactVentas</code> usa <code>fecha_id</code> apuntando a esa PK. En Power BI/DBeaver/psql puedes filtrar por
+          <code>nombre_dia</code>, <code>nombre_mes</code> y <code>anio</code>.
+        </p>
+        <pre style="margin-top: 10px; padding: 12px; overflow-x: auto; background: #0f172a; color: #e2e8f0; border-radius: 8px; font-size: 12px;"><code>SELECT SUM(f.monto) AS total_monto
+FROM core_factventas f
+JOIN core_dimtiempo t ON f.fecha_id = t.id_tiempo
+WHERE t.nombre_dia = 'Lunes'
+  AND t.nombre_mes = 'Enero'
+  AND t.anio = 2026;</code></pre>
+      </section>
+
+      <section class="card" style="margin-top: 16px">
         <h2>Mejores clientes</h2>
         <div class="tableWrap">
           <table class="table">

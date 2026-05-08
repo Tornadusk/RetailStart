@@ -4,8 +4,8 @@ from __future__ import annotations
 ELT — fase Extract + Load hacia el Data Lake (sin transformar).
 
 Simula sistemas heterogéneos: cada fuente vive en su propia carpeta bajo `data_sources/`.
-Este módulo solo copia los archivos “tal cual” a `data_lake/raw/` con los nombres que
-consume el pipeline batch (`run_etl`).
+Este módulo copia los archivos sin transformar contenido; el nombre en `raw/` lleva sufijo
+`_YYYYMMDD` (fecha de ingesta) para trazabilidad y auditoría.
 
 La fase Transform en un ELT puro suele ejecutarse después en el almacén (SQL, dbt, etc.).
 Aquí la transformación analítica sigue en Python vía `ingest_transform.run_pipeline` tras
@@ -14,6 +14,7 @@ tener todo consolidado en `raw`.
 
 import shutil
 from dataclasses import dataclass
+from datetime import date
 from pathlib import Path
 
 
@@ -37,10 +38,17 @@ DEFAULT_SCATTERED_SOURCES: tuple[SourceFile, ...] = (
 )
 
 
+def _dated_filename(lake_raw_name: str, ingest_stamp: str) -> str:
+    """`ventas_pos.csv` → `ventas_pos_20260508.csv` con sufijo AAAAMMDD."""
+    p = Path(lake_raw_name)
+    return f"{p.stem}_{ingest_stamp}{p.suffix}"
+
+
 def ingest_scattered_sources(
     sources_root: Path,
     lake_raw: Path,
     sources: tuple[SourceFile, ...] = DEFAULT_SCATTERED_SOURCES,
+    ingest_day: date | None = None,
 ) -> list[Path]:
     """
     Copia archivos desde múltiples carpetas hacia `lake_raw` sin modificar contenido.
@@ -50,6 +58,9 @@ def ingest_scattered_sources(
     list[Path]
         Rutas escritas en el data lake (raw).
     """
+    when = ingest_day or date.today()
+    ingest_stamp = when.strftime("%Y%m%d")
+
     lake_raw.mkdir(parents=True, exist_ok=True)
     written: list[Path] = []
     for spec in sources:
@@ -59,7 +70,7 @@ def ingest_scattered_sources(
                 f"ELT ingest: no existe la fuente esperada: {src} "
                 f"(¿existe la carpeta y los archivos del anexo bajo {sources_root!r}?)"
             )
-        dest = lake_raw / spec.lake_raw_name
+        dest = lake_raw / _dated_filename(spec.lake_raw_name, ingest_stamp)
         shutil.copy2(src, dest)
         written.append(dest)
     return written

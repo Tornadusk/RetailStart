@@ -25,13 +25,24 @@ class DimProducto(models.Model):
 
 
 class DimTiempo(models.Model):
-    fecha = models.DateField(unique=True)
-    anio = models.IntegerField()
+    """
+    Dimensión tiempo tipo calendario. PK numérica YYYYMMDD para enlazar con FactVentas.
+    Se pre-genera (no viene de sistemas fuente).
+    """
+
+    id_tiempo = models.IntegerField(primary_key=True)  # ej. 20260508
+    fecha_completa = models.DateField(unique=True, db_index=True)
+    dia_semana = models.IntegerField()  # 1=Lunes … 7=Domingo (ISO)
+    nombre_dia = models.CharField(max_length=12)
+    dia_mes = models.IntegerField()
     mes = models.IntegerField()
-    dia = models.IntegerField()
+    nombre_mes = models.CharField(max_length=16)
+    trimestre = models.IntegerField()
+    anio = models.IntegerField()
+    es_fin_semana = models.BooleanField(default=False)
 
     def __str__(self) -> str:
-        return self.fecha.isoformat()
+        return f"{self.id_tiempo} ({self.fecha_completa})"
 
 
 class DimCanal(models.Model):

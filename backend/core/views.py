@@ -196,17 +196,19 @@ def analytics(request: HttpRequest) -> HttpResponse:
         .order_by("-total")[:15]
     )
 
-    preview_rows = (
-        FactVentas.objects.select_related("cliente", "producto", "canal", "fecha")
-        .order_by("-fecha__fecha", "-id")[:50]
-        .iterator()
+    # Evitar server-side cursors (iterator) en Postgres:
+    # en algunos entornos el cursor puede invalidarse durante el render (InvalidCursorName).
+    preview_rows = list(
+        FactVentas.objects.select_related("cliente", "producto", "canal", "fecha").order_by(
+            "-fecha__fecha_completa", "-id"
+        )[:50]
     )
 
     preview = []
     for fv in preview_rows:
         preview.append(
             {
-                "fecha": fv.fecha.fecha.isoformat(),
+                "fecha": fv.fecha.fecha_completa.isoformat(),
                 "id_cliente": fv.cliente.id_cliente,
                 "cliente": f'{fv.cliente.nombre} {fv.cliente.apellido}',
                 "segmento": fv.cliente.segmento,

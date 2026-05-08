@@ -4,9 +4,10 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import pandas as pd
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 
+from core.dw_calendar import fecha_a_id_tiempo, seed_dim_tiempo_calendar
 from core.models import DimCanal, DimCliente, DimProducto, DimTiempo, FactVentas
 
 
@@ -50,10 +51,33 @@ class Command(BaseCommand):
             default="/data_lake/processed",
             help="Processed directory (default: /data_lake/processed inside Docker).",
         )
+        parser.add_argument(
+            "--calendar-from",
+            type=int,
+            default=2020,
+            help="Año inicial (inclusive) para pre-generar DimTiempo (default: 2020).",
+        )
+        parser.add_argument(
+            "--calendar-to",
+            type=int,
+            default=2030,
+            help="Año final (inclusive) para pre-generar DimTiempo (default: 2030).",
+        )
 
     @transaction.atomic
     def handle(self, *args, **options):
         processed_dir = Path(options["processed_dir"])
+        y0 = int(options["calendar_from"])
+        y1 = int(options["calendar_to"])
+        if y0 > y1:
+            raise CommandError("calendar-from debe ser <= calendar-to.")
+
+        ncal = seed_dim_tiempo_calendar(y0, y1)
+        self.stdout.write(
+            f"DimTiempo calendario: intento de carga de {ncal} días ({y0}–{y1}), "
+            f"filas en tabla: {DimTiempo.objects.count()}"
+        )
+
         files = _pick_files(processed_dir)
 
         clientes = pd.read_csv(files.clientes)
@@ -84,14 +108,6 @@ class Command(BaseCommand):
                 },
             )
 
-        # Tiempo dim from ventas dates
-        fechas = sorted({d.date() for d in ventas["fecha"].dropna()})
-        for f in fechas:
-            DimTiempo.objects.update_or_create(
-                fecha=f,
-                defaults={"anio": f.year, "mes": f.month, "dia": f.day},
-            )
-
         # Canal dim
         for c in sorted(set(ventas["canal"].dropna().astype(str))):
             DimCanal.objects.update_or_create(canal=c)
@@ -99,7 +115,7 @@ class Command(BaseCommand):
         # Facts (idempotent-ish: delete and reload)
         FactVentas.objects.all().delete()
 
-        tiempo_by_fecha = {t.fecha: t for t in DimTiempo.objects.all()}
+        tiempo_by_id = {t.id_tiempo: t for t in DimTiempo.objects.all()}
         canal_by_name = {c.canal: c for c in DimCanal.objects.all()}
         cliente_by_id = {c.id_cliente: c for c in DimCliente.objects.all()}
         producto_by_id = {p.id_producto: p for p in DimProducto.objects.all()}
@@ -110,6 +126,12 @@ class Command(BaseCommand):
             if pd.isna(fecha_dt):
                 continue
             f = fecha_dt.date()
+            id_tiempo = fecha_a_id_tiempo(f)
+            if id_tiempo not in tiempo_by_id:
+                raise CommandError(
+                    f"Fecha {f} fuera del calendario DimTiempo ({y0}–{y1}). "
+                    "Amplía --calendar-from/--calendar-to o corrige fechas en ventas."
+                )
             id_cliente = int(r["id_cliente"])
             canal = str(r["canal"])
 
@@ -121,7 +143,7 @@ class Command(BaseCommand):
             facts.append(
                 FactVentas(
                     id_venta_origen=int(r["id_venta"]),
-                    fecha=tiempo_by_fecha[f],
+                    fecha=tiempo_by_id[id_tiempo],
                     cliente=cliente_by_id[id_cliente],
                     producto=producto,
                     canal=canal_by_name[canal],

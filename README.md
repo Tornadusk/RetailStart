@@ -163,7 +163,8 @@ La actividad pide simular un flujo moderno:
 
 ### 0) ELT: llevar datos sueltos al Data Lake (`raw/`)
 
-Útil cuando los archivos del anexo están repartidos en varias carpetas (simula CRM, ERP, POS, logs, etc.):
+Útil cuando los archivos del anexo están repartidos en varias carpetas (simula CRM, ERP, POS, logs, etc.).  
+**En `data_lake/raw/` los nombres llevan sufijo `_YYYYMMDD`** (fecha de ingesta; por defecto la del sistema; se puede fijar con `--ingest-date`).
 
 ```powershell
 cd "v:\Base de datos\Almacenamientos de datos\RetailStart"
@@ -175,6 +176,8 @@ Sin Docker (desde `backend/`, rutas relativas al repo):
 ```powershell
 python manage.py run_elt_ingest --sources-root "..\data_sources" --lake-root "..\data_lake"
 ```
+
+Opcional: `python manage.py run_elt_ingest --ingest-date 2026-05-07` (también admite `YYYYMMDD`).
 
 ### 1) Ejecutar el ETL (batch)
 
@@ -188,12 +191,30 @@ docker compose exec backend python manage.py run_etl
 ### 2) Cargar el Data Warehouse (modelo estrella)
 
 Carga en Postgres:
-- `DimCliente`, `DimProducto`, `DimTiempo`, `DimCanal`
-- `FactVentas`
+- `DimCliente`, `DimProducto`, `DimCanal`
+- **`DimTiempo`**: calendario **pre-generado** (por defecto años **2020–2030**, un registro por día) con `id_tiempo` = entero **AAAAMMDD**, `nombre_dia` (Lunes…), `nombre_mes`, trimestre y `es_fin_semana`. No se alimenta desde las fuentes CSV; sirve para cortes por día/semana/mes/año y consultas tipo BI.
+- `FactVentas` enlaza a `DimTiempo` mediante la FK `fecha` (internamente `fecha_id` = mismo valor que `DimTiempo.id_tiempo`).
 
 ```powershell
 cd "C:\ruta\a\RetailStart"
 docker compose exec backend python manage.py load_dw
+```
+
+Para ampliar el rango del calendario si tus ventas tienen años fuera del intervalo:
+
+```powershell
+docker compose exec backend python manage.py load_dw --calendar-from 2018 --calendar-to 2035
+```
+
+Ejemplo de consulta (Power BI/SQL client) equivalente a *“¿cómo nos fue todos los lunes de enero de 2026?”* usando tablas físicas Django (`core_factventas` / `core_dimtiempo`):
+
+```sql
+SELECT SUM(f.monto) AS total_monto
+FROM core_factventas f
+JOIN core_dimtiempo t ON f.fecha_id = t.id_tiempo
+WHERE t.nombre_dia = 'Lunes'
+  AND t.nombre_mes = 'Enero'
+  AND t.anio = 2026;
 ```
 
 ### 3) Generar evidencia (gráficos)

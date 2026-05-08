@@ -30,6 +30,21 @@ def _read_csv(path: Path) -> pd.DataFrame:
     return pd.read_csv(path)
 
 
+def _latest_raw_sidecar(raw_dir: Path, stem: str, ext: str) -> Path:
+    """
+    Preferir última versión landed en raw: `{stem}_YYYYMMDD{ext}`, con fallback `{stem}{ext}`.
+    """
+    cand: list[Path] = list(raw_dir.glob(f"{stem}_*{ext}"))
+    legacy = raw_dir / f"{stem}{ext}"
+    if legacy.is_file():
+        cand.append(legacy)
+    if not cand:
+        raise FileNotFoundError(
+            f"ETL: no hay archivo en {raw_dir} para '{stem}' (esperaba {stem}_*{ext} o {stem}{ext})."
+        )
+    return max(cand, key=lambda p: p.stat().st_mtime)
+
+
 def _read_json(path: Path) -> pd.DataFrame:
     data: list[dict[str, Any]] = json.loads(path.read_text(encoding="utf-8"))
     return pd.DataFrame(data)
@@ -62,14 +77,15 @@ def _read_logs_txt(path: Path) -> pd.DataFrame:
 
 
 def extract_from_lake(lake: LakePaths) -> dict[str, pd.DataFrame]:
+    r = lake.raw
     return {
-        "ventas_pos": _read_csv(lake.raw / "ventas_pos.csv"),
-        "ventas_online": _read_csv(lake.raw / "ventas_online.csv"),
-        "clientes": _read_csv(lake.raw / "clientes_crm.csv"),
-        "productos": _read_csv(lake.raw / "productos_erp.csv"),
-        "eventos_app": _read_json(lake.raw / "eventos_app.json"),
-        "logistica": _read_xml_logistica(lake.raw / "logistica.xml"),
-        "logs_sistema": _read_logs_txt(lake.raw / "logs_sistema.txt"),
+        "ventas_pos": _read_csv(_latest_raw_sidecar(r, "ventas_pos", ".csv")),
+        "ventas_online": _read_csv(_latest_raw_sidecar(r, "ventas_online", ".csv")),
+        "clientes": _read_csv(_latest_raw_sidecar(r, "clientes_crm", ".csv")),
+        "productos": _read_csv(_latest_raw_sidecar(r, "productos_erp", ".csv")),
+        "eventos_app": _read_json(_latest_raw_sidecar(r, "eventos_app", ".json")),
+        "logistica": _read_xml_logistica(_latest_raw_sidecar(r, "logistica", ".xml")),
+        "logs_sistema": _read_logs_txt(_latest_raw_sidecar(r, "logs_sistema", ".txt")),
     }
 
 

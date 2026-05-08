@@ -19,3 +19,11 @@ backend/staticfiles/
 readme_intrucciones/
 *.docx
 ~$*.*
+
+# Data lake: artefactos generados (reproducir desde data_sources/ con los comandos Docker)
+data_lake/raw/**/*.csv
+data_lake/raw/**/*.json
+data_lake/raw/**/*.xml
+data_lake/raw/**/*.txt
+data_lake/processed/**/*.csv
+data_lake/processed/evidence/*.png
