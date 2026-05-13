@@ -41,6 +41,21 @@ body {
   color: var(--muted);
 }
 
+.browseHint {
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 209, 102, 0.35);
+  background: rgba(255, 209, 102, 0.08);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.browseHint code {
+  font-size: 13px;
+}
+
 .card {
   background: color-mix(in srgb, var(--card) 88%, black);
   border: 1px solid rgba(105, 210, 255, 0.18);
@@ -336,4 +351,350 @@ body {
   border-radius: 999px;
   background: #ffd166;
   box-shadow: 0 0 0 3px rgba(255, 209, 102, 0.12);
+}
+
+/* Analytics: panel único + filtros */
+main.analyticsPage {
+  max-width: 1120px;
+}
+
+.analyticsDwCard .analyticsKpiStrip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.analyticsDwCard .analyticsKpiStrip .kpi {
+  padding: 12px;
+}
+
+.analyticsFilterCluster {
+  margin-top: 18px;
+  padding: 16px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(105, 210, 255, 0.12);
+}
+
+.filterActiveLine {
+  margin: 0 0 14px;
+  font-size: 15px;
+  color: var(--text);
+}
+
+.filterActiveLine strong {
+  color: var(--accent);
+}
+
+.analyticsFormRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 18px;
+  align-items: flex-end;
+}
+
+.analyticsField label {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.analyticsField select {
+  min-width: 140px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(15, 23, 42, 0.95);
+  color: var(--text);
+  font-size: 14px;
+}
+
+.analyticsField select:focus {
+  outline: none;
+  border-color: rgba(105, 210, 255, 0.45);
+  box-shadow: 0 0 0 2px rgba(105, 210, 255, 0.12);
+}
+
+.analyticsFormActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.analyticsBanner {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: rgba(88, 242, 179, 0.08);
+  border: 1px solid rgba(88, 242, 179, 0.22);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.analyticsBanner .bannerMuted {
+  display: block;
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.chipLink {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--text);
+  border: 1px solid rgba(105, 210, 255, 0.28);
+  background: rgba(105, 210, 255, 0.1);
+}
+
+.chipLink:hover {
+  border-color: rgba(105, 210, 255, 0.55);
+  background: rgba(105, 210, 255, 0.16);
+}
+
+.timeSubBlock {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.timeSubBlock h3 {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+}
+
+/* Analytics: tablas con columnas claras, rayas y mensaje sin datos */
+main.analyticsPage .table thead th {
+  vertical-align: bottom;
+  border-bottom: 1px solid rgba(105, 210, 255, 0.2);
+  white-space: nowrap;
+}
+
+main.analyticsPage .table thead th .link {
+  color: #c8dcff;
+  font-weight: 600;
+}
+
+main.analyticsPage .table thead th .link:hover {
+  color: var(--accent);
+}
+
+main.analyticsPage .table tbody tr:nth-child(even):not(.table-msg) td {
+  background: rgba(255, 255, 255, 0.035);
+}
+
+main.analyticsPage .table tbody tr:not(.table-msg):hover td {
+  background: rgba(105, 210, 255, 0.08);
+}
+
+main.analyticsPage .table tbody tr.table-msg td {
+  text-align: center;
+  padding: 20px 16px;
+  color: var(--muted);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+main.analyticsPage .table tbody tr.table-msg:hover td {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+main.analyticsPage .analyticsDwCard .tableWrap {
+  border-color: rgba(105, 210, 255, 0.12);
+  background: rgba(0, 0, 0, 0.12);
+}
+
+/* Panel principal analytics: un poco más de relieve que cards genéricas */
+main.analyticsPage .card.analyticsDwCard {
+  border-color: rgba(105, 210, 255, 0.26);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.42);
+}
+
+#segmentar-ventas {
+  scroll-margin-top: 1rem;
+  outline: none;
+}
+
+/* --- Layout utilities (sin estilos inline en plantillas) --- */
+.cardStack {
+  margin-top: 16px;
+}
+
+.badge--inline {
+  margin-left: 6px;
+}
+
+.btn--inline {
+  margin-top: 0;
+}
+
+/* --- Bloque reutilizado: comandos Docker + árbol de datos (include) --- */
+.pipelineCard {
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(105, 210, 255, 0.14);
+}
+
+.pipelineCard__title {
+  margin: 0 0 10px;
+}
+
+.pipelineCard__lead {
+  margin: 0 0 14px;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.pipelineCard__paths {
+  margin: 14px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.pipelineCard--aside .pipelineCard__lead {
+  font-size: 13px;
+}
+
+.pipelineCard--aside .commandSteps__cmd {
+  font-size: 12px;
+}
+
+.pipelineCard--aside .commandSteps__what {
+  font-size: 12px;
+}
+
+.commandSteps {
+  margin: 0;
+  padding-left: 22px;
+}
+
+.commandSteps__item {
+  margin: 0 0 14px;
+  padding-left: 6px;
+}
+
+.commandSteps__item::marker {
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.commandSteps__cmd {
+  display: block;
+  margin: 6px 0 6px;
+  font-size: 13px;
+  line-height: 1.35;
+  word-break: break-word;
+  color: #dbe7ff;
+}
+
+.commandSteps__what {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+/* --- Analytics: reemplazo de inline --- */
+.analyticsBanner--warn {
+  border-color: rgba(255, 209, 102, 0.35);
+  background: rgba(255, 209, 102, 0.08);
+}
+
+.filterClusterTitle {
+  margin: 0 0 10px;
+}
+
+.filterClusterHint {
+  margin: 0 0 12px;
+  font-size: 13px;
+}
+
+.chipRowCaption {
+  margin: 10px 0 0;
+  font-size: 12px;
+}
+
+.timeSubLead {
+  margin-top: 4px;
+}
+
+.timeSubBlock--accent {
+  border-top-color: rgba(105, 210, 255, 0.2);
+}
+
+.ormExampleLine {
+  margin: 8px 0 0;
+}
+
+.detailsSql__summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.detailsSql__lead {
+  margin-top: 10px;
+}
+
+.codeBlock {
+  margin-top: 10px;
+  padding: 12px 14px;
+  overflow-x: auto;
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 1.45;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.flowDesc {
+  margin: 0;
+}
+
+.flowLakehouseNote {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(105, 210, 255, 0.18);
+  background: rgba(105, 210, 255, 0.06);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.lakeRouteTableWrap td code {
+  font-size: 12px;
+  word-break: break-word;
+}
+
+.evidenceFileMeta {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.evidenceFileMeta p {
+  margin: 8px 0 0;
+}
+
+.evidenceFileMeta p:first-child {
+  margin-top: 0;
 }

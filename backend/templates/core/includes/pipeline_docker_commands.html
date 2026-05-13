@@ -1,0 +1,51 @@
+{#-
+  Árbol de datos (misma lógica en todo el sitio):
+
+  data_sources/          … archivos del anexo / pruebas
+       │
+       ▼  run_elt_ingest  (ELT: copiar sin transformar)
+  data_lake/raw/         … landing *_YYYYMMDD.csv|json|…
+       │
+       ▼  run_etl         (ETL: pandas, ingest_transform.py)
+  data_lake/processed/   … CSV limpios + agregados (*_timestamp.csv)
+       │
+       ▼  load_dw         (carga modelo estrella en Postgres)
+  Postgres (DW)          … core_dim*, core_factventas
+       │
+       ▼  analyze_dw      (matplotlib → PNG)
+  data_lake/processed/evidence/  … gráficos para /evidence/
+
+  Esta plantilla se incluye desde: home, analytics, evidence (aside).
+-#}
+<div class="pipelineCard{% if pipeline_aside %} pipelineCard--aside{% endif %}">
+  <h3 class="h3 pipelineCard__title">Comandos Docker (orden recomendado)</h3>
+  <p class="muted pipelineCard__lead">
+    Desde la raíz del repo (junto a <code>docker-compose.yml</code>), con <code>docker compose up</code> en marcha.
+    Cada paso alimenta el siguiente; <strong>/analytics/</strong> y <strong>/evidence/</strong> leen el DW y los PNG ya generados.
+  </p>
+  <ol class="commandSteps">
+    <li class="commandSteps__item">
+      <code class="commandSteps__cmd">docker compose exec backend python manage.py run_elt_ingest</code>
+      <p class="commandSteps__what muted">ELT: copia <code>data_sources/</code> → <code>data_lake/raw/</code> (misma información, nombres con fecha).</p>
+    </li>
+    <li class="commandSteps__item">
+      <code class="commandSteps__cmd">docker compose exec backend python manage.py run_etl</code>
+      <p class="commandSteps__what muted">ETL: lee <code>raw/</code>, limpia y unifica → escribe CSV en <code>data_lake/processed/</code> (<code>core/etl/ingest_transform.py</code>).</p>
+    </li>
+    <li class="commandSteps__item">
+      <code class="commandSteps__cmd">docker compose exec backend python manage.py load_dw</code>
+      <p class="commandSteps__what muted">Carga el último <code>ventas_unificadas_*.csv</code> + dimensiones → Postgres (<code>core/management/commands/load_dw.py</code>).</p>
+    </li>
+    <li class="commandSteps__item">
+      <code class="commandSteps__cmd">docker compose exec backend python manage.py analyze_dw</code>
+      <p class="commandSteps__what muted">Lee el DW y genera PNG en <code>processed/evidence/</code> (Parte 5: gráficos de respaldo a las tablas ORM).</p>
+    </li>
+  </ol>
+  <p class="muted pipelineCard__paths">
+    En Windows, las mismas rutas bajo el proyecto:
+    <code>…\data_sources\</code>,
+    <code>…\data_lake\raw\</code>,
+    <code>…\data_lake\processed\</code>,
+    <code>…\data_lake\processed\evidence\</code>.
+  </p>
+</div>

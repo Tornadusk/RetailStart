@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Evidencia - RetailStart</title>
-    <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=4" />
   </head>
   <body>
     <main class="container">
@@ -48,23 +48,16 @@
 
           <div class="divider"></div>
 
-          <h3 class="h3">Comandos (orden recomendado)</h3>
-          <ol class="steps">
-            <li><code>python manage.py run_elt_ingest</code> (<code>data_sources/</code> → <code>data_lake/raw/</code>, sin transformar)</li>
-            <li><code>python manage.py run_etl</code> (raw → processed)</li>
-            <li><code>python manage.py load_dw</code> (processed → Postgres DW)</li>
-            <li><code>python manage.py analyze_dw</code> (DW → gráficos PNG en evidence)</li>
-          </ol>
-          <p class="muted">
-            En Docker (desde la raíz del repo): anteponé <code>docker compose exec backend</code> a cada comando.
-          </p>
+          {% include "core/includes/pipeline_docker_commands.html" with pipeline_aside=True %}
 
-          <p class="muted">
-            Último CSV: <span class="badge">{% if latest_processed %}{{ latest_processed }}{% else %}—{% endif %}</span>
-          </p>
-          <p class="muted" style="margin-top: 8px">
-            Último gráfico: <span class="badge">{% if latest_chart %}{{ latest_chart }}{% else %}—{% endif %}</span>
-          </p>
+          <div class="evidenceFileMeta">
+            <p class="muted">
+              Último CSV: <span class="badge">{% if latest_processed %}{{ latest_processed }}{% else %}—{% endif %}</span>
+            </p>
+            <p class="muted">
+              Último gráfico: <span class="badge">{% if latest_chart %}{{ latest_chart }}{% else %}—{% endif %}</span>
+            </p>
+          </div>
         </aside>
 
         <div class="stack">
@@ -88,7 +81,7 @@
             {% endif %}
           </section>
 
-          <section class="card" style="margin-top: 16px">
+          <section class="card cardStack">
             <h2>Archivos procesados (CSV)</h2>
             {% if files %}
               <div class="tableWrap">
@@ -118,4 +111,3 @@
     </main>
   </body>
 </html>
-

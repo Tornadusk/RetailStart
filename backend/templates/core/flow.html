@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Flujo - RetailStart</title>
-    <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=5" />
   </head>
   <body>
     <main class="container">
@@ -27,14 +27,50 @@
         </p>
       </section>
 
-      <section class="card" style="margin-top: 16px">
+      <section class="card cardStack">
+        <h2>Tabla: origen disperso → Data Lake (<code>raw/</code>)</h2>
+        <p class="muted">
+          Mapeo alineado con <code>DEFAULT_SCATTERED_SOURCES</code> en <code>core/etl/elt_ingest.py</code>.
+          <code>run_elt_ingest</code> copia el archivo <em>sin transformar</em>; en <code>raw/</code> el nombre incluye
+          <code>_YYYYMMDD</code> (fecha de ingesta) para auditoría.
+        </p>
+        <p class="muted flowLakehouseNote">
+          Tu diagrama Lakehouse separa <strong>streaming</strong> y <strong>batch</strong>. En este proyecto la ingesta al lake está
+          <strong>simulada en batch</strong> (ELT por comando). El streaming lo podés describir en la reflexión de la actividad como evolución
+          (p. ej. Kafka, CDC) sin que falte una tabla en la app: esta grilla cubre el camino <code>data_sources</code> → <code>raw</code>.
+        </p>
+        <div class="tableWrap lakeRouteTableWrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Rol (anexo / simulación)</th>
+                <th>Ruta bajo <code>data_sources/</code></th>
+                <th>Nombre en <code>data_lake/raw/</code></th>
+                <th>Formato</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in lake_route_rows %}
+                <tr>
+                  <td>{{ row.rol }}</td>
+                  <td><code>{{ row.sources_path }}</code></td>
+                  <td><code>{{ row.raw_landing }}</code></td>
+                  <td>{{ row.formato }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card cardStack">
         <h2>Flujo</h2>
         <div class="flow">
           {% for s in steps %}
             <div class="flowRow">
               <div class="flowStep">{{ s.name }}</div>
               <div>
-                <p style="margin: 0">{{ s.desc }}</p>
+                <p class="flowDesc">{{ s.desc }}</p>
                 <div>
                   {% if s.status_ok %}
                     <span class="pill"><span class="okDot"></span>OK</span>
@@ -45,7 +81,7 @@
                     <span class="pill">{{ t }}</span>
                   {% endfor %}
                 </div>
-                <p class="muted" style="margin: 10px 0 0">{{ s.details }}</p>
+                <p class="muted flowDetailsMuted">{{ s.details }}</p>
               </div>
             </div>
             {% if not forloop.last %}
@@ -57,4 +93,3 @@
     </main>
   </body>
 </html>
-

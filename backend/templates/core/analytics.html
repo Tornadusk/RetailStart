@@ -5,13 +5,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Analytics (DW) - RetailStart</title>
-    <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=4" />
   </head>
   <body>
-    <main class="container">
+    <main class="container analyticsPage">
       <header class="header">
         <h1 class="title">Analytics (Data Warehouse)</h1>
-        <p class="subtitle">Consultas/tablas sobre Postgres (modelo estrella)</p>
+        <p class="subtitle">Consumo desde el DW vía Django ORM (modelo estrella + dimensión tiempo)</p>
         <p class="muted">
           Inicio: <a class="link" href="/">/</a> · Flujo: <a class="link" href="/flow/">/flow/</a> · Evidencia PNG/CSV:
           <a class="link" href="/evidence/">/evidence/</a>
@@ -21,25 +21,279 @@
       <section class="card">
         <h2>Preguntas de negocio (Parte 5)</h2>
         <p class="muted">
-          Este tablero complementa los gráficos en Python: aquí verás las mismas agregaciones en formato tabla (consumo/consultas).
+          Los datos viven en Postgres (<code>DimTiempo</code>, hechos, demás dimensiones). Los filtros y orden de columnas se traducen a consultas SQL en el servidor (ORM). Los PNG siguen en <a class="link" href="/evidence/">/evidence/</a>.
         </p>
       </section>
 
-      <section class="card" style="margin-top: 16px">
-        <h2>Ejemplo con dimensión tiempo (consulta SQL)</h2>
+      <section class="card cardStack">
+        <h2>Pipeline y comandos Docker</h2>
         <p class="muted">
-          <code>DimTiempo</code> se precarga día a día (<code>id_tiempo</code> en formato AAAAMMDD). <code>FactVentas</code> usa <code>fecha_id</code> apuntando a esa PK. En Power BI/DBeaver/psql puedes filtrar por
-          <code>nombre_dia</code>, <code>nombre_mes</code> y <code>anio</code>.
+          Las tablas de abajo leen <strong>Postgres</strong> (no el CSV en vivo). Si ves ceros o tablas vacías, ejecutá el pipeline en orden; el código vive en <code>core/management/commands/</code> y <code>core/etl/</code>.
         </p>
-        <pre style="margin-top: 10px; padding: 12px; overflow-x: auto; background: #0f172a; color: #e2e8f0; border-radius: 8px; font-size: 12px;"><code>SELECT SUM(f.monto) AS total_monto
+        {% include "core/includes/pipeline_docker_commands.html" %}
+      </section>
+
+      <section class="card analyticsDwCard cardStack">
+        <h2>Modelo en estrella · filtros · dimensión tiempo</h2>
+        <p class="muted">
+          Un solo panel: KPIs del DW, segmentación (año / mes / día de semana, combinables) y tablas que se actualizan al enviar el formulario.
+          Los encabezados de tabla alternan orden. Debajo, rankings y vista previa usan el mismo filtro.
+        </p>
+
+        <div class="analyticsKpiStrip">
+          <div class="kpi">
+            <div class="kpiLabel">DimCliente</div>
+            <div class="kpiValue">{{ star_model.dim_cliente }}</div>
+          </div>
+          <div class="kpi">
+            <div class="kpiLabel">DimProducto</div>
+            <div class="kpiValue">{{ star_model.dim_producto }}</div>
+          </div>
+          <div class="kpi">
+            <div class="kpiLabel">DimTiempo (calendario)</div>
+            <div class="kpiValue">{{ star_model.dim_tiempo }}</div>
+          </div>
+          <div class="kpi">
+            <div class="kpiLabel">DimCanal</div>
+            <div class="kpiValue">{{ star_model.dim_canal }}</div>
+          </div>
+          <div class="kpi">
+            <div class="kpiLabel">FactVentas (total)</div>
+            <div class="kpiValue">{{ star_model.fact_ventas }}</div>
+          </div>
+          <div class="kpi">
+            <div class="kpiLabel">Hechos que ves ahora</div>
+            <div class="kpiValue">{{ star_model.hechos_filtrados }}</div>
+          </div>
+        </div>
+
+        {% if dw_span_min %}
+          <div class="analyticsBanner">
+            <strong>Datos cargados en el DW (sin filtrar):</strong>
+            del <strong>{{ dw_span_min|date:"d/m/Y" }}</strong> al <strong>{{ dw_span_max|date:"d/m/Y" }}</strong>
+            — <strong>{{ dw_total_unfiltered }}</strong> hechos.
+            <span class="bannerMuted">
+              Años que tienen al menos una venta:
+              {% for yy in years_with_sales %}<span class="badge badge--inline">{{ yy }}</span>{% empty %}—{% endfor %}
+            </span>
+          </div>
+        {% else %}
+          <div class="analyticsBanner analyticsBanner--warn">
+            <strong>No hay hechos en FactVentas.</strong> Ejecutá <code>load_dw</code> tras el ETL.
+          </div>
+        {% endif %}
+
+        <div class="analyticsFilterCluster" id="segmentar-ventas" tabindex="-1">
+          <h3 class="h3 filterClusterTitle">Segmentar ventas</h3>
+          <p class="filterActiveLine">
+            <strong>Vista actual:</strong> {{ filter_summary }}
+          </p>
+          <p class="muted filterClusterHint">
+            Ejemplos: solo <em>Lunes</em> · solo año <em>2000</em> (si hay datos) · año + mes · <em>Domingos</em> de un mes (elegí año, mes y día).
+          </p>
+          <form method="get" class="analyticsFormRow" action="{% url 'analytics' %}#segmentar-ventas">
+            <div class="analyticsField">
+              <label for="fy">Año</label>
+              <select name="y" id="fy">
+                <option value="">Todos los años</option>
+                {% for yr in years %}
+                  <option value="{{ yr }}" {% if filter_y == yr %}selected{% endif %}>{{ yr }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="analyticsField">
+              <label for="fm">Mes</label>
+              <select name="m" id="fm">
+                <option value="">Todos los meses</option>
+                {% for mo, mo_label in months %}
+                  <option value="{{ mo }}" {% if filter_m == mo %}selected{% endif %}>{{ mo_label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="analyticsField">
+              <label for="fd">Día de la semana</label>
+              <select name="d" id="fd">
+                {% for val, label in dias_semana %}
+                  <option value="{{ val }}" {% if filter_d == val %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="analyticsFormActions">
+              <button type="submit" class="btn btn--inline">Actualizar vista</button>
+              <a class="link" href="{% url 'analytics' %}#segmentar-ventas">Quitar filtros</a>
+            </div>
+          </form>
+          <p class="muted chipRowCaption">Atajos (misma lógica que el formulario):</p>
+          <div class="chipRow">
+            {% for ql in quick_time_links %}
+              <a class="chipLink" href="{% url 'analytics' %}{{ ql.href }}">{{ ql.label }}</a>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="timeSubBlock">
+          <h3>1 · DimTiempo enlazada a los hechos filtrados</h3>
+          <p class="muted timeSubLead">
+            Cada hecho apunta a <code>DimTiempo</code> por <code>id_tiempo</code> (AAAAMMDD).
+          </p>
+          <div class="tableWrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th class="right"><a class="link" href="{% url 'analytics' %}{{ sort_href.dim_id }}">id_tiempo</a></th>
+                  <th><a class="link" href="{% url 'analytics' %}{{ sort_href.dim_fecha }}">Fecha</a></th>
+                  <th><a class="link" href="{% url 'analytics' %}{{ sort_href.dim_dia }}">Día</a></th>
+                  <th class="right"># sem.</th>
+                  <th>Mes</th>
+                  <th class="right">Trim.</th>
+                  <th class="right"><a class="link" href="{% url 'analytics' %}{{ sort_href.dim_anio }}">Año</a></th>
+                  <th>Fin sem.</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for t in dim_tiempo_en_hechos %}
+                  <tr>
+                    <td class="right">{{ t.id_tiempo }}</td>
+                    <td>{{ t.fecha_completa|date:"Y-m-d" }}</td>
+                    <td>{{ t.nombre_dia }}</td>
+                    <td class="right">{{ t.dia_semana }}</td>
+                    <td>{{ t.nombre_mes }}</td>
+                    <td class="right">{{ t.trimestre }}</td>
+                    <td class="right">{{ t.anio }}</td>
+                    <td>{% if t.es_fin_semana %}Sí{% else %}No{% endif %}</td>
+                  </tr>
+                {% empty %}
+                  <tr class="table-msg">
+                    <td colspan="8" class="muted">Sin hechos con el filtro actual o DW vacío. Ejecutá <code>load_dw</code> o quitá filtros.</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="timeSubBlock">
+          <h3>2 · Ventas por día civil</h3>
+          <p class="muted timeSubLead">Suma de <code>monto</code> y transacciones por <code>fecha_completa</code>.</p>
+          <div class="tableWrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th class="right"><a class="link" href="{% url 'analytics' %}{{ sort_href.dc_id }}">id_tiempo</a></th>
+                  <th><a class="link" href="{% url 'analytics' %}{{ sort_href.dc_fecha }}">Fecha</a></th>
+                  <th>Día</th>
+                  <th class="right"><a class="link" href="{% url 'analytics' %}{{ sort_href.dc_tx }}">Transacciones</a></th>
+                  <th class="right"><a class="link" href="{% url 'analytics' %}{{ sort_href.dc_monto }}">Total ($)</a></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for r in ventas_por_dia_civil %}
+                  <tr>
+                    <td class="right">{{ r.fecha__id_tiempo }}</td>
+                    <td>{{ r.fecha__fecha_completa|date:"Y-m-d" }}</td>
+                    <td>{{ r.fecha__nombre_dia }}</td>
+                    <td class="right">{{ r.transacciones }}</td>
+                    <td class="right">{{ r.total_monto }}</td>
+                  </tr>
+                {% empty %}
+                  <tr class="table-msg">
+                    <td colspan="5" class="muted">Sin datos con el filtro actual (revisá año/mes o quitá filtros).</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="timeSubBlock">
+          <h3>3 · Ventas por día de la semana</h3>
+          <div class="tableWrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th><a class="link" href="{% url 'analytics' %}{{ sort_href.sem_dia }}">Día</a></th>
+                  <th class="right"># ISO</th>
+                  <th class="right"><a class="link" href="{% url 'analytics' %}{{ sort_href.sem_tx }}">Transacciones</a></th>
+                  <th class="right"><a class="link" href="{% url 'analytics' %}{{ sort_href.sem_monto }}">Total ($)</a></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for r in ventas_por_dia_semana %}
+                  <tr>
+                    <td>{{ r.fecha__nombre_dia }}</td>
+                    <td class="right">{{ r.fecha__dia_semana }}</td>
+                    <td class="right">{{ r.transacciones }}</td>
+                    <td class="right">{{ r.total_monto }}</td>
+                  </tr>
+                {% empty %}
+                  <tr class="table-msg">
+                    <td colspan="4" class="muted">Sin datos con el filtro actual.</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="timeSubBlock">
+          <h3>4 · Ventas por mes y año</h3>
+          <div class="tableWrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th><a class="link" href="{% url 'analytics' %}{{ sort_href.mes_per }}">Mes</a></th>
+                  <th class="right"># mes</th>
+                  <th class="right">Año</th>
+                  <th class="right"><a class="link" href="{% url 'analytics' %}{{ sort_href.mes_tx }}">Transacciones</a></th>
+                  <th class="right"><a class="link" href="{% url 'analytics' %}{{ sort_href.mes_monto }}">Total ($)</a></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for r in ventas_por_mes_anio %}
+                  <tr>
+                    <td>{{ r.fecha__nombre_mes }}</td>
+                    <td class="right">{{ r.fecha__mes }}</td>
+                    <td class="right">{{ r.fecha__anio }}</td>
+                    <td class="right">{{ r.transacciones }}</td>
+                    <td class="right">{{ r.total_monto }}</td>
+                  </tr>
+                {% empty %}
+                  <tr class="table-msg">
+                    <td colspan="5" class="muted">Sin datos con el filtro actual.</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="timeSubBlock timeSubBlock--accent">
+          <h3>Ejemplo combinado (ORM)</h3>
+          <p class="muted timeSubLead">
+            Misma lógica que “todos los lunes de enero de 2026”: suma de <code>monto</code> con año + mes + día fijos en código.
+            Si el dataset no tiene ese mes, el total es <code>0</code>.
+          </p>
+          <p class="ormExampleLine">
+            <strong>Suma monto · Lunes + Enero + 2026:</strong>
+            <span class="badge">${{ ej_orm_lunes_enero_2026 }}</span>
+          </p>
+        </div>
+      </section>
+
+      <details class="card cardStack detailsSql">
+        <summary class="detailsSql__summary">Referencia SQL (DBeaver / psql)</summary>
+        <p class="muted detailsSql__lead">
+          Equivalente a los joins que el ORM hace entre <code>core_factventas</code> y <code>core_dimtiempo</code>:
+        </p>
+        <pre class="codeBlock"><code>SELECT SUM(f.monto) AS total_monto
 FROM core_factventas f
 JOIN core_dimtiempo t ON f.fecha_id = t.id_tiempo
 WHERE t.nombre_dia = 'Lunes'
   AND t.nombre_mes = 'Enero'
   AND t.anio = 2026;</code></pre>
-      </section>
+      </details>
 
-      <section class="card" style="margin-top: 16px">
+      <section class="card cardStack">
         <h2>Mejores clientes</h2>
         <div class="tableWrap">
           <table class="table">
@@ -60,7 +314,7 @@ WHERE t.nombre_dia = 'Lunes'
                   <td class="right">{{ r.total }}</td>
                 </tr>
               {% empty %}
-                <tr>
+                <tr class="table-msg">
                   <td colspan="4" class="muted">Sin datos. Ejecuta <code>load_dw</code> después del ETL.</td>
                 </tr>
               {% endfor %}
@@ -69,7 +323,7 @@ WHERE t.nombre_dia = 'Lunes'
         </div>
       </section>
 
-      <section class="card" style="margin-top: 16px">
+      <section class="card cardStack">
         <h2>Rendimiento por canal</h2>
         <div class="tableWrap">
           <table class="table">
@@ -86,7 +340,7 @@ WHERE t.nombre_dia = 'Lunes'
                   <td class="right">{{ r.total }}</td>
                 </tr>
               {% empty %}
-                <tr>
+                <tr class="table-msg">
                   <td colspan="2" class="muted">Sin datos. Ejecuta <code>load_dw</code> después del ETL.</td>
                 </tr>
               {% endfor %}
@@ -95,7 +349,7 @@ WHERE t.nombre_dia = 'Lunes'
         </div>
       </section>
 
-      <section class="card" style="margin-top: 16px">
+      <section class="card cardStack">
         <h2>Productos líderes</h2>
         <p class="muted">Nota: ventas online sin producto pueden quedar agrupadas sin producto (null).</p>
         <div class="tableWrap">
@@ -117,7 +371,7 @@ WHERE t.nombre_dia = 'Lunes'
                   <td class="right">{{ r.total }}</td>
                 </tr>
               {% empty %}
-                <tr>
+                <tr class="table-msg">
                   <td colspan="4" class="muted">Sin datos. Ejecuta <code>load_dw</code> después del ETL.</td>
                 </tr>
               {% endfor %}
@@ -126,13 +380,17 @@ WHERE t.nombre_dia = 'Lunes'
         </div>
       </section>
 
-      <section class="card" style="margin-top: 16px">
+      <section class="card cardStack">
         <h2>Vista rápida (FactVentas, últimos 50)</h2>
         <div class="tableWrap">
           <table class="table">
             <thead>
               <tr>
+                <th class="right">id_tiempo</th>
                 <th>Fecha</th>
+                <th class="right">Día</th>
+                <th class="right">Mes</th>
+                <th class="right">Año</th>
                 <th>ID cliente</th>
                 <th>Cliente</th>
                 <th>Segmento</th>
@@ -146,7 +404,11 @@ WHERE t.nombre_dia = 'Lunes'
             <tbody>
               {% for r in preview %}
                 <tr>
+                  <td class="right">{{ r.id_tiempo }}</td>
                   <td>{{ r.fecha }}</td>
+                  <td class="right">{{ r.dia }}</td>
+                  <td class="right">{{ r.mes }}</td>
+                  <td class="right">{{ r.anio }}</td>
                   <td>{{ r.id_cliente }}</td>
                   <td>{{ r.cliente }}</td>
                   <td>{{ r.segmento }}</td>
@@ -157,8 +419,8 @@ WHERE t.nombre_dia = 'Lunes'
                   <td class="right">{{ r.monto }}</td>
                 </tr>
               {% empty %}
-                <tr>
-                  <td colspan="9" class="muted">Sin datos.</td>
+                <tr class="table-msg">
+                  <td colspan="13" class="muted">Sin datos.</td>
                 </tr>
               {% endfor %}
             </tbody>
@@ -166,5 +428,6 @@ WHERE t.nombre_dia = 'Lunes'
         </div>
       </section>
     </main>
+    <script src="{% static 'js/analytics-filtros-anchor.js' %}?v=1" defer></script>
   </body>
 </html>

@@ -5,13 +5,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>RetailStart</title>
-    <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=4" />
   </head>
   <body>
     <main class="container">
       <header class="header">
         <h1 class="title">RetailStart</h1>
         <p class="subtitle">Django + Postgres + Nginx (Docker)</p>
+        <p class="browseHint">
+          <strong>Entrá acá desde tu PC:</strong>
+          <a class="link" href="http://127.0.0.1:8080/">http://127.0.0.1:8080/</a>
+          · <code>0.0.0.0:8000</code> es solo “escuchar en todas las interfaces” <em>dentro</em> del contenedor; el navegador no puede abrir esa dirección. El puerto hacia afuera es <strong>8080</strong> (Nginx → backend).
+        </p>
       </header>
 
       <section class="card">
@@ -32,29 +37,14 @@
           Ver flujo completo (Origen → Consumo): <a class="link" href="/flow/">/flow/</a>
         </p>
 
-        <h3 class="h3">Comandos Docker (orden recomendado)</h3>
-        <p class="muted">
-          Desde la raíz del repo (junto a <code>docker-compose.yml</code>), con <code>docker compose up</code> corriendo. El flujo parte de
-          <code>data_sources/</code> y regenera raw, processed y el DW.
-        </p>
-        <ol class="steps">
-          <li><code>docker compose exec backend python manage.py run_elt_ingest</code></li>
-          <li><code>docker compose exec backend python manage.py run_etl</code></li>
-          <li><code>docker compose exec backend python manage.py load_dw</code></li>
-          <li><code>docker compose exec backend python manage.py analyze_dw</code></li>
-        </ol>
-        <p class="muted">
-          En Windows las mismas rutas bajo el proyecto:
-          <code>…\data_sources\</code>,
-          <code>…\data_lake\raw\</code>,
-          <code>…\data_lake\processed\</code>,
-          <code>…\data_lake\processed\evidence\</code>.
-        </p>
-
         <div class="actions">
           <a class="btn" href="/analytics/">Abrir Analytics (consultas desde el DW)</a>
           <a class="btn" href="/evidence/">Abrir Evidencia (PNGs + CSV)</a>
         </div>
+      </section>
+
+      <section class="card cardStack">
+        {% include "core/includes/pipeline_docker_commands.html" %}
       </section>
     </main>
 

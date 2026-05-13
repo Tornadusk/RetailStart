@@ -1,14 +1,35 @@
 from __future__ import annotations
 
 """
-ETL (batch) para Actividad 2.
+ETL (batch) para Actividad 2 — capa *processed* del data lake.
 
-Responsabilidad:
-- Extract: leer fuentes heterogéneas desde `data_lake/raw/` (CSV/JSON/XML/TXT)
-- Transform: limpieza mínima, unificación omnicanal (POS + online) y agregaciones base
-- Load (a archivos): escribir CSV “procesados” en `data_lake/processed/` con timestamp
+Árbol de dependencias (dónde vive cada cosa):
 
-Este módulo es invocado por el comando `python manage.py run_etl`.
+    data_lake/raw/*.csv|json|xml|txt     ← salida de `run_elt_ingest` (ELT)
+            │
+            │  extract_from_lake()  lee el archivo *más reciente* por stem
+            ▼
+    ┌───────────────────────────────────────┐
+    │  transform()  (pandas)                 │
+    │  · limpia / dedup clientes y productos│
+    │  · unifica ventas_pos + ventas_online │
+    │  · enriquece (merge clientes/producto)│
+    │  · agrega totales por cliente/canal/  │
+    │    producto                           │
+    └───────────────────────────────────────┘
+            │
+            │  load_to_processed()
+            ▼
+    data_lake/processed/<nombre>_<timestamp>.csv
+
+Responsabilidad por etapa:
+- Extract: leer fuentes heterogéneas desde `data_lake/raw/` (CSV/JSON/XML/TXT).
+- Transform: limpieza mínima, unificación omnicanal (POS + online) y agregaciones base.
+  Las ventas unificadas incluyen `fecha` más columnas de calendario (`anio`, `mes`, `dia`, `id_tiempo`)
+  para trazabilidad con la dimensión tiempo del DW (`load_dw` + `DimTiempo`).
+- Load (a archivos): escribir CSV procesados en `data_lake/processed/` con timestamp.
+
+Invocación: `python manage.py run_etl` (Docker: `docker compose exec backend python manage.py run_etl`).
 """
 
 import json
@@ -135,6 +156,14 @@ def transform(dfs: dict[str, pd.DataFrame]) -> dict[str, pd.DataFrame]:
     ventas = ventas.dropna(subset=["fecha", "id_cliente"])
     ventas["id_cliente"] = pd.to_numeric(ventas["id_cliente"], errors="coerce").astype("Int64")
     ventas["id_producto"] = pd.to_numeric(ventas["id_producto"], errors="coerce").astype("Int64")
+
+    # Calendario explícito en CSV processed (alineado con DimTiempo.id_tiempo = YYYYMMDD en el DW).
+    ventas["anio"] = ventas["fecha"].dt.year.astype("Int64")
+    ventas["mes"] = ventas["fecha"].dt.month.astype("Int64")
+    ventas["dia"] = ventas["fecha"].dt.day.astype("Int64")
+    ventas["id_tiempo"] = (
+        ventas["fecha"].dt.year * 10000 + ventas["fecha"].dt.month * 100 + ventas["fecha"].dt.day
+    ).astype("Int64")
 
     # Dataset limpio para análisis: ventas + clientes + productos
     ventas_enriquecidas = (

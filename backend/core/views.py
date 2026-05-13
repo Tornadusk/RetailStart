@@ -2,12 +2,25 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlencode
 
-from django.db.models import Sum
+from django.db.models import Count, Max, Min, QuerySet, Sum
 from django.http import FileResponse, Http404, HttpRequest, HttpResponse
 from django.shortcuts import render
 
+from core.etl.elt_ingest import DEFAULT_SCATTERED_SOURCES
 from core.models import DimCanal, DimCliente, DimProducto, DimTiempo, FactVentas
+
+# Etiquetas para la tabla de ingesta → raw (alineado con DEFAULT_SCATTERED_SOURCES en elt_ingest.py).
+_LAKE_SOURCE_ROLE: dict[str, str] = {
+    "ventas_pos.csv": "POS (tiendas)",
+    "ventas_online.csv": "E-commerce / marketplace",
+    "clientes_crm.csv": "CRM — clientes",
+    "productos_erp.csv": "ERP — productos",
+    "eventos_app.json": "App — eventos (opcional)",
+    "logistica.xml": "Logística — pedidos (opcional)",
+    "logs_sistema.txt": "Infra — logs (opcional)",
+}
 
 
 def home(request: HttpRequest) -> HttpResponse:
@@ -71,6 +84,73 @@ def evidence(request: HttpRequest) -> HttpResponse:
     )
 
 
+DIAS_SEMANA_CHOICES: tuple[tuple[str, str], ...] = (
+    ("", "Todos"),
+    ("Lunes", "Lunes"),
+    ("Martes", "Martes"),
+    ("Miércoles", "Miércoles"),
+    ("Jueves", "Jueves"),
+    ("Viernes", "Viernes"),
+    ("Sábado", "Sábado"),
+    ("Domingo", "Domingo"),
+)
+
+_ANALYTICS_FILTROS_ANCHOR = "#segmentar-ventas"
+
+
+def _parse_optional_year(val: str | None) -> int | None:
+    if val is None or not str(val).strip():
+        return None
+    try:
+        y = int(val)
+    except ValueError:
+        return None
+    return y if 1990 <= y <= 2100 else None
+
+
+def _parse_optional_month(val: str | None) -> int | None:
+    if val is None or not str(val).strip():
+        return None
+    try:
+        m = int(val)
+    except ValueError:
+        return None
+    return m if 1 <= m <= 12 else None
+
+
+def _filter_fact_qs(qs: QuerySet, *, y: int | None, m: int | None, dia: str) -> QuerySet:
+    if y is not None:
+        qs = qs.filter(fecha__anio=y)
+    if m is not None:
+        qs = qs.filter(fecha__mes=m)
+    if dia:
+        qs = qs.filter(fecha__nombre_dia=dia)
+    return qs
+
+
+def _order_prefix(direction: str | None) -> str:
+    return "-" if (direction or "asc").lower() == "desc" else ""
+
+
+def _analytics_filter_qs(params: dict[str, Any]) -> str:
+    """Querystring solo con filtros de tiempo (sin parámetros de orden)."""
+    clean = {k: v for k, v in params.items() if v is not None and str(v) != ""}
+    base = "?" + urlencode(clean) if clean else "?"
+    return base + _ANALYTICS_FILTROS_ANCHOR
+
+
+def _toggle_sort_href(request: HttpRequest, group: str, field: str, dir_key: str) -> str:
+    q = request.GET.copy()
+    prev = q.get(group)
+    cur_dir = (q.get(dir_key) or "asc").lower()
+    if prev == field:
+        q[dir_key] = "desc" if cur_dir == "asc" else "asc"
+    else:
+        q[group] = field
+        q[dir_key] = "asc"
+    return "?" + q.urlencode()
+
+
 def _count_files_recursive(root: Path) -> int:
     if not root.exists():
         return 0
@@ -106,6 +186,20 @@ def flow(request: HttpRequest) -> HttpResponse:
     }
 
     raw_total = sum(raw_summary.values())
+
+    lake_route_rows: list[dict[str, str]] = []
+    for sf in DEFAULT_SCATTERED_SOURCES:
+        p = Path(sf.lake_raw_name)
+        dated_pattern = f"{p.stem}_YYYYMMDD{p.suffix}"
+        lake_route_rows.append(
+            {
+                "rol": _LAKE_SOURCE_ROLE.get(sf.lake_raw_name, sf.lake_raw_name),
+                "sources_path": sf.relative_path.replace("\\", "/"),
+                "raw_landing": dated_pattern,
+                "formato": p.suffix.lstrip(".").upper() or "—",
+            }
+        )
+
     steps: list[dict[str, Any]] = [
         {
             "name": "Origen",
@@ -144,8 +238,8 @@ def flow(request: HttpRequest) -> HttpResponse:
         },
         {
             "name": "Consumo",
-            "desc": "Dashboard/consultas: PNG + KPIs (/evidence/) y tablas SQL (/analytics/).",
-            "tech": ["Django", "Nginx", "matplotlib", "SQL/JDBC-like (ORM)"],
+            "desc": "Dashboard: PNG + KPIs (/evidence/) y tablas agregadas vía ORM (/analytics/).",
+            "tech": ["Django ORM", "Nginx", "matplotlib"],
             "status_ok": evidence_png_count > 0 and dw_fact_count > 0,
             "details": f"PNG: {evidence_png_count} (ver /evidence/) · DW cargado: FactVentas={dw_fact_count} (ver /analytics/)",
         },
@@ -157,22 +251,159 @@ def flow(request: HttpRequest) -> HttpResponse:
         {
             "steps": steps,
             "dw_counts": dw_counts,
+            "lake_route_rows": lake_route_rows,
         },
     )
 
 
 def analytics(request: HttpRequest) -> HttpResponse:
     """
-    Consumo tipo BI (tablas navegables) sobre el Data Warehouse (Postgres).
+    Consumo tipo BI (tablas y KPIs) sobre el Data Warehouse en Postgres.
 
-    Responde las preguntas típicas de la actividad:
-    - mejores clientes
-    - rendimiento por canal
-    - productos líderes
+    Árbol de datos hasta esta vista::
+
+        data_sources/  →  run_elt_ingest  →  data_lake/raw/
+        data_lake/raw/ →  run_etl         →  data_lake/processed/*.csv
+        processed/     →  load_dw         →  Postgres (FactVentas + dimensiones)
+        Postgres       →  analyze_dw      →  processed/evidence/*.png  (no usado aquí directamente)
+
+        Esta vista (core.views.analytics)
+            └─ ORM sobre FactVentas + joins a DimTiempo / DimCliente / …
+               · Querystring ?y=&m=&d= filtra hechos (`_filter_fact_qs`).
+               · Agregaciones `.values(...).annotate(...)` = GROUP BY en SQL.
+               · `preview` lista hechos con `select_related` (JOIN en una query).
+
+    Parte 5 actividad: mejores clientes, canal, producto; más cortes por dimensión tiempo.
     """
 
+    fy = _parse_optional_year(request.GET.get("y"))
+    fm = _parse_optional_month(request.GET.get("m"))
+    fd = (request.GET.get("d") or "").strip()
+
+    facts_all = FactVentas.objects.all()
+    agg_dates = facts_all.aggregate(
+        dmin=Min("fecha__fecha_completa"),
+        dmax=Max("fecha__fecha_completa"),
+    )
+    dw_total_unfiltered = facts_all.count()
+    years_with_sales = sorted(
+        {y for y in facts_all.values_list("fecha__anio", flat=True).distinct() if y is not None}
+    )
+    years_for_select = sorted(set(range(2000, 2036)) | set(years_with_sales))
+
+    filter_parts: list[str] = []
+    if fy is not None:
+        filter_parts.append(f"Año {fy}")
+    if fm is not None:
+        filter_parts.append(f"Mes {fm:02d}")
+    if fd:
+        filter_parts.append(fd)
+    filter_summary = " · ".join(filter_parts) if filter_parts else "Sin filtros (todos los hechos)"
+
+    quick_time_links: list[dict[str, str]] = [{"label": "Quitar filtros", "href": "?" + _ANALYTICS_FILTROS_ANCHOR}]
+    dmin, dmax = agg_dates["dmin"], agg_dates["dmax"]
+    if dmin is not None and dmax is not None:
+        y0, m0 = dmin.year, dmin.month
+        y1 = dmax.year
+        quick_time_links.extend(
+            [
+                {"label": f"Todo el año {y0}", "href": _analytics_filter_qs({"y": y0})},
+                {"label": f"Todo el año {y1}", "href": _analytics_filter_qs({"y": y1})},
+                {"label": "Solo lunes", "href": _analytics_filter_qs({"d": "Lunes"})},
+                {"label": "Solo martes", "href": _analytics_filter_qs({"d": "Martes"})},
+                {"label": "Solo miércoles", "href": _analytics_filter_qs({"d": "Miércoles"})},
+                {
+                    "label": f"Domingos de {m0:02d}/{y0}",
+                    "href": _analytics_filter_qs({"y": y0, "m": m0, "d": "Domingo"}),
+                },
+                {
+                    "label": f"Todos los meses de {y0} (sin filtrar día)",
+                    "href": _analytics_filter_qs({"y": y0}),
+                },
+            ]
+        )
+
+    qs = _filter_fact_qs(facts_all, y=fy, m=fm, dia=fd)
+
+    # Modelo estrella: qs es FactVentas; cada .values("fecha__…") proyecta DimTiempo vía FK fecha_id.
+    star_model = {
+        "dim_cliente": DimCliente.objects.count(),
+        "dim_producto": DimProducto.objects.count(),
+        "dim_tiempo": DimTiempo.objects.count(),
+        "dim_canal": DimCanal.objects.count(),
+        "fact_ventas": FactVentas.objects.count(),
+        "hechos_filtrados": qs.count(),
+    }
+
+    tiempo_ids_en_hechos = qs.values_list("fecha_id", flat=True).distinct()
+
+    dim_ord = request.GET.get("dim_ord", "fecha") or "fecha"
+    dim_field_map = {
+        "fecha": "fecha_completa",
+        "id": "id_tiempo",
+        "dia": "nombre_dia",
+        "anio": "anio",
+    }
+    ob_dim = dim_field_map.get(dim_ord, "fecha_completa")
+    p_dim = _order_prefix(request.GET.get("dim_dir"))
+    dim_tiempo_en_hechos = list(
+        DimTiempo.objects.filter(pk__in=tiempo_ids_en_hechos).order_by(f"{p_dim}{ob_dim}")[:120]
+    )
+
+    dc_ord = request.GET.get("dc_ord", "fecha") or "fecha"
+    dc_field_map = {
+        "fecha": "fecha__fecha_completa",
+        "id": "fecha__id_tiempo",
+        "monto": "total_monto",
+        "tx": "transacciones",
+    }
+    p_dc = _order_prefix(request.GET.get("dc_dir"))
+    ob_dc = dc_field_map.get(dc_ord, "fecha__fecha_completa")
+
+    ventas_por_dia_civil = list(
+        qs.values("fecha__id_tiempo", "fecha__fecha_completa", "fecha__nombre_dia")
+        .annotate(total_monto=Sum("monto"), transacciones=Count("id"))
+        .order_by(f"{p_dc}{ob_dc}")
+    )
+
+    sem_ord = request.GET.get("sem_ord", "dia") or "dia"
+    sem_map = {"dia": "fecha__dia_semana", "monto": "total_monto", "tx": "transacciones"}
+    p_sem = _order_prefix(request.GET.get("sem_dir"))
+    ob_sem = sem_map.get(sem_ord, "fecha__dia_semana")
+
+    ventas_por_dia_semana = list(
+        qs.values("fecha__nombre_dia", "fecha__dia_semana")
+        .annotate(total_monto=Sum("monto"), transacciones=Count("id"))
+        .order_by(f"{p_sem}{ob_sem}")
+    )
+
+    mes_ord = request.GET.get("mes_ord", "periodo") or "periodo"
+    p_mes = _order_prefix(request.GET.get("mes_dir"))
+    if mes_ord == "periodo":
+        ventas_por_mes_anio = list(
+            qs.values("fecha__anio", "fecha__mes", "fecha__nombre_mes")
+            .annotate(total_monto=Sum("monto"), transacciones=Count("id"))
+            .order_by(f"{p_mes}fecha__anio", f"{p_mes}fecha__mes")
+        )
+    else:
+        ob_m = "total_monto" if mes_ord == "monto" else "transacciones"
+        ventas_por_mes_anio = list(
+            qs.values("fecha__anio", "fecha__mes", "fecha__nombre_mes")
+            .annotate(total_monto=Sum("monto"), transacciones=Count("id"))
+            .order_by(f"{p_mes}{ob_m}")
+        )
+
+    ej_orm_lunes_enero_2026 = (
+        qs.filter(
+            fecha__nombre_dia="Lunes",
+            fecha__nombre_mes="Enero",
+            fecha__anio=2026,
+        ).aggregate(total=Sum("monto"))["total"]
+        or 0
+    )
+
     top_clientes = (
-        FactVentas.objects.values(
+        qs.values(
             "cliente__id_cliente",
             "cliente__nombre",
             "cliente__apellido",
@@ -182,12 +413,10 @@ def analytics(request: HttpRequest) -> HttpResponse:
         .order_by("-total")[:15]
     )
 
-    top_canales = (
-        FactVentas.objects.values("canal__canal").annotate(total=Sum("monto")).order_by("-total")
-    )
+    top_canales = qs.values("canal__canal").annotate(total=Sum("monto")).order_by("-total")
 
     top_productos = (
-        FactVentas.objects.values(
+        qs.values(
             "producto__id_producto",
             "producto__nombre_producto",
             "producto__categoria",
@@ -196,10 +425,8 @@ def analytics(request: HttpRequest) -> HttpResponse:
         .order_by("-total")[:15]
     )
 
-    # Evitar server-side cursors (iterator) en Postgres:
-    # en algunos entornos el cursor puede invalidarse durante el render (InvalidCursorName).
     preview_rows = list(
-        FactVentas.objects.select_related("cliente", "producto", "canal", "fecha").order_by(
+        qs.select_related("cliente", "producto", "canal", "fecha").order_by(
             "-fecha__fecha_completa", "-id"
         )[:50]
     )
@@ -208,7 +435,11 @@ def analytics(request: HttpRequest) -> HttpResponse:
     for fv in preview_rows:
         preview.append(
             {
+                "id_tiempo": fv.fecha.id_tiempo,
                 "fecha": fv.fecha.fecha_completa.isoformat(),
+                "dia": fv.fecha.dia_mes,
+                "mes": fv.fecha.mes,
+                "anio": fv.fecha.anio,
                 "id_cliente": fv.cliente.id_cliente,
                 "cliente": f'{fv.cliente.nombre} {fv.cliente.apellido}',
                 "segmento": fv.cliente.segmento,
@@ -220,14 +451,52 @@ def analytics(request: HttpRequest) -> HttpResponse:
             }
         )
 
+    sort_href = {
+        "dim_fecha": _toggle_sort_href(request, "dim_ord", "fecha", "dim_dir"),
+        "dim_id": _toggle_sort_href(request, "dim_ord", "id", "dim_dir"),
+        "dim_dia": _toggle_sort_href(request, "dim_ord", "dia", "dim_dir"),
+        "dim_anio": _toggle_sort_href(request, "dim_ord", "anio", "dim_dir"),
+        "dc_fecha": _toggle_sort_href(request, "dc_ord", "fecha", "dc_dir"),
+        "dc_id": _toggle_sort_href(request, "dc_ord", "id", "dc_dir"),
+        "dc_monto": _toggle_sort_href(request, "dc_ord", "monto", "dc_dir"),
+        "dc_tx": _toggle_sort_href(request, "dc_ord", "tx", "dc_dir"),
+        "sem_dia": _toggle_sort_href(request, "sem_ord", "dia", "sem_dir"),
+        "sem_monto": _toggle_sort_href(request, "sem_ord", "monto", "sem_dir"),
+        "sem_tx": _toggle_sort_href(request, "sem_ord", "tx", "sem_dir"),
+        "mes_per": _toggle_sort_href(request, "mes_ord", "periodo", "mes_dir"),
+        "mes_monto": _toggle_sort_href(request, "mes_ord", "monto", "mes_dir"),
+        "mes_tx": _toggle_sort_href(request, "mes_ord", "tx", "mes_dir"),
+    }
+
+    months = [(i, f"{i:02d}") for i in range(1, 13)]
+
     return render(
         request,
         "core/analytics.html",
         {
+            "star_model": star_model,
+            "dim_tiempo_en_hechos": dim_tiempo_en_hechos,
+            "ventas_por_dia_civil": ventas_por_dia_civil,
+            "ventas_por_dia_semana": ventas_por_dia_semana,
+            "ventas_por_mes_anio": ventas_por_mes_anio,
+            "ej_orm_lunes_enero_2026": ej_orm_lunes_enero_2026,
             "top_clientes": list(top_clientes),
             "top_canales": list(top_canales),
             "top_productos": list(top_productos),
             "preview": preview,
+            "filter_y": fy or "",
+            "filter_m": fm or "",
+            "filter_d": fd,
+            "filter_summary": filter_summary,
+            "dias_semana": DIAS_SEMANA_CHOICES,
+            "years": years_for_select,
+            "months": months,
+            "sort_href": sort_href,
+            "dw_span_min": dmin,
+            "dw_span_max": dmax,
+            "dw_total_unfiltered": dw_total_unfiltered,
+            "years_with_sales": years_with_sales,
+            "quick_time_links": quick_time_links,
         },
     )
 

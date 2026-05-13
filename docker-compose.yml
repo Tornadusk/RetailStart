@@ -31,9 +31,20 @@ services:
       - ./data_lake:/data_lake
       - ./data_sources:/data_sources:ro
       - staticfiles:/app/staticfiles
-    command: >
-      sh -c "python manage.py migrate &&
-             gunicorn retailstart.wsgi:application --bind 0.0.0.0:8000"
+    command:
+      - sh
+      - -c
+      - |
+        python manage.py migrate &&
+        python manage.py collectstatic --noinput &&
+        echo "" &&
+        echo "========================================" &&
+        echo "RetailStart — abrí en el navegador:" &&
+        echo "  http://127.0.0.1:8080/" &&
+        echo "(Nginx expone 8080; Gunicorn :8000 es solo interno.)" &&
+        echo "========================================" &&
+        echo "" &&
+        gunicorn retailstart.wsgi:application --bind 0.0.0.0:8000
     expose:
       - "8000"
 
