@@ -1,22 +1,8 @@
-{#-
-  Árbol de datos (misma lógica en todo el sitio):
-
-  data_sources/          … archivos del anexo / pruebas
-       │
-       ▼  run_elt_ingest  (ELT: copiar sin transformar)
-  data_lake/raw/         … landing *_YYYYMMDD.csv|json|…
-       │
-       ▼  run_etl         (ETL: pandas, ingest_transform.py)
-  data_lake/processed/   … CSV limpios + agregados (*_timestamp.csv)
-       │
-       ▼  load_dw         (carga modelo estrella en Postgres)
-  Postgres (DW)          … core_dim*, core_factventas
-       │
-       ▼  analyze_dw      (matplotlib → PNG)
-  data_lake/processed/evidence/  … gráficos para /evidence/
-
-  Esta plantilla se incluye desde: home, analytics, evidence (aside).
--#}
+{% comment %}
+Árbol de datos (misma lógica en todo el sitio):
+data_sources → run_elt_ingest → raw → run_etl → processed → load_dw (Postgres DW) → analyze_dw → evidence PNG.
+Incluida desde analytics, home y evidence (vía pipeline_docker_commands_collapsible en home/evidence).
+{% endcomment %}
 <div class="pipelineCard{% if pipeline_aside %} pipelineCard--aside{% endif %}">
   <h3 class="h3 pipelineCard__title">Comandos Docker (orden recomendado)</h3>
   <p class="muted pipelineCard__lead">

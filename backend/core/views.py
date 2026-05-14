@@ -1,12 +1,15 @@
 from __future__ import annotations
 
+from datetime import date, timedelta
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlencode
 
+from django.core.paginator import Paginator
 from django.db.models import Count, Max, Min, QuerySet, Sum
 from django.http import FileResponse, Http404, HttpRequest, HttpResponse
 from django.shortcuts import render
+from django.urls import reverse
 
 from core.etl.elt_ingest import DEFAULT_SCATTERED_SOURCES
 from core.models import DimCanal, DimCliente, DimProducto, DimTiempo, FactVentas
@@ -118,7 +121,36 @@ def _parse_optional_month(val: str | None) -> int | None:
     return m if 1 <= m <= 12 else None
 
 
-def _filter_fact_qs(qs: QuerySet, *, y: int | None, m: int | None, dia: str) -> QuerySet:
+def _parse_iso_date(val: str | None) -> date | None:
+    if val is None or not str(val).strip():
+        return None
+    s = str(val).strip()
+    parts = s.split("-")
+    if len(parts) != 3:
+        return None
+    try:
+        y, mo, d = int(parts[0]), int(parts[1]), int(parts[2])
+    except ValueError:
+        return None
+    if not (1990 <= y <= 2100 and 1 <= mo <= 12 and 1 <= d <= 31):
+        return None
+    try:
+        return date(y, mo, d)
+    except ValueError:
+        return None
+
+
+def _filter_fact_qs(
+    qs: QuerySet,
+    *,
+    y: int | None,
+    m: int | None,
+    dia: str,
+    date_from: date | None = None,
+    date_to: date | None = None,
+) -> QuerySet:
+    if date_from is not None and date_to is not None and date_from <= date_to:
+        return qs.filter(fecha__fecha_completa__gte=date_from, fecha__fecha_completa__lte=date_to)
     if y is not None:
         qs = qs.filter(fecha__anio=y)
     if m is not None:
@@ -126,6 +158,15 @@ def _filter_fact_qs(qs: QuerySet, *, y: int | None, m: int | None, dia: str) -> 
     if dia:
         qs = qs.filter(fecha__nombre_dia=dia)
     return qs
+
+
+def _analytics_anchor_date(today: date, dmin: date, dmax: date) -> date:
+    """Fecha de calendario para presets: hoy si cae dentro del DW; si no, el borde más cercano."""
+    if today < dmin:
+        return dmin
+    if today > dmax:
+        return dmax
+    return today
 
 
 def _order_prefix(direction: str | None) -> str:
@@ -137,6 +178,22 @@ def _analytics_filter_qs(params: dict[str, Any]) -> str:
     clean = {k: v for k, v in params.items() if v is not None and str(v) != ""}
     base = "?" + urlencode(clean) if clean else "?"
     return base + _ANALYTICS_FILTROS_ANCHOR
+
+
+_FACT_PREVIEW_PER_PAGE = 50
+_FACT_PREVIEW_PAGE_PARAM = "fact_page"
+
+
+def _fact_preview_page_url(request: HttpRequest, page_num: int) -> str:
+    """Conserva filtros y orden en la query; ancla a la vista de hechos."""
+    q = request.GET.copy()
+    if page_num <= 1:
+        q.pop(_FACT_PREVIEW_PAGE_PARAM, None)
+    else:
+        q[_FACT_PREVIEW_PAGE_PARAM] = str(page_num)
+    path = reverse("analytics")
+    qs = q.urlencode()
+    return f"{path}?{qs}#dw-vista-hechos" if qs else f"{path}#dw-vista-hechos"
 
 
 def _toggle_sort_href(request: HttpRequest, group: str, field: str, dir_key: str) -> str:
@@ -269,9 +326,9 @@ def analytics(request: HttpRequest) -> HttpResponse:
 
         Esta vista (core.views.analytics)
             └─ ORM sobre FactVentas + joins a DimTiempo / DimCliente / …
-               · Querystring ?y=&m=&d= filtra hechos (`_filter_fact_qs`).
+               · Querystring ?y=&m=&d= o rango ?fde=&fha= (YYYY-MM-DD, inclusivo) filtra hechos (`_filter_fact_qs`).
                · Agregaciones `.values(...).annotate(...)` = GROUP BY en SQL.
-               · `preview` lista hechos con `select_related` (JOIN en una query).
+               · `preview` página de hechos con `select_related` y paginación (`fact_page`).
 
     Parte 5 actividad: mejores clientes, canal, producto; más cortes por dimensión tiempo.
     """
@@ -279,6 +336,9 @@ def analytics(request: HttpRequest) -> HttpResponse:
     fy = _parse_optional_year(request.GET.get("y"))
     fm = _parse_optional_month(request.GET.get("m"))
     fd = (request.GET.get("d") or "").strip()
+    fde = _parse_iso_date(request.GET.get("fde"))
+    fha = _parse_iso_date(request.GET.get("fha"))
+    range_active = fde is not None and fha is not None and fde <= fha
 
     facts_all = FactVentas.objects.all()
     agg_dates = facts_all.aggregate(
@@ -291,39 +351,65 @@ def analytics(request: HttpRequest) -> HttpResponse:
     )
     years_for_select = sorted(set(range(2000, 2036)) | set(years_with_sales))
 
+    dmin, dmax = agg_dates["dmin"], agg_dates["dmax"]
+    ej_ref_year = date.today().year
+    if dmin is not None and dmax is not None:
+        ej_ref_year = _analytics_anchor_date(date.today(), dmin, dmax).year
+
     filter_parts: list[str] = []
-    if fy is not None:
-        filter_parts.append(f"Año {fy}")
-    if fm is not None:
-        filter_parts.append(f"Mes {fm:02d}")
-    if fd:
-        filter_parts.append(fd)
+    if range_active:
+        assert fde is not None and fha is not None
+        filter_parts.append(
+            f"Rango del {fde.strftime('%d/%m/%Y')} al {fha.strftime('%d/%m/%Y')}"
+        )
+    else:
+        if fy is not None:
+            filter_parts.append(f"Año {fy}")
+        if fm is not None:
+            filter_parts.append(f"Mes {fm:02d}")
+        if fd:
+            filter_parts.append(fd)
     filter_summary = " · ".join(filter_parts) if filter_parts else "Sin filtros (todos los hechos)"
 
-    quick_time_links: list[dict[str, str]] = [{"label": "Quitar filtros", "href": "?" + _ANALYTICS_FILTROS_ANCHOR}]
-    dmin, dmax = agg_dates["dmin"], agg_dates["dmax"]
+    quick_time_links: list[dict[str, str]] = []
     if dmin is not None and dmax is not None:
-        y0, m0 = dmin.year, dmin.month
-        y1 = dmax.year
+        anchor = _analytics_anchor_date(date.today(), dmin, dmax)
+        y_ref, m_ref = anchor.year, anchor.month
+        quick_time_links.append({"label": "Año actual", "href": _analytics_filter_qs({"y": y_ref})})
+        quick_time_links.append({"label": "Mes actual", "href": _analytics_filter_qs({"y": y_ref, "m": m_ref})})
+        monday = anchor - timedelta(days=anchor.weekday())
+        sunday = monday + timedelta(days=6)
+        w0, w1 = max(monday, dmin), min(sunday, dmax)
+        if w0 <= w1:
+            quick_time_links.append(
+                {
+                    "label": "Semana actual",
+                    "href": _analytics_filter_qs({"fde": w0.isoformat(), "fha": w1.isoformat()}),
+                }
+            )
         quick_time_links.extend(
             [
-                {"label": f"Todo el año {y0}", "href": _analytics_filter_qs({"y": y0})},
-                {"label": f"Todo el año {y1}", "href": _analytics_filter_qs({"y": y1})},
                 {"label": "Solo lunes", "href": _analytics_filter_qs({"d": "Lunes"})},
-                {"label": "Solo martes", "href": _analytics_filter_qs({"d": "Martes"})},
-                {"label": "Solo miércoles", "href": _analytics_filter_qs({"d": "Miércoles"})},
+                {"label": "Solo domingos", "href": _analytics_filter_qs({"d": "Domingo"})},
                 {
-                    "label": f"Domingos de {m0:02d}/{y0}",
-                    "href": _analytics_filter_qs({"y": y0, "m": m0, "d": "Domingo"}),
-                },
-                {
-                    "label": f"Todos los meses de {y0} (sin filtrar día)",
-                    "href": _analytics_filter_qs({"y": y0}),
+                    "label": "Domingos del mes actual",
+                    "href": _analytics_filter_qs({"y": y_ref, "m": m_ref, "d": "Domingo"}),
                 },
             ]
         )
+    quick_time_links.append({"label": "Quitar filtros", "href": "?" + _ANALYTICS_FILTROS_ANCHOR})
 
-    qs = _filter_fact_qs(facts_all, y=fy, m=fm, dia=fd)
+    if range_active:
+        assert fde is not None and fha is not None
+        qs = _filter_fact_qs(facts_all, y=None, m=None, dia="", date_from=fde, date_to=fha)
+        form_select_y: int | str = ""
+        form_select_m: int | str = ""
+        form_select_d = ""
+    else:
+        qs = _filter_fact_qs(facts_all, y=fy, m=fm, dia=fd)
+        form_select_y = fy if fy is not None else ""
+        form_select_m = fm if fm is not None else ""
+        form_select_d = fd
 
     # Modelo estrella: qs es FactVentas; cada .values("fecha__…") proyecta DimTiempo vía FK fecha_id.
     star_model = {
@@ -393,11 +479,11 @@ def analytics(request: HttpRequest) -> HttpResponse:
             .order_by(f"{p_mes}{ob_m}")
         )
 
-    ej_orm_lunes_enero_2026 = (
+    ej_orm_lunes_enero_ref = (
         qs.filter(
             fecha__nombre_dia="Lunes",
             fecha__nombre_mes="Enero",
-            fecha__anio=2026,
+            fecha__anio=ej_ref_year,
         ).aggregate(total=Sum("monto"))["total"]
         or 0
     )
@@ -425,31 +511,66 @@ def analytics(request: HttpRequest) -> HttpResponse:
         .order_by("-total")[:15]
     )
 
-    preview_rows = list(
-        qs.select_related("cliente", "producto", "canal", "fecha").order_by(
-            "-fecha__fecha_completa", "-id"
-        )[:50]
+    preview_qs = qs.select_related("cliente", "producto", "canal", "fecha").order_by(
+        "-fecha__fecha_completa", "-id"
     )
+    preview_paginator = Paginator(preview_qs, _FACT_PREVIEW_PER_PAGE)
+    preview_nav: dict[str, Any]
+    preview: list[dict[str, Any]] = []
 
-    preview = []
-    for fv in preview_rows:
-        preview.append(
-            {
-                "id_tiempo": fv.fecha.id_tiempo,
-                "fecha": fv.fecha.fecha_completa.isoformat(),
-                "dia": fv.fecha.dia_mes,
-                "mes": fv.fecha.mes,
-                "anio": fv.fecha.anio,
-                "id_cliente": fv.cliente.id_cliente,
-                "cliente": f'{fv.cliente.nombre} {fv.cliente.apellido}',
-                "segmento": fv.cliente.segmento,
-                "canal": fv.canal.canal,
-                "id_producto": "" if fv.producto is None else fv.producto.id_producto,
-                "producto": "" if fv.producto is None else fv.producto.nombre_producto,
-                "cantidad": fv.cantidad,
-                "monto": fv.monto,
-            }
-        )
+    if preview_paginator.count == 0:
+        preview_nav = {
+            "empty": True,
+            "total": 0,
+            "has_previous": False,
+            "has_next": False,
+            "prev_url": None,
+            "next_url": None,
+            "num_pages": 0,
+            "number": 0,
+            "start_index": 0,
+            "end_index": 0,
+        }
+    else:
+        page_obj = preview_paginator.get_page(request.GET.get(_FACT_PREVIEW_PAGE_PARAM))
+        for fv in page_obj:
+            preview.append(
+                {
+                    "id_tiempo": fv.fecha.id_tiempo,
+                    "fecha": fv.fecha.fecha_completa.isoformat(),
+                    "dia": fv.fecha.dia_mes,
+                    "mes": fv.fecha.mes,
+                    "anio": fv.fecha.anio,
+                    "id_cliente": fv.cliente.id_cliente,
+                    "cliente": f'{fv.cliente.nombre} {fv.cliente.apellido}',
+                    "segmento": fv.cliente.segmento,
+                    "canal": fv.canal.canal,
+                    "id_producto": "" if fv.producto is None else fv.producto.id_producto,
+                    "producto": "" if fv.producto is None else fv.producto.nombre_producto,
+                    "cantidad": fv.cantidad,
+                    "monto": fv.monto,
+                }
+            )
+        preview_nav = {
+            "empty": False,
+            "total": preview_paginator.count,
+            "has_previous": page_obj.has_previous(),
+            "has_next": page_obj.has_next(),
+            "prev_url": (
+                _fact_preview_page_url(request, page_obj.previous_page_number())
+                if page_obj.has_previous()
+                else None
+            ),
+            "next_url": (
+                _fact_preview_page_url(request, page_obj.next_page_number())
+                if page_obj.has_next()
+                else None
+            ),
+            "num_pages": preview_paginator.num_pages,
+            "number": page_obj.number,
+            "start_index": page_obj.start_index(),
+            "end_index": page_obj.end_index(),
+        }
 
     sort_href = {
         "dim_fecha": _toggle_sort_href(request, "dim_ord", "fecha", "dim_dir"),
@@ -479,14 +600,20 @@ def analytics(request: HttpRequest) -> HttpResponse:
             "ventas_por_dia_civil": ventas_por_dia_civil,
             "ventas_por_dia_semana": ventas_por_dia_semana,
             "ventas_por_mes_anio": ventas_por_mes_anio,
-            "ej_orm_lunes_enero_2026": ej_orm_lunes_enero_2026,
+            "ej_orm_lunes_enero_ref": ej_orm_lunes_enero_ref,
+            "ej_ref_year": ej_ref_year,
             "top_clientes": list(top_clientes),
             "top_canales": list(top_canales),
             "top_productos": list(top_productos),
             "preview": preview,
-            "filter_y": fy or "",
-            "filter_m": fm or "",
-            "filter_d": fd,
+            "preview_nav": preview_nav,
+            "fact_preview_per_page": _FACT_PREVIEW_PER_PAGE,
+            "filter_range_active": range_active,
+            "filter_fde": fde if range_active else None,
+            "filter_fha": fha if range_active else None,
+            "filter_y": form_select_y,
+            "filter_m": form_select_m,
+            "filter_d": form_select_d,
             "filter_summary": filter_summary,
             "dias_semana": DIAS_SEMANA_CHOICES,
             "years": years_for_select,

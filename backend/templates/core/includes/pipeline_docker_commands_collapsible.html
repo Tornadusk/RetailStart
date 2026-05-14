@@ -1,0 +1,23 @@
+{% comment %}
+Comandos Docker en bloque plegable (+ / −) con estado en localStorage (misma lógica que /analytics/).
+Uso desde otras plantillas: include con storage_key (obligatorio), opcional wrap_card, pipeline_aside, default_open, heading.
+{% endcomment %}
+<details
+  class="analyticsCollapsible{% if wrap_card %} card cardStack{% endif %}"
+  id="collapsible-pipeline-{{ storage_key }}"
+  data-storage-key="{{ storage_key }}"
+  data-default-open="{% if default_open == 'true' %}true{% else %}false{% endif %}"
+  {% if default_open == 'true' %}open{% endif %}
+>
+  <summary class="analyticsCollapsible__summary">
+    <span class="analyticsCollapsible__toggle" aria-hidden="true"></span>
+    <h2 class="analyticsCollapsible__heading">{% if heading %}{{ heading }}{% else %}Pipeline y comandos Docker{% endif %}</h2>
+  </summary>
+  <div class="analyticsCollapsible__body">
+    {% if pipeline_aside %}
+      {% include "core/includes/pipeline_docker_commands.html" with pipeline_aside=True %}
+    {% else %}
+      {% include "core/includes/pipeline_docker_commands.html" %}
+    {% endif %}
+  </div>
+</details>

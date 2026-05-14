@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Evidencia - RetailStart</title>
-    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=4" />
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=11" />
   </head>
   <body>
     <main class="container">
@@ -14,9 +14,7 @@
         <p class="subtitle">
           Pipeline: ELT (<code>data_sources</code> → raw) → ETL (raw → processed) → DW → gráficos
         </p>
-        <p class="muted">
-          Volver: <a class="link" href="/">inicio</a>
-        </p>
+        {% include "core/includes/site_quick_nav.html" %}
       </header>
 
       <section class="layout">
@@ -48,7 +46,7 @@
 
           <div class="divider"></div>
 
-          {% include "core/includes/pipeline_docker_commands.html" with pipeline_aside=True %}
+          {% include "core/includes/pipeline_docker_commands_collapsible.html" with storage_key="evidence-pipeline" pipeline_aside=True default_open='true' %}
 
           <div class="evidenceFileMeta">
             <p class="muted">
@@ -109,5 +107,6 @@
         </div>
       </section>
     </main>
+    <script src="{% static 'js/analytics-collapsibles.js' %}?v=2" defer></script>
   </body>
 </html>

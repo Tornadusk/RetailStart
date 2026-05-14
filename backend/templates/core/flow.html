@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Flujo - RetailStart</title>
-    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=5" />
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=10" />
   </head>
   <body>
     <main class="container">
@@ -14,10 +14,7 @@
         <p class="subtitle">
           Origen → Ingesta → Almacenamiento → Procesamiento → Consumo
         </p>
-        <p class="muted">
-          Volver: <a class="link" href="/">inicio</a> · Evidencia: <a class="link" href="/evidence/">/evidence/</a> ·
-          Analytics (tablas): <a class="link" href="/analytics/">/analytics/</a>
-        </p>
+        {% include "core/includes/site_quick_nav.html" %}
       </header>
 
       <section class="card">

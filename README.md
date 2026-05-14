@@ -46,10 +46,12 @@ Abrir en el navegador:
 
 - `backend/`: proyecto Django
 - `nginx/`: configuración del reverse proxy y estáticos
-- `data_sources/`: datos “sueltos” simulando orígenes en carpetas distintas (entrada del **ELT**)
+- `data_sources/`: datos “sueltos” simulando orígenes en carpetas distintas (entrada del **ELT**). **Sí se versionan** en Git los CSV/JSON/XML de ejemplo del repo (no están en `.gitignore`).
 - `data_lake/raw/`: landing zone única del lago (CSV/JSON/XML/TXT; lo rellena `run_elt_ingest` y/o manual)
 - `data_lake/processed/`: datos preprocesados (salida del ETL batch)
 - `data_lake/processed/evidence/`: gráficos de evidencia (análisis)
+
+**Git:** en `.gitignore` se excluyen los artefactos bajo `data_lake/raw/**` y `data_lake/processed/**` (CSV/JSON/XML/TXT en raw, CSV en processed, PNG en evidence) para no subir datos generados; se vuelven a crear con los pasos de **Actividad 2**. Las carpetas pueden llevar `.gitkeep` para mantener la estructura.
 
 ## Árbol del proyecto (tree)
 

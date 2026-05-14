@@ -12,7 +12,7 @@ Coloca tus archivos en estas rutas (relativas a `data_sources/`):
 - `crm_export/clientes_crm.csv`
 - `erp_snapshot/productos_erp.csv`
 - `mobile_analytics/eventos_app.json`
-- `proveedor_logistica/logistica.xml`
+- `sistemas_legacy/proveedor_logistica/logistica.xml`
 - `infra_logs/logs_sistema.txt`
 
 ### Ejecutar ELT (dentro de Docker)

@@ -4,98 +4,97 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Analytics (DW) - RetailStart</title>
-    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=4" />
+    <title>Consultas DW — RetailStart</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=10" />
   </head>
   <body>
     <main class="container analyticsPage">
-      <header class="header">
-        <h1 class="title">Analytics (Data Warehouse)</h1>
-        <p class="subtitle">Consumo desde el DW vía Django ORM (modelo estrella + dimensión tiempo)</p>
-        <p class="muted">
-          Inicio: <a class="link" href="/">/</a> · Flujo: <a class="link" href="/flow/">/flow/</a> · Evidencia PNG/CSV:
-          <a class="link" href="/evidence/">/evidence/</a>
+      <header class="header analyticsHeader">
+        <h1 class="title analyticsHeader__title">Analytics (Data Warehouse)</h1>
+        <p class="analyticsHeader__tagline">
+          Consumo desde el DW vía Django ORM (modelo en estrella + dimensión tiempo)
         </p>
+        {% include "core/includes/site_quick_nav.html" %}
       </header>
 
-      <section class="card">
-        <h2>Preguntas de negocio (Parte 5)</h2>
-        <p class="muted">
-          Los datos viven en Postgres (<code>DimTiempo</code>, hechos, demás dimensiones). Los filtros y orden de columnas se traducen a consultas SQL en el servidor (ORM). Los PNG siguen en <a class="link" href="/evidence/">/evidence/</a>.
-        </p>
-      </section>
-
-      <section class="card cardStack">
-        <h2>Pipeline y comandos Docker</h2>
-        <p class="muted">
-          Las tablas de abajo leen <strong>Postgres</strong> (no el CSV en vivo). Si ves ceros o tablas vacías, ejecutá el pipeline en orden; el código vive en <code>core/management/commands/</code> y <code>core/etl/</code>.
-        </p>
-        {% include "core/includes/pipeline_docker_commands.html" %}
-      </section>
-
-      <section class="card analyticsDwCard cardStack">
-        <h2>Modelo en estrella · filtros · dimensión tiempo</h2>
-        <p class="muted">
-          Un solo panel: KPIs del DW, segmentación (año / mes / día de semana, combinables) y tablas que se actualizan al enviar el formulario.
-          Los encabezados de tabla alternan orden. Debajo, rankings y vista previa usan el mismo filtro.
-        </p>
-
-        <div class="analyticsKpiStrip">
-          <div class="kpi">
-            <div class="kpiLabel">DimCliente</div>
-            <div class="kpiValue">{{ star_model.dim_cliente }}</div>
-          </div>
-          <div class="kpi">
-            <div class="kpiLabel">DimProducto</div>
-            <div class="kpiValue">{{ star_model.dim_producto }}</div>
-          </div>
-          <div class="kpi">
-            <div class="kpiLabel">DimTiempo (calendario)</div>
-            <div class="kpiValue">{{ star_model.dim_tiempo }}</div>
-          </div>
-          <div class="kpi">
-            <div class="kpiLabel">DimCanal</div>
-            <div class="kpiValue">{{ star_model.dim_canal }}</div>
-          </div>
-          <div class="kpi">
-            <div class="kpiLabel">FactVentas (total)</div>
-            <div class="kpiValue">{{ star_model.fact_ventas }}</div>
-          </div>
-          <div class="kpi">
-            <div class="kpiLabel">Hechos que ves ahora</div>
-            <div class="kpiValue">{{ star_model.hechos_filtrados }}</div>
-          </div>
+      <details
+        class="card analyticsCollapsible"
+        id="analytics-collapsible-consultas"
+        data-storage-key="consultas"
+        data-default-open="true"
+        open
+      >
+        <summary class="analyticsCollapsible__summary">
+          <span class="analyticsCollapsible__toggle" aria-hidden="true"></span>
+          <h2 class="analyticsCollapsible__heading">Consultas al almacén — RetailStart</h2>
+        </summary>
+        <div class="analyticsCollapsible__body">
+          <p class="muted">
+            Los datos viven en Postgres (<code>DimTiempo</code>, hechos, demás dimensiones). Los filtros y orden de columnas se traducen a consultas SQL en el servidor (ORM). Los PNG siguen en <a class="link" href="/evidence/">/evidence/</a>.
+          </p>
         </div>
+      </details>
 
-        {% if dw_span_min %}
-          <div class="analyticsBanner">
-            <strong>Datos cargados en el DW (sin filtrar):</strong>
-            del <strong>{{ dw_span_min|date:"d/m/Y" }}</strong> al <strong>{{ dw_span_max|date:"d/m/Y" }}</strong>
-            — <strong>{{ dw_total_unfiltered }}</strong> hechos.
-            <span class="bannerMuted">
-              Años que tienen al menos una venta:
-              {% for yy in years_with_sales %}<span class="badge badge--inline">{{ yy }}</span>{% empty %}—{% endfor %}
-            </span>
-          </div>
-        {% else %}
-          <div class="analyticsBanner analyticsBanner--warn">
-            <strong>No hay hechos en FactVentas.</strong> Ejecutá <code>load_dw</code> tras el ETL.
-          </div>
-        {% endif %}
+      <details
+        class="card cardStack analyticsCollapsible"
+        id="analytics-collapsible-pipeline"
+        data-storage-key="pipeline"
+        data-default-open="true"
+        open
+      >
+        <summary class="analyticsCollapsible__summary">
+          <span class="analyticsCollapsible__toggle" aria-hidden="true"></span>
+          <h2 class="analyticsCollapsible__heading">Pipeline y comandos Docker</h2>
+        </summary>
+        <div class="analyticsCollapsible__body">
+          <p class="muted">
+            Las tablas de abajo leen <strong>Postgres</strong> (no el CSV en vivo). Si ves ceros o tablas vacías, ejecutá el pipeline en orden; el código vive en <code>core/management/commands/</code> y <code>core/etl/</code>.
+          </p>
+          {% include "core/includes/pipeline_docker_commands.html" %}
+        </div>
+      </details>
+
+      <details
+        class="card analyticsDwCard cardStack analyticsCollapsible"
+        id="analytics-collapsible-modelo-estrella"
+        data-storage-key="modelo-estrella"
+        data-default-open="true"
+        open
+      >
+        <summary class="analyticsCollapsible__summary">
+          <span class="analyticsCollapsible__toggle" aria-hidden="true"></span>
+          <h2 class="analyticsCollapsible__heading">Modelo en estrella en Postgres</h2>
+        </summary>
+        <div class="analyticsCollapsible__body">
+        <p class="muted">
+          La página está agrupada: <strong>1)</strong> tabla de hechos y KPIs, <strong>2)</strong> dimensiones (cardinalidad),
+          <strong>3)</strong> dimensión tiempo y cruces temporales, <strong>4)</strong> agregados por cliente/canal/producto,
+          <strong>5)</strong> vista fila a fila de <code>FactVentas</code>. Usá las pestañas para ver solo un bloque.
+        </p>
+        <p class="muted">
+          Plegar este bloque o los de arriba (icono <strong>+</strong> / <strong>−</strong>;
+          <a class="link" href="#analytics-collapsible-pipeline">Pipeline y comandos Docker</a>) solo cambia la vista en el navegador;
+          los datos en <strong>Postgres</strong> no se alteran (carga con <code>load_dw</code>).
+          El estado abierto/cerrado se guarda en <code>localStorage</code> (también cuando lo dejás <em>abierto</em>).
+        </p>
 
         <div class="analyticsFilterCluster" id="segmentar-ventas" tabindex="-1">
-          <h3 class="h3 filterClusterTitle">Segmentar ventas</h3>
+          <h4 class="analyticsFilterCluster__subtitle">Segmentar hechos (misma lógica para todas las tablas)</h4>
           <p class="filterActiveLine">
             <strong>Vista actual:</strong> {{ filter_summary }}
           </p>
           <p class="muted filterClusterHint">
-            Ejemplos: solo <em>Lunes</em> · solo año <em>2000</em> (si hay datos) · año + mes · <em>Domingos</em> de un mes (elegí año, mes y día).
+            Los atajos aplican los mismos parámetros que el formulario (año / mes / día de la semana, o rango <code>fde</code>–<code>fha</code> para la semana ISO). Se calculan con la fecha de hoy, acotada al rango de fechas cargado en el DW.
           </p>
           <form method="get" class="analyticsFormRow" action="{% url 'analytics' %}#segmentar-ventas">
+            {% if filter_range_active %}
+              <input type="hidden" name="fde" value="{{ filter_fde|date:'Y-m-d' }}" />
+              <input type="hidden" name="fha" value="{{ filter_fha|date:'Y-m-d' }}" />
+            {% endif %}
             <div class="analyticsField">
               <label for="fy">Año</label>
-              <select name="y" id="fy">
-                <option value="">Todos los años</option>
+              <select name="y" id="fy" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
+                <option value="" {% if filter_y == "" %}selected{% endif %}>Todos los años</option>
                 {% for yr in years %}
                   <option value="{{ yr }}" {% if filter_y == yr %}selected{% endif %}>{{ yr }}</option>
                 {% endfor %}
@@ -103,8 +102,8 @@
             </div>
             <div class="analyticsField">
               <label for="fm">Mes</label>
-              <select name="m" id="fm">
-                <option value="">Todos los meses</option>
+              <select name="m" id="fm" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
+                <option value="" {% if filter_m == "" %}selected{% endif %}>Todos los meses</option>
                 {% for mo, mo_label in months %}
                   <option value="{{ mo }}" {% if filter_m == mo %}selected{% endif %}>{{ mo_label }}</option>
                 {% endfor %}
@@ -112,7 +111,7 @@
             </div>
             <div class="analyticsField">
               <label for="fd">Día de la semana</label>
-              <select name="d" id="fd">
+              <select name="d" id="fd" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
                 {% for val, label in dias_semana %}
                   <option value="{{ val }}" {% if filter_d == val %}selected{% endif %}>{{ label }}</option>
                 {% endfor %}
@@ -123,7 +122,13 @@
               <a class="link" href="{% url 'analytics' %}#segmentar-ventas">Quitar filtros</a>
             </div>
           </form>
-          <p class="muted chipRowCaption">Atajos (misma lógica que el formulario):</p>
+          {% if filter_range_active %}
+            <p class="muted filterRangeHint">
+              Filtro por <strong>rango de fechas</strong> (semana). Los desplegables de año/mes/día están deshabilitados;
+              usá <a class="link" href="{% url 'analytics' %}#segmentar-ventas">Quitar filtros</a> para volver al modo año/mes/día.
+            </p>
+          {% endif %}
+          <p class="muted chipRowCaption">Accesos rápidos (presets dinámicos según hoy y el rango cargado en el DW):</p>
           <div class="chipRow">
             {% for ql in quick_time_links %}
               <a class="chipLink" href="{% url 'analytics' %}{{ ql.href }}">{{ ql.label }}</a>
@@ -131,258 +136,393 @@
           </div>
         </div>
 
-        <div class="timeSubBlock">
-          <h3>1 · DimTiempo enlazada a los hechos filtrados</h3>
-          <p class="muted timeSubLead">
-            Cada hecho apunta a <code>DimTiempo</code> por <code>id_tiempo</code> (AAAAMMDD).
+        <div class="analyticsViewTabs" role="tablist" aria-label="Vista del panel del DW">
+          <button type="button" class="analyticsViewTabs__btn is-active" data-analytics-view="todas" aria-pressed="true" role="tab">Todas</button>
+          <button type="button" class="analyticsViewTabs__btn" data-analytics-view="hechos" aria-pressed="false" role="tab">Hechos</button>
+          <button type="button" class="analyticsViewTabs__btn" data-analytics-view="dimensiones" aria-pressed="false" role="tab">Dimensiones</button>
+          <button type="button" class="analyticsViewTabs__btn" data-analytics-view="tiempo" aria-pressed="false" role="tab">Tiempo</button>
+        </div>
+
+        {# --- Tabla de hechos: métricas globales del hecho (filtros arriba; recortan el queryset en toda la página) --- #}
+        <div id="dw-hechos" class="analyticsZone analyticsZone--first js-analytics-view" data-analytics-views="todas hechos" tabindex="-1">
+          <h3 class="analyticsZone__title">1 · Tabla de hechos — <code>FactVentas</code></h3>
+          <p class="muted analyticsZone__lead">
+            Cada fila es una venta: <code>cantidad</code>, <code>precio_unitario</code>, <code>monto</code>, y claves foráneas a
+            <code>DimTiempo</code>, <code>DimCliente</code>, <code>DimProducto</code> (opcional) y <code>DimCanal</code>.
+            Los filtros de arriba aplican a <strong>todos</strong> los bloques de esta página.
           </p>
-          <div class="tableWrap">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th class="right"><a class="link" href="{% url 'analytics' %}{{ sort_href.dim_id }}">id_tiempo</a></th>
-                  <th><a class="link" href="{% url 'analytics' %}{{ sort_href.dim_fecha }}">Fecha</a></th>
-                  <th><a class="link" href="{% url 'analytics' %}{{ sort_href.dim_dia }}">Día</a></th>
-                  <th class="right"># sem.</th>
-                  <th>Mes</th>
-                  <th class="right">Trim.</th>
-                  <th class="right"><a class="link" href="{% url 'analytics' %}{{ sort_href.dim_anio }}">Año</a></th>
-                  <th>Fin sem.</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for t in dim_tiempo_en_hechos %}
-                  <tr>
-                    <td class="right">{{ t.id_tiempo }}</td>
-                    <td>{{ t.fecha_completa|date:"Y-m-d" }}</td>
-                    <td>{{ t.nombre_dia }}</td>
-                    <td class="right">{{ t.dia_semana }}</td>
-                    <td>{{ t.nombre_mes }}</td>
-                    <td class="right">{{ t.trimestre }}</td>
-                    <td class="right">{{ t.anio }}</td>
-                    <td>{% if t.es_fin_semana %}Sí{% else %}No{% endif %}</td>
-                  </tr>
-                {% empty %}
-                  <tr class="table-msg">
-                    <td colspan="8" class="muted">Sin hechos con el filtro actual o DW vacío. Ejecutá <code>load_dw</code> o quitá filtros.</td>
-                  </tr>
-                {% endfor %}
-              </tbody>
-            </table>
+          <div class="analyticsKpiStrip analyticsKpiStrip--narrow">
+            <div class="kpi kpi--fact">
+              <div class="kpiLabel">FactVentas (total en DW)</div>
+              <div class="kpiValue">{{ star_model.fact_ventas }}</div>
+            </div>
+            <div class="kpi kpi--fact">
+              <div class="kpiLabel">Hechos con el filtro actual</div>
+              <div class="kpiValue">{{ star_model.hechos_filtrados }}</div>
+            </div>
           </div>
+
+          {% if dw_span_min %}
+            <div class="analyticsBanner">
+              <strong>Datos cargados en el DW (sin filtrar):</strong>
+              del <strong>{{ dw_span_min|date:"d/m/Y" }}</strong> al <strong>{{ dw_span_max|date:"d/m/Y" }}</strong>
+              — <strong>{{ dw_total_unfiltered }}</strong> hechos.
+              <span class="bannerMuted">
+                Años que tienen al menos una venta:
+                {% for yy in years_with_sales %}<span class="badge badge--inline">{{ yy }}</span>{% empty %}—{% endfor %}
+              </span>
+            </div>
+          {% else %}
+            <div class="analyticsBanner analyticsBanner--warn">
+              <strong>No hay hechos en FactVentas.</strong> Ejecutá <code>load_dw</code> tras el ETL.
+            </div>
+          {% endif %}
         </div>
 
-        <div class="timeSubBlock">
-          <h3>2 · Ventas por día civil</h3>
-          <p class="muted timeSubLead">Suma de <code>monto</code> y transacciones por <code>fecha_completa</code>.</p>
-          <div class="tableWrap">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th class="right"><a class="link" href="{% url 'analytics' %}{{ sort_href.dc_id }}">id_tiempo</a></th>
-                  <th><a class="link" href="{% url 'analytics' %}{{ sort_href.dc_fecha }}">Fecha</a></th>
-                  <th>Día</th>
-                  <th class="right"><a class="link" href="{% url 'analytics' %}{{ sort_href.dc_tx }}">Transacciones</a></th>
-                  <th class="right"><a class="link" href="{% url 'analytics' %}{{ sort_href.dc_monto }}">Total ($)</a></th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for r in ventas_por_dia_civil %}
-                  <tr>
-                    <td class="right">{{ r.fecha__id_tiempo }}</td>
-                    <td>{{ r.fecha__fecha_completa|date:"Y-m-d" }}</td>
-                    <td>{{ r.fecha__nombre_dia }}</td>
-                    <td class="right">{{ r.transacciones }}</td>
-                    <td class="right">{{ r.total_monto }}</td>
-                  </tr>
-                {% empty %}
-                  <tr class="table-msg">
-                    <td colspan="5" class="muted">Sin datos con el filtro actual (revisá año/mes o quitá filtros).</td>
-                  </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="timeSubBlock">
-          <h3>3 · Ventas por día de la semana</h3>
-          <div class="tableWrap">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th><a class="link" href="{% url 'analytics' %}{{ sort_href.sem_dia }}">Día</a></th>
-                  <th class="right"># ISO</th>
-                  <th class="right"><a class="link" href="{% url 'analytics' %}{{ sort_href.sem_tx }}">Transacciones</a></th>
-                  <th class="right"><a class="link" href="{% url 'analytics' %}{{ sort_href.sem_monto }}">Total ($)</a></th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for r in ventas_por_dia_semana %}
-                  <tr>
-                    <td>{{ r.fecha__nombre_dia }}</td>
-                    <td class="right">{{ r.fecha__dia_semana }}</td>
-                    <td class="right">{{ r.transacciones }}</td>
-                    <td class="right">{{ r.total_monto }}</td>
-                  </tr>
-                {% empty %}
-                  <tr class="table-msg">
-                    <td colspan="4" class="muted">Sin datos con el filtro actual.</td>
-                  </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="timeSubBlock">
-          <h3>4 · Ventas por mes y año</h3>
-          <div class="tableWrap">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th><a class="link" href="{% url 'analytics' %}{{ sort_href.mes_per }}">Mes</a></th>
-                  <th class="right"># mes</th>
-                  <th class="right">Año</th>
-                  <th class="right"><a class="link" href="{% url 'analytics' %}{{ sort_href.mes_tx }}">Transacciones</a></th>
-                  <th class="right"><a class="link" href="{% url 'analytics' %}{{ sort_href.mes_monto }}">Total ($)</a></th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for r in ventas_por_mes_anio %}
-                  <tr>
-                    <td>{{ r.fecha__nombre_mes }}</td>
-                    <td class="right">{{ r.fecha__mes }}</td>
-                    <td class="right">{{ r.fecha__anio }}</td>
-                    <td class="right">{{ r.transacciones }}</td>
-                    <td class="right">{{ r.total_monto }}</td>
-                  </tr>
-                {% empty %}
-                  <tr class="table-msg">
-                    <td colspan="5" class="muted">Sin datos con el filtro actual.</td>
-                  </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="timeSubBlock timeSubBlock--accent">
-          <h3>Ejemplo combinado (ORM)</h3>
-          <p class="muted timeSubLead">
-            Misma lógica que “todos los lunes de enero de 2026”: suma de <code>monto</code> con año + mes + día fijos en código.
-            Si el dataset no tiene ese mes, el total es <code>0</code>.
+        {# --- Dimensiones: cardinalidad (no son la tabla completa; el detalle sale en agregados y vista rápida) --- #}
+        <div id="dw-dimensiones" class="analyticsZone js-analytics-view" data-analytics-views="todas dimensiones" tabindex="-1">
+          <h3 class="analyticsZone__title">2 · Dimensiones del modelo estrella</h3>
+          <p class="muted analyticsZone__lead">
+            Tablas <code>DimCliente</code>, <code>DimProducto</code>, <code>DimCanal</code> y <code>DimTiempo</code> (calendario pre-cargado).
+            Los recuentos son del DW completo; las tablas más abajo usan el <strong>mismo filtro de hechos</strong> donde aplica.
           </p>
-          <p class="ormExampleLine">
-            <strong>Suma monto · Lunes + Enero + 2026:</strong>
-            <span class="badge">${{ ej_orm_lunes_enero_2026 }}</span>
-          </p>
+          <div class="analyticsKpiStrip">
+            <div class="kpi kpi--dim">
+              <div class="kpiLabel">DimCliente</div>
+              <div class="kpiValue">{{ star_model.dim_cliente }}</div>
+            </div>
+            <div class="kpi kpi--dim">
+              <div class="kpiLabel">DimProducto</div>
+              <div class="kpiValue">{{ star_model.dim_producto }}</div>
+            </div>
+            <div class="kpi kpi--dim">
+              <div class="kpiLabel">DimCanal</div>
+              <div class="kpiValue">{{ star_model.dim_canal }}</div>
+            </div>
+            <div class="kpi kpi--dim">
+              <div class="kpiLabel">DimTiempo (días en calendario)</div>
+              <div class="kpiValue">{{ star_model.dim_tiempo }}</div>
+            </div>
+          </div>
         </div>
-      </section>
 
-      <details class="card cardStack detailsSql">
-        <summary class="detailsSql__summary">Referencia SQL (DBeaver / psql)</summary>
-        <p class="muted detailsSql__lead">
-          Equivalente a los joins que el ORM hace entre <code>core_factventas</code> y <code>core_dimtiempo</code>:
-        </p>
-        <pre class="codeBlock"><code>SELECT SUM(f.monto) AS total_monto
-FROM core_factventas f
-JOIN core_dimtiempo t ON f.fecha_id = t.id_tiempo
-WHERE t.nombre_dia = 'Lunes'
-  AND t.nombre_mes = 'Enero'
-  AND t.anio = 2026;</code></pre>
+        {# --- Dimensión tiempo: solo cruces y atributos de tiempo enlazados a hechos filtrados --- #}
+        <div id="dw-tiempo" class="analyticsZone js-analytics-view" data-analytics-views="todas tiempo" tabindex="-1">
+          <h3 class="analyticsZone__title">3 · Dimensión tiempo — <code>DimTiempo</code></h3>
+          <p class="muted analyticsZone__lead">
+            El hecho enlaza con <code>fecha_id → DimTiempo.id_tiempo</code> (AAAAMMDD). Las tablas siguientes muestran cortes temporales sobre el conjunto de <strong>hechos ya filtrado</strong>.
+          </p>
+
+          <div class="timeSubBlock timeSubBlock--nested timeSubBlock--nestedFlush">
+            <h4 class="timeSubBlock__h4">3.1 · Filas de <code>DimTiempo</code> presentes en los hechos filtrados</h4>
+            <p class="muted timeSubLead">
+              Una fila por día de calendario que aparece al menos una vez en <code>FactVentas</code> (con el filtro actual).
+            </p>
+            <div class="tableWrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th class="right"><a class="link" href="{% url 'analytics' %}{{ sort_href.dim_id }}">id_tiempo</a></th>
+                    <th><a class="link" href="{% url 'analytics' %}{{ sort_href.dim_fecha }}">Fecha</a></th>
+                    <th><a class="link" href="{% url 'analytics' %}{{ sort_href.dim_dia }}">Día</a></th>
+                    <th class="right"># sem.</th>
+                    <th>Mes</th>
+                    <th class="right">Trim.</th>
+                    <th class="right"><a class="link" href="{% url 'analytics' %}{{ sort_href.dim_anio }}">Año</a></th>
+                    <th>Fin sem.</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for t in dim_tiempo_en_hechos %}
+                    <tr>
+                      <td class="right">{{ t.id_tiempo }}</td>
+                      <td>{{ t.fecha_completa|date:"Y-m-d" }}</td>
+                      <td>{{ t.nombre_dia }}</td>
+                      <td class="right">{{ t.dia_semana }}</td>
+                      <td>{{ t.nombre_mes }}</td>
+                      <td class="right">{{ t.trimestre }}</td>
+                      <td class="right">{{ t.anio }}</td>
+                      <td>{% if t.es_fin_semana %}Sí{% else %}No{% endif %}</td>
+                    </tr>
+                  {% empty %}
+                    <tr class="table-msg">
+                      <td colspan="8" class="muted">Sin hechos con el filtro actual o DW vacío. Ejecutá <code>load_dw</code> o quitá filtros.</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="timeSubBlock timeSubBlock--nested">
+            <h4 class="timeSubBlock__h4">3.2 · Agregado de hechos por día civil</h4>
+            <p class="muted timeSubLead">Suma de <code>monto</code> y conteo de transacciones por <code>fecha_completa</code>.</p>
+            <div class="tableWrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th class="right"><a class="link" href="{% url 'analytics' %}{{ sort_href.dc_id }}">id_tiempo</a></th>
+                    <th><a class="link" href="{% url 'analytics' %}{{ sort_href.dc_fecha }}">Fecha</a></th>
+                    <th>Día</th>
+                    <th class="right"><a class="link" href="{% url 'analytics' %}{{ sort_href.dc_tx }}">Transacciones</a></th>
+                    <th class="right"><a class="link" href="{% url 'analytics' %}{{ sort_href.dc_monto }}">Total ($)</a></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for r in ventas_por_dia_civil %}
+                    <tr>
+                      <td class="right">{{ r.fecha__id_tiempo }}</td>
+                      <td>{{ r.fecha__fecha_completa|date:"Y-m-d" }}</td>
+                      <td>{{ r.fecha__nombre_dia }}</td>
+                      <td class="right">{{ r.transacciones }}</td>
+                      <td class="right">{{ r.total_monto }}</td>
+                    </tr>
+                  {% empty %}
+                    <tr class="table-msg">
+                      <td colspan="5" class="muted">Sin datos con el filtro actual (revisá año/mes o quitá filtros).</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="timeSubBlock timeSubBlock--nested">
+            <h4 class="timeSubBlock__h4">3.3 · Agregado por día de la semana</h4>
+            <div class="tableWrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th><a class="link" href="{% url 'analytics' %}{{ sort_href.sem_dia }}">Día</a></th>
+                    <th class="right"># ISO</th>
+                    <th class="right"><a class="link" href="{% url 'analytics' %}{{ sort_href.sem_tx }}">Transacciones</a></th>
+                    <th class="right"><a class="link" href="{% url 'analytics' %}{{ sort_href.sem_monto }}">Total ($)</a></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for r in ventas_por_dia_semana %}
+                    <tr>
+                      <td>{{ r.fecha__nombre_dia }}</td>
+                      <td class="right">{{ r.fecha__dia_semana }}</td>
+                      <td class="right">{{ r.transacciones }}</td>
+                      <td class="right">{{ r.total_monto }}</td>
+                    </tr>
+                  {% empty %}
+                    <tr class="table-msg">
+                      <td colspan="4" class="muted">Sin datos con el filtro actual.</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="timeSubBlock timeSubBlock--nested">
+            <h4 class="timeSubBlock__h4">3.4 · Agregado por mes y año</h4>
+            <div class="tableWrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th><a class="link" href="{% url 'analytics' %}{{ sort_href.mes_per }}">Mes</a></th>
+                    <th class="right"># mes</th>
+                    <th class="right">Año</th>
+                    <th class="right"><a class="link" href="{% url 'analytics' %}{{ sort_href.mes_tx }}">Transacciones</a></th>
+                    <th class="right"><a class="link" href="{% url 'analytics' %}{{ sort_href.mes_monto }}">Total ($)</a></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for r in ventas_por_mes_anio %}
+                    <tr>
+                      <td>{{ r.fecha__nombre_mes }}</td>
+                      <td class="right">{{ r.fecha__mes }}</td>
+                      <td class="right">{{ r.fecha__anio }}</td>
+                      <td class="right">{{ r.transacciones }}</td>
+                      <td class="right">{{ r.total_monto }}</td>
+                    </tr>
+                  {% empty %}
+                    <tr class="table-msg">
+                      <td colspan="5" class="muted">Sin datos con el filtro actual.</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="timeSubBlock timeSubBlock--nested timeSubBlock--accent">
+            <h4 class="timeSubBlock__h4">3.5 · Ejemplo fijo (ORM sobre hechos filtrados)</h4>
+            <p class="muted timeSubLead">
+              Suma de <code>monto</code> con año + mes + día fijos en código (Lunes + Enero + año de referencia <strong>{{ ej_ref_year }}</strong>, anclado al calendario dentro del rango del DW). Si el dataset no tiene ese mes, el total es <code>0</code>.
+            </p>
+            <p class="ormExampleLine">
+              <strong>Suma monto · Lunes + Enero + {{ ej_ref_year }}:</strong>
+              <span class="badge">${{ ej_orm_lunes_enero_ref }}</span>
+            </p>
+          </div>
+        </div>
+        </div>
       </details>
 
-      <section class="card cardStack">
-        <h2>Mejores clientes</h2>
-        <div class="tableWrap">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Segmento</th>
-                <th class="right">Total ($)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for r in top_clientes %}
-                <tr>
-                  <td>{{ r.cliente__id_cliente }}</td>
-                  <td>{{ r.cliente__nombre }} {{ r.cliente__apellido }}</td>
-                  <td>{{ r.cliente__segmento }}</td>
-                  <td class="right">{{ r.total }}</td>
-                </tr>
-              {% empty %}
-                <tr class="table-msg">
-                  <td colspan="4" class="muted">Sin datos. Ejecuta <code>load_dw</code> después del ETL.</td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+      <details
+        id="dw-agregados"
+        class="card cardStack analyticsCollapsible js-analytics-view"
+        data-analytics-views="todas dimensiones"
+        data-storage-key="agregados-dimensiones"
+        data-default-open="true"
+        open
+        tabindex="-1"
+      >
+        <summary class="analyticsCollapsible__summary">
+          <span class="analyticsCollapsible__toggle" aria-hidden="true"></span>
+          <h2 class="analyticsCollapsible__heading">Agregados por otras dimensiones (mismo filtro de hechos)</h2>
+        </summary>
+        <div class="analyticsCollapsible__body">
+        <p class="muted">
+          Consultas <code>GROUP BY</code> sobre <code>FactVentas</code> unidas a <code>DimCliente</code>, <code>DimCanal</code> y <code>DimProducto</code>.
+          Responden las preguntas de negocio típicas de la actividad.
+        </p>
+        <div class="analyticsDimGrid">
+          <div class="dimAggBlock">
+            <h3 class="dimAggBlock__title">DimCliente — mejores clientes</h3>
+            <div class="tableWrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Segmento</th>
+                    <th class="right">Total ($)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for r in top_clientes %}
+                    <tr>
+                      <td>{{ r.cliente__id_cliente }}</td>
+                      <td>{{ r.cliente__nombre }} {{ r.cliente__apellido }}</td>
+                      <td>{{ r.cliente__segmento }}</td>
+                      <td class="right">{{ r.total }}</td>
+                    </tr>
+                  {% empty %}
+                    <tr class="table-msg">
+                      <td colspan="4" class="muted">Sin datos. Ejecuta <code>load_dw</code> después del ETL.</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="dimAggBlock">
+            <h3 class="dimAggBlock__title">DimCanal — rendimiento por canal</h3>
+            <div class="tableWrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Canal</th>
+                    <th class="right">Total ($)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for r in top_canales %}
+                    <tr>
+                      <td>{{ r.canal__canal }}</td>
+                      <td class="right">{{ r.total }}</td>
+                    </tr>
+                  {% empty %}
+                    <tr class="table-msg">
+                      <td colspan="2" class="muted">Sin datos. Ejecuta <code>load_dw</code> después del ETL.</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="dimAggBlock">
+            <h3 class="dimAggBlock__title">DimProducto — productos líderes</h3>
+            <p class="muted dimAggBlock__note">Ventas online sin producto pueden quedar sin dimensión producto (null).</p>
+            <div class="tableWrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Producto</th>
+                    <th>Categoría</th>
+                    <th class="right">Total ($)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for r in top_productos %}
+                    <tr>
+                      <td>{{ r.producto__id_producto }}</td>
+                      <td>{{ r.producto__nombre_producto }}</td>
+                      <td>{{ r.producto__categoria }}</td>
+                      <td class="right">{{ r.total }}</td>
+                    </tr>
+                  {% empty %}
+                    <tr class="table-msg">
+                      <td colspan="4" class="muted">Sin datos. Ejecuta <code>load_dw</code> después del ETL.</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
-      </section>
-
-      <section class="card cardStack">
-        <h2>Rendimiento por canal</h2>
-        <div class="tableWrap">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Canal</th>
-                <th class="right">Total ($)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for r in top_canales %}
-                <tr>
-                  <td>{{ r.canal__canal }}</td>
-                  <td class="right">{{ r.total }}</td>
-                </tr>
-              {% empty %}
-                <tr class="table-msg">
-                  <td colspan="2" class="muted">Sin datos. Ejecuta <code>load_dw</code> después del ETL.</td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
         </div>
-      </section>
+      </details>
 
-      <section class="card cardStack">
-        <h2>Productos líderes</h2>
-        <p class="muted">Nota: ventas online sin producto pueden quedar agrupadas sin producto (null).</p>
-        <div class="tableWrap">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Producto</th>
-                <th>Categoría</th>
-                <th class="right">Total ($)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for r in top_productos %}
-                <tr>
-                  <td>{{ r.producto__id_producto }}</td>
-                  <td>{{ r.producto__nombre_producto }}</td>
-                  <td>{{ r.producto__categoria }}</td>
-                  <td class="right">{{ r.total }}</td>
-                </tr>
-              {% empty %}
-                <tr class="table-msg">
-                  <td colspan="4" class="muted">Sin datos. Ejecuta <code>load_dw</code> después del ETL.</td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="card cardStack">
-        <h2>Vista rápida (FactVentas, últimos 50)</h2>
-        <div class="tableWrap">
+      <details
+        id="dw-vista-hechos"
+        class="card cardStack analyticsCollapsible js-analytics-view"
+        data-analytics-views="todas hechos"
+        data-storage-key="fact-ventas-preview"
+        data-default-open="true"
+        open
+        tabindex="-1"
+      >
+        <summary class="analyticsCollapsible__summary">
+          <span class="analyticsCollapsible__toggle" aria-hidden="true"></span>
+          <h2 class="factPreviewTitle analyticsCollapsible__heading">
+            Vista rápida: filas de <code>FactVentas</code>
+            <span class="factPreviewTitle__meta">
+              {% if preview_nav.empty %}
+                (sin hechos con el filtro actual)
+              {% else %}
+                · {{ fact_preview_per_page }} por página · orden: más recientes primero
+              {% endif %}
+            </span>
+          </h2>
+        </summary>
+        <div class="analyticsCollapsible__body">
+        {% if not preview_nav.empty %}
+          <p class="muted factPreviewPagerLine">
+            Hechos que cumplen el filtro: <strong>{{ preview_nav.total }}</strong>
+            {% if preview_nav.num_pages > 1 %}
+              · Página <strong>{{ preview_nav.number }}</strong> de <strong>{{ preview_nav.num_pages }}</strong>
+              · Filas <strong>{{ preview_nav.start_index }}</strong>–<strong>{{ preview_nav.end_index }}</strong>
+            {% endif %}
+          </p>
+        {% endif %}
+        <p class="muted">
+          Cada fila es un hecho; las columnas de fecha/día/mes/año e <code>id_tiempo</code> vienen de la dimensión enlazada (<code>fecha_id</code>).
+        </p>
+        {% if not preview_nav.empty and preview_nav.num_pages > 1 %}
+          <nav class="factPreviewPager" aria-label="Paginación vista FactVentas">
+            {% if preview_nav.prev_url %}
+              <a class="btn btn--inline factPreviewPager__btn" href="{{ preview_nav.prev_url }}">← Anterior</a>
+            {% else %}
+              <span class="factPreviewPager__btn factPreviewPager__btn--disabled" aria-disabled="true">← Anterior</span>
+            {% endif %}
+            <span class="factPreviewPager__status">
+              {{ preview_nav.number }} / {{ preview_nav.num_pages }}
+            </span>
+            {% if preview_nav.next_url %}
+              <a class="btn btn--inline factPreviewPager__btn" href="{{ preview_nav.next_url }}">Siguiente →</a>
+            {% else %}
+              <span class="factPreviewPager__btn factPreviewPager__btn--disabled" aria-disabled="true">Siguiente →</span>
+            {% endif %}
+          </nav>
+        {% endif %}
+        <div class="tableWrap tableWrap--factPreview">
           <table class="table">
             <thead>
               <tr>
@@ -426,8 +566,42 @@ WHERE t.nombre_dia = 'Lunes'
             </tbody>
           </table>
         </div>
-      </section>
+        {% if not preview_nav.empty and preview_nav.num_pages > 1 %}
+          <nav class="factPreviewPager factPreviewPager--bottom" aria-label="Paginación vista FactVentas">
+            {% if preview_nav.prev_url %}
+              <a class="btn btn--inline factPreviewPager__btn" href="{{ preview_nav.prev_url }}">← Anterior</a>
+            {% else %}
+              <span class="factPreviewPager__btn factPreviewPager__btn--disabled" aria-disabled="true">← Anterior</span>
+            {% endif %}
+            <span class="factPreviewPager__status">
+              {{ preview_nav.number }} / {{ preview_nav.num_pages }}
+            </span>
+            {% if preview_nav.next_url %}
+              <a class="btn btn--inline factPreviewPager__btn" href="{{ preview_nav.next_url }}">Siguiente →</a>
+            {% else %}
+              <span class="factPreviewPager__btn factPreviewPager__btn--disabled" aria-disabled="true">Siguiente →</span>
+            {% endif %}
+          </nav>
+        {% endif %}
+        </div>
+      </details>
+
+      <details class="card cardStack detailsSql js-analytics-view" data-analytics-views="todas tiempo">
+        <summary class="detailsSql__summary">Referencia SQL (DBeaver / psql)</summary>
+        <p class="muted detailsSql__lead">
+          Equivalente a los joins que el ORM hace entre <code>core_factventas</code> y <code>core_dimtiempo</code>
+          (mismo ejemplo que el bloque <strong>3.5</strong> del panel de tiempo, arriba):
+        </p>
+        <pre class="codeBlock"><code>SELECT SUM(f.monto) AS total_monto
+FROM core_factventas f
+JOIN core_dimtiempo t ON f.fecha_id = t.id_tiempo
+WHERE t.nombre_dia = 'Lunes'
+  AND t.nombre_mes = 'Enero'
+  AND t.anio = {{ ej_ref_year }};</code></pre>
+      </details>
     </main>
+    <script src="{% static 'js/analytics-collapsibles.js' %}?v=2" defer></script>
     <script src="{% static 'js/analytics-filtros-anchor.js' %}?v=1" defer></script>
+    <script src="{% static 'js/analytics-tabs.js' %}?v=1" defer></script>
   </body>
 </html>

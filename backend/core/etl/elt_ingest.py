@@ -33,7 +33,7 @@ DEFAULT_SCATTERED_SOURCES: tuple[SourceFile, ...] = (
     SourceFile("crm_export/clientes_crm.csv", "clientes_crm.csv"),
     SourceFile("erp_snapshot/productos_erp.csv", "productos_erp.csv"),
     SourceFile("mobile_analytics/eventos_app.json", "eventos_app.json"),
-    SourceFile("proveedor_logistica/logistica.xml", "logistica.xml"),
+    SourceFile("sistemas_legacy/proveedor_logistica/logistica.xml", "logistica.xml"),
     SourceFile("infra_logs/logs_sistema.txt", "logs_sistema.txt"),
 )
 

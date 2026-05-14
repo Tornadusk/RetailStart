@@ -41,21 +41,6 @@ body {
   color: var(--muted);
 }
 
-.browseHint {
-  margin: 14px 0 0;
-  padding: 12px 14px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 209, 102, 0.35);
-  background: rgba(255, 209, 102, 0.08);
-  font-size: 14px;
-  line-height: 1.5;
-  color: var(--text);
-}
-
-.browseHint code {
-  font-size: 13px;
-}
-
 .card {
   background: color-mix(in srgb, var(--card) 88%, black);
   border: 1px solid rgba(105, 210, 255, 0.18);
@@ -358,6 +343,281 @@ main.analyticsPage {
   max-width: 1120px;
 }
 
+.analyticsHeader {
+  margin-bottom: 22px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(105, 210, 255, 0.14);
+}
+
+.analyticsHeader__title {
+  margin-bottom: 10px;
+}
+
+.analyticsHeader__tagline {
+  margin: 0 0 16px;
+  max-width: 52rem;
+  font-size: 16px;
+  line-height: 1.55;
+  color: color-mix(in srgb, var(--muted) 92%, var(--text));
+  letter-spacing: 0.01em;
+}
+
+.header:not(.analyticsHeader) .siteQuickNav {
+  margin-top: 14px;
+}
+
+.analyticsHeader__quick {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.analyticsHeader__quicklink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(105, 210, 255, 0.22);
+  background: rgba(105, 210, 255, 0.06);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.analyticsHeader__quicklink:hover {
+  border-color: rgba(105, 210, 255, 0.45);
+  background: rgba(105, 210, 255, 0.12);
+  color: #fff;
+}
+
+.analyticsHeader__quickpath {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  opacity: 0.95;
+}
+
+.factPreviewTitle {
+  font-size: 1.35rem;
+  line-height: 1.35;
+  margin: 0 0 8px;
+}
+
+.factPreviewTitle__meta {
+  display: block;
+  margin-top: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+@media (min-width: 640px) {
+  .factPreviewTitle__meta {
+    display: inline;
+    margin-top: 0;
+    margin-left: 6px;
+  }
+}
+
+.factPreviewPagerLine {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
+.factPreviewPager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 14px 0 10px;
+}
+
+.factPreviewPager--bottom {
+  margin: 14px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.factPreviewPager__btn--disabled {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--muted);
+  font-size: 14px;
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.factPreviewPager__status {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent);
+  min-width: 4.5rem;
+  text-align: center;
+}
+
+main.analyticsPage .tableWrap--factPreview {
+  max-height: min(58vh, 520px);
+  margin-top: 8px;
+  border-color: rgba(105, 210, 255, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
+
+main.analyticsPage .tableWrap--factPreview .table {
+  min-width: 920px;
+}
+
+.analyticsToc {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin: 16px 0 8px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(105, 210, 255, 0.14);
+  font-size: 14px;
+}
+
+.analyticsToc__sep {
+  color: var(--muted);
+  user-select: none;
+}
+
+.analyticsViewTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0 18px;
+}
+
+.analyticsViewTabs__btn {
+  margin: 0;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.analyticsViewTabs__btn:hover {
+  border-color: rgba(105, 210, 255, 0.4);
+  background: rgba(105, 210, 255, 0.08);
+}
+
+.analyticsViewTabs__btn.is-active {
+  border-color: rgba(105, 210, 255, 0.55);
+  background: rgba(105, 210, 255, 0.18);
+  color: #fff;
+  box-shadow: 0 0 0 1px rgba(105, 210, 255, 0.2);
+}
+
+.analyticsZone {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(105, 210, 255, 0.2);
+  scroll-margin-top: 1rem;
+}
+
+.analyticsZone--first {
+  margin-top: 12px;
+  padding-top: 0;
+  border-top: none;
+}
+
+.analyticsZone__title {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.02em;
+}
+
+.analyticsZone__lead {
+  margin: 0 0 14px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.analyticsKpiStrip--narrow {
+  max-width: 520px;
+}
+
+.analyticsFilterCluster__subtitle {
+  margin: 0 0 10px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.timeSubBlock--nested {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.timeSubBlock--nestedFlush {
+  margin-top: 8px;
+  padding-top: 0;
+  border-top: none;
+}
+
+.timeSubBlock__h4 {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #b8d4ff;
+}
+
+.analyticsDimGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 18px;
+  margin-top: 12px;
+}
+
+.dimAggBlock {
+  min-width: 0;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.dimAggBlock__title {
+  margin: 0 0 10px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.dimAggBlock__note {
+  margin: 0 0 10px;
+  font-size: 12px;
+}
+
+.kpi--fact {
+  border-color: rgba(88, 242, 179, 0.22);
+  background: rgba(88, 242, 179, 0.06);
+}
+
+.kpi--dim {
+  border-color: rgba(105, 210, 255, 0.2);
+  background: rgba(105, 210, 255, 0.05);
+}
+
 .analyticsDwCard .analyticsKpiStrip {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -488,6 +748,10 @@ main.analyticsPage .table thead th {
   vertical-align: bottom;
   border-bottom: 1px solid rgba(105, 210, 255, 0.2);
   white-space: nowrap;
+  /* Cabecera sticky: fondo opaco + capa sobre el tbody (evita que el scroll se “vea atravesado”) */
+  background: color-mix(in srgb, var(--card) 92%, black);
+  z-index: 1;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
 }
 
 main.analyticsPage .table thead th .link {
@@ -529,14 +793,100 @@ main.analyticsPage .card.analyticsDwCard {
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.42);
 }
 
-#segmentar-ventas {
+#dw-agregados,
+#dw-vista-hechos {
   scroll-margin-top: 1rem;
-  outline: none;
 }
 
 /* --- Layout utilities (sin estilos inline en plantillas) --- */
 .cardStack {
   margin-top: 16px;
+}
+
+/* --- Analytics: bloques plegables (+ / −) --- */
+.analyticsCollapsible {
+  padding: 0;
+}
+
+.analyticsCollapsible > summary {
+  list-style: none;
+}
+
+.analyticsCollapsible > summary::-webkit-details-marker {
+  display: none;
+}
+
+.analyticsCollapsible__summary {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 18px;
+  cursor: pointer;
+  border-radius: 14px;
+  user-select: none;
+}
+
+.analyticsCollapsible__summary:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.analyticsCollapsible__summary:focus {
+  outline: none;
+}
+
+.analyticsCollapsible__summary:focus-visible {
+  outline: 2px solid rgba(105, 210, 255, 0.65);
+  outline-offset: 2px;
+}
+
+.analyticsCollapsible__toggle {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid rgba(105, 210, 255, 0.4);
+  background: rgba(105, 210, 255, 0.1);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  margin-top: 2px;
+  color: var(--accent);
+}
+
+.analyticsCollapsible__toggle::before {
+  content: "+";
+}
+
+.analyticsCollapsible[open] .analyticsCollapsible__toggle::before {
+  content: "−";
+}
+
+.analyticsCollapsible__heading {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  line-height: 1.35;
+  color: var(--text);
+}
+
+.analyticsCollapsible__body {
+  padding: 0 18px 18px;
+}
+
+.analyticsCollapsible__body > p:first-child {
+  margin-top: 0;
+}
+
+/* Comandos Docker plegables dentro del aside de /evidence/ (sin segunda tarjeta "card") */
+aside .analyticsCollapsible:not(.card) {
+  margin-top: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(105, 210, 255, 0.14);
+  background: rgba(0, 0, 0, 0.18);
 }
 
 .badge--inline {
