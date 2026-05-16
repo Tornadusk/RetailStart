@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Dashboard — RetailStart</title>
     <script src="{% static 'js/dashboard-view-prefs.js' %}?v=1"></script>
-    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=14" />
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=16" />
   </head>
   <body class="appShell">
     {% include "core/includes/site_sidebar.html" %}
@@ -18,24 +18,83 @@
               <h1 class="title">Dashboard</h1>
             </div>
             <div class="dashboardHeader__actions">
-              <details class="dashboardDownload">
+              <details class="dashboardDownload{% if view_mode == 'both' %} dashboardDownload--mega{% endif %}">
                 <summary class="btn btn--inline dashboardDownload__summary">Descargar ▾</summary>
-                <div class="dashboardDownload__menu">
-                  <a
-                    class="dashboardDownload__item"
-                    href="{% url 'dashboard_export' 'csv' %}{% if export_querystring %}?{{ export_querystring }}{% endif %}"
-                    >CSV</a>
-                  <a
-                    class="dashboardDownload__item"
-                    href="{% url 'dashboard_export' 'html' %}{% if export_querystring %}?{{ export_querystring }}{% endif %}"
-                    >HTML</a>
-                  <a
-                    class="dashboardDownload__item"
-                    href="{% url 'dashboard_export' 'pdf' %}{% if export_querystring %}?{{ export_querystring }}{% endif %}"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    >PDF (imprimir)</a>
-                </div>
+                {% if view_mode == 'both' %}
+                  <div class="dashboardDownload__menu" role="group" aria-label="Exportaciones del dashboard">
+                    <div class="dashboardDownload__megaGrid">
+                      <div class="dashboardDownload__megaCol">
+                        <div class="dashboardDownload__megaHead">Gráficos</div>
+                        <p class="dashboardDownload__megaHint">PNG/SVG (navegador, iguales a pantalla); Excel (.xlsx) con tabla + imagen ya visible en Excel; CSV solo texto UTF-8 (Base64 cortado).</p>
+                        <a
+                          class="dashboardDownload__item"
+                          href="{% url 'dashboard_export' 'xlsx' %}{% if export_querystring %}?{{ export_querystring }}{% endif %}"
+                          >Excel · tabla + imagen del gráfico (servidor)</a>
+                        <button type="button" class="dashboardDownload__item dashboardDownload__item--btn js-dashboard-bundle-charts-png">
+                          PNG (cada panel)
+                        </button>
+                        <button type="button" class="dashboardDownload__item dashboardDownload__item--btn js-dashboard-bundle-charts-svg">
+                          SVG (cada panel)
+                        </button>
+                        <button type="button" class="dashboardDownload__item dashboardDownload__item--btn js-dashboard-bundle-charts-csv">
+                          CSV texto (datos + PNG Base64 troceados)
+                        </button>
+                        <button type="button" class="dashboardDownload__item dashboardDownload__item--btn js-dashboard-bundle-charts-html">
+                          HTML todos los gráficos
+                        </button>
+                        <button type="button" class="dashboardDownload__item dashboardDownload__item--btn js-dashboard-bundle-charts-pdf">
+                          PDF imprimir todos
+                        </button>
+                      </div>
+                      <div class="dashboardDownload__megaCol">
+                        <div class="dashboardDownload__megaHead">Tablas</div>
+                        <p class="dashboardDownload__megaHint">Las tablas siguen igual (CSV/HTML/PDF servidor). También puede bajar PNG capturado por panel o Excel con filas + dibujo estadístico embebido.</p>
+                        <a
+                          class="dashboardDownload__item"
+                          href="{% url 'dashboard_export' 'xlsx' %}{% if export_querystring %}?{{ export_querystring }}{% endif %}"
+                          >Excel · tabla + imagen del gráfico (servidor)</a>
+                        <button type="button" class="dashboardDownload__item dashboardDownload__item--btn js-dashboard-bundle-tables-png">
+                          PNG (cada tabla)
+                        </button>
+                        <a
+                          class="dashboardDownload__item"
+                          href="{% url 'dashboard_export' 'csv' %}{% if export_querystring %}?{{ export_querystring }}{% endif %}"
+                          >CSV todas las tablas</a>
+                        <a
+                          class="dashboardDownload__item"
+                          href="{% url 'dashboard_export' 'html' %}{% if export_querystring %}?{{ export_querystring }}{% endif %}"
+                          >HTML todas las tablas</a>
+                        <a
+                          class="dashboardDownload__item"
+                          href="{% url 'dashboard_export' 'pdf' %}{% if export_querystring %}?{{ export_querystring }}{% endif %}"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          >PDF todas las tablas</a>
+                      </div>
+                    </div>
+                  </div>
+                {% else %}
+                  <div class="dashboardDownload__menu">
+                    <a
+                      class="dashboardDownload__item"
+                      href="{% url 'dashboard_export' 'csv' %}{% if export_querystring %}?{{ export_querystring }}{% endif %}"
+                      >CSV</a>
+                    <a
+                      class="dashboardDownload__item"
+                      href="{% url 'dashboard_export' 'html' %}{% if export_querystring %}?{{ export_querystring }}{% endif %}"
+                      >HTML</a>
+                    <a
+                      class="dashboardDownload__item"
+                      href="{% url 'dashboard_export' 'xlsx' %}{% if export_querystring %}?{{ export_querystring }}{% endif %}"
+                      >Excel (tabla + gráfico servidor)</a>
+                    <a
+                      class="dashboardDownload__item"
+                      href="{% url 'dashboard_export' 'pdf' %}{% if export_querystring %}?{{ export_querystring }}{% endif %}"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      >PDF (imprimir)</a>
+                  </div>
+                {% endif %}
               </details>
             </div>
           </div>
@@ -129,6 +188,7 @@
         </section>
 
         {{ chart_payload|json_script:"dashboard-chart-data" }}
+        {{ dashboard_bundle_manifest|json_script:"dashboard-bundle-manifest" }}
 
         <div
           id="dashboard-panels"
@@ -138,15 +198,18 @@
           <div class="dashboardGrid">
             <article class="dashboardCard">
               <div class="dashboardCard__head">
-                <h3 class="dashboardCard__title">Por canal · torta</h3>
-                {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-canal" export_panel="canal" export_stem="retailstart_dashboard_canal" chart_export_title="Por canal · torta" %}
+                <h3 class="dashboardCard__title">Por canal</h3>
+                <div class="dashboardCard__tools">
+                  {% include "core/includes/dashboard_pie_kind_toggle.html" with chart_canvas_id="chart-canal" pie_block_key="by_canal" %}
+                  {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-canal" export_panel="canal" export_stem="retailstart_dashboard_canal" chart_export_title="Por canal" table_wrap_id="dashboard-table-canal" %}
+                </div>
               </div>
               <div class="dashboardChartWrap">
                 <div class="dashboardChartSizer">
                   <canvas id="chart-canal" aria-label="Gráfico por canal"></canvas>
                 </div>
               </div>
-              <div class="dashboardTableWrap tableWrap">
+              <div class="dashboardTableWrap tableWrap" id="dashboard-table-canal">
                 <table class="table table--compact">
                   <thead><tr><th>Canal</th><th class="right">Total</th></tr></thead>
                   <tbody>
@@ -163,14 +226,16 @@
             <article class="dashboardCard">
               <div class="dashboardCard__head">
                 <h3 class="dashboardCard__title">Top clientes · barras horizontales</h3>
-                {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-clientes" export_panel="clientes" export_stem="retailstart_dashboard_clientes" chart_export_title="Top clientes · barras horizontales" %}
+                <div class="dashboardCard__tools">
+                  {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-clientes" export_panel="clientes" export_stem="retailstart_dashboard_clientes" chart_export_title="Top clientes · barras horizontales" table_wrap_id="dashboard-table-clientes" %}
+                </div>
               </div>
               <div class="dashboardChartWrap">
                 <div class="dashboardChartSizer dashboardChartSizer--tall">
                   <canvas id="chart-clientes" aria-label="Top clientes"></canvas>
                 </div>
               </div>
-              <div class="dashboardTableWrap tableWrap">
+              <div class="dashboardTableWrap tableWrap" id="dashboard-table-clientes">
                 <table class="table table--compact">
                   <thead>
                     <tr><th>ID</th><th>Cliente</th><th>Segmento</th><th class="right">Total</th></tr>
@@ -194,14 +259,16 @@
             <article class="dashboardCard">
               <div class="dashboardCard__head">
                 <h3 class="dashboardCard__title">Por día civil · barras</h3>
-                {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-dia" export_panel="dia" export_stem="retailstart_dashboard_dia" chart_export_title="Por día civil · barras" %}
+                <div class="dashboardCard__tools">
+                  {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-dia" export_panel="dia" export_stem="retailstart_dashboard_dia" chart_export_title="Por día civil · barras" table_wrap_id="dashboard-table-dia" %}
+                </div>
               </div>
               <div class="dashboardChartWrap">
                 <div class="dashboardChartSizer">
                   <canvas id="chart-dia" aria-label="Ventas por día"></canvas>
                 </div>
               </div>
-              <div class="dashboardTableWrap tableWrap">
+              <div class="dashboardTableWrap tableWrap" id="dashboard-table-dia">
                 <table class="table table--compact">
                   <thead>
                     <tr><th>Fecha</th><th>Día</th><th class="right">Tx</th><th class="right">Total</th></tr>
@@ -224,15 +291,18 @@
 
             <article class="dashboardCard">
               <div class="dashboardCard__head">
-                <h3 class="dashboardCard__title">Por día de la semana · torta</h3>
-                {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-dow" export_panel="dow" export_stem="retailstart_dashboard_dow" chart_export_title="Por día de la semana · torta" %}
+                <h3 class="dashboardCard__title">Por día de la semana</h3>
+                <div class="dashboardCard__tools">
+                  {% include "core/includes/dashboard_pie_kind_toggle.html" with chart_canvas_id="chart-dow" pie_block_key="by_dow" %}
+                  {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-dow" export_panel="dow" export_stem="retailstart_dashboard_dow" chart_export_title="Por día de la semana" table_wrap_id="dashboard-table-dow" %}
+                </div>
               </div>
               <div class="dashboardChartWrap">
                 <div class="dashboardChartSizer">
                   <canvas id="chart-dow" aria-label="Por día de semana"></canvas>
                 </div>
               </div>
-              <div class="dashboardTableWrap tableWrap">
+              <div class="dashboardTableWrap tableWrap" id="dashboard-table-dow">
                 <table class="table table--compact">
                   <thead><tr><th>Día</th><th class="right"># ISO</th><th class="right">Total</th></tr></thead>
                   <tbody>
@@ -253,14 +323,16 @@
             <article class="dashboardCard dashboardCard--wide">
               <div class="dashboardCard__head">
                 <h3 class="dashboardCard__title">Top productos · barras horizontales</h3>
-                {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-productos" export_panel="productos" export_stem="retailstart_dashboard_productos" chart_export_title="Top productos · barras horizontales" %}
+                <div class="dashboardCard__tools">
+                  {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-productos" export_panel="productos" export_stem="retailstart_dashboard_productos" chart_export_title="Top productos · barras horizontales" table_wrap_id="dashboard-table-productos" %}
+                </div>
               </div>
               <div class="dashboardChartWrap">
                 <div class="dashboardChartSizer dashboardChartSizer--tall">
                   <canvas id="chart-productos" aria-label="Top productos"></canvas>
                 </div>
               </div>
-              <div class="dashboardTableWrap tableWrap">
+              <div class="dashboardTableWrap tableWrap" id="dashboard-table-productos">
                 <table class="table table--compact">
                   <thead><tr><th>ID</th><th>Producto</th><th class="right">Total</th></tr></thead>
                   <tbody>
@@ -287,8 +359,9 @@
       </main>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
     <script src="{% static 'js/site-sidebar.js' %}?v=1" defer></script>
-    <script src="{% static 'js/dashboard-charts.js' %}?v=2" defer></script>
-    <script src="{% static 'js/dashboard-panel-download.js' %}?v=3" defer></script>
+    <script src="{% static 'js/dashboard-charts.js' %}?v=4" defer></script>
+    <script src="{% static 'js/dashboard-panel-download.js' %}?v=10" defer></script>
   </body>
 </html>

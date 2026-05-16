@@ -1,12 +1,12 @@
 {% comment %}
-  PNG / CSV / HTML / PDF del gráfico (Chart.js en cliente) si view_mode es charts o both.
-  CSV / HTML / PDF de tabla vía servidor si view_mode es solo tables.
+  table_wrap_id: id del div .dashboardTableWrap para PNG vía html2canvas.
 {% endcomment %}
 <details
   class="dashboardDownload dashboardDownload--card"
   data-chart-canvas="{{ chart_canvas_id }}"
   data-chart-title="{{ chart_export_title }}"
   data-export-stem="{{ export_stem }}"
+  {% if table_wrap_id %}data-dashboard-table-id="{{ table_wrap_id }}"{% endif %}
 >
   <summary class="btn btn--inline dashboardDownload__summary dashboardDownload__summary--sm">Descargar ▾</summary>
   <div class="dashboardDownload__menu">
@@ -17,6 +17,18 @@
       >
         PNG (gráfico)
       </button>
+      {% if table_wrap_id %}
+        <button
+          type="button"
+          class="dashboardDownload__item dashboardDownload__item--btn js-dashboard-table-png"
+        >
+          PNG (tabla)
+        </button>
+      {% endif %}
+      <a
+        class="dashboardDownload__item"
+        href="{% url 'dashboard_export' 'xlsx' %}?panel={{ export_panel }}{% if export_querystring %}&{{ export_querystring }}{% endif %}"
+        >Excel (tabla + gráfico servidor)</a>
       <a
         class="dashboardDownload__item"
         href="{% url 'dashboard_export' 'csv' %}?panel={{ export_panel }}{% if export_querystring %}&{{ export_querystring }}{% endif %}"
@@ -38,8 +50,25 @@
       >
         PNG (gráfico)
       </button>
+      {% if table_wrap_id %}
+        {% if view_mode == "both" %}
+          <button
+            type="button"
+            class="dashboardDownload__item dashboardDownload__item--btn js-dashboard-table-png"
+          >
+            PNG (tabla)
+          </button>
+        {% endif %}
+      {% endif %}
+      <button type="button" class="dashboardDownload__item dashboardDownload__item--btn js-dashboard-chart-svg">
+        SVG (gráfico)
+      </button>
+      <a
+        class="dashboardDownload__item"
+        href="{% url 'dashboard_export' 'xlsx' %}?panel={{ export_panel }}{% if export_querystring %}&{{ export_querystring }}{% endif %}"
+        >Excel (tabla + gráfico servidor)</a>
       <button type="button" class="dashboardDownload__item dashboardDownload__item--btn js-dashboard-chart-csv">
-        CSV (gráfico — serie)
+        CSV solo texto (+ PNG codificado troceado; Excel no pinta foto)
       </button>
       <button type="button" class="dashboardDownload__item dashboardDownload__item--btn js-dashboard-chart-html">
         HTML (gráfico)

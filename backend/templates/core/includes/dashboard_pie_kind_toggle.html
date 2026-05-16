@@ -1,0 +1,25 @@
+{% comment %}
+  Conmutador Torta / Dona por canvas (solo gráficos circulares).
+{% endcomment %}
+<div
+  class="dashboardPieKindToggle"
+  data-chart-target="{{ chart_canvas_id }}"
+  data-chart-block="{{ pie_block_key }}"
+  role="group"
+  aria-label="Tipo de gráfico circular"
+>
+  <button
+    type="button"
+    class="dashboardPieKindToggle__btn js-pie-kind"
+    data-kind="pie"
+  >
+    Torta
+  </button>
+  <button
+    type="button"
+    class="dashboardPieKindToggle__btn js-pie-kind"
+    data-kind="doughnut"
+  >
+    Dona
+  </button>
+</div>

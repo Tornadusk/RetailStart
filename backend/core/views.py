@@ -677,6 +677,40 @@ def _dashboard_view_qs(request: HttpRequest, view: str) -> str:
 
 _DASHBOARD_PANEL_KEYS: tuple[str, ...] = ("canal", "clientes", "dia", "dow", "productos")
 
+# Paneles dashboard: mismos stems/ids que en `dashboard.html` (export combinado vista «Todos»).
+_DASHBOARD_BUNDLE_MANIFEST: list[dict[str, str]] = [
+    {
+        "canvasId": "chart-canal",
+        "stem": "retailstart_dashboard_canal",
+        "title": "Por canal",
+        "tableWrapId": "dashboard-table-canal",
+    },
+    {
+        "canvasId": "chart-clientes",
+        "stem": "retailstart_dashboard_clientes",
+        "title": "Top clientes · barras horizontales",
+        "tableWrapId": "dashboard-table-clientes",
+    },
+    {
+        "canvasId": "chart-dia",
+        "stem": "retailstart_dashboard_dia",
+        "title": "Por día civil · barras",
+        "tableWrapId": "dashboard-table-dia",
+    },
+    {
+        "canvasId": "chart-dow",
+        "stem": "retailstart_dashboard_dow",
+        "title": "Por día de la semana",
+        "tableWrapId": "dashboard-table-dow",
+    },
+    {
+        "canvasId": "chart-productos",
+        "stem": "retailstart_dashboard_productos",
+        "title": "Top productos · barras horizontales",
+        "tableWrapId": "dashboard-table-productos",
+    },
+]
+
 
 def _dashboard_agg_rows(qs: QuerySet) -> dict[str, list]:
     """Agregaciones del dashboard (mismos límites que los gráficos en pantalla)."""
@@ -819,6 +853,7 @@ def dashboard(request: HttpRequest) -> HttpResponse:
         "qs_view_charts": _dashboard_view_qs(request, "charts"),
         "qs_view_tables": _dashboard_view_qs(request, "tables"),
         "qs_view_both": _dashboard_view_qs(request, "both"),
+        "dashboard_bundle_manifest": _DASHBOARD_BUNDLE_MANIFEST,
     }
     return render(request, "core/dashboard.html", ctx)
 
@@ -949,7 +984,7 @@ def _dashboard_export_append_html_panel(parts: list[str], panel: str, rows_map: 
 
 def dashboard_export(request: HttpRequest, fmt: str) -> HttpResponse:
     fmt_norm = fmt.lower().strip()
-    if fmt_norm not in ("csv", "html", "pdf"):
+    if fmt_norm not in ("csv", "html", "pdf", "xlsx"):
         raise Http404("Unsupported format")
 
     qs, meta = _dw_time_filter_bundle(request, preset_anchor=_DASHBOARD_FILTERS_ANCHOR)
@@ -992,6 +1027,21 @@ def dashboard_export(request: HttpRequest, fmt: str) -> HttpResponse:
         html = "".join(parts)
         resp = HttpResponse(html, content_type="text/html; charset=utf-8")
         resp["Content-Disposition"] = f'attachment; filename="retailstart_{slug}.html"'
+        return resp
+
+    if fmt_norm == "xlsx":
+        from core.dashboard_xlsx_export import build_dashboard_xlsx_bytes
+
+        xlsx_blob = build_dashboard_xlsx_bytes(
+            panels=list(panels),
+            rows_map=rows_map,
+            filter_summary=str(meta.get("filter_summary") or ""),
+        )
+        resp = HttpResponse(
+            xlsx_blob,
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
+        resp["Content-Disposition"] = f'attachment; filename="retailstart_{slug}.xlsx"'
         return resp
 
     return render(

@@ -9,6 +9,9 @@
     return;
   }
 
+  var STORAGE_PREFIX = "retailstart.dashboard.pieType.";
+  var EMPTY = { labels: [], values: [] };
+
   var fontColor = "#c8dcff";
   var gridColor = "rgba(105, 210, 255, 0.12)";
   var palette = [
@@ -28,22 +31,71 @@
     return out;
   }
 
-  function pie(id, block) {
+  function readPieKind(canvasId) {
+    try {
+      var v = localStorage.getItem(STORAGE_PREFIX + canvasId);
+      return v === "doughnut" ? "doughnut" : "pie";
+    } catch (e2) {
+      return "pie";
+    }
+  }
+
+  function writePieKind(canvasId, kind) {
+    try {
+      localStorage.setItem(STORAGE_PREFIX + canvasId, kind);
+    } catch (e2) {}
+  }
+
+  function syncPieToggleUi(wrap) {
+    if (!wrap) return;
+    var target = wrap.getAttribute("data-chart-target");
+    if (!target) return;
+    var k = readPieKind(target);
+    var btns = wrap.querySelectorAll(".js-pie-kind");
+    for (var i = 0; i < btns.length; i++) {
+      var btn = btns[i];
+      var isMatch = btn.getAttribute("data-kind") === k;
+      btn.classList.toggle("is-active", isMatch);
+      btn.setAttribute("aria-pressed", isMatch ? "true" : "false");
+    }
+  }
+
+  function blockForPieKey(blockKey) {
+    if (!blockKey || !data) return EMPTY;
+    return data[blockKey] || EMPTY;
+  }
+
+  function rebuildPieFromToggle(wrap, chartKind) {
+    var canvasId = wrap.getAttribute("data-chart-target");
+    var blockKey = wrap.getAttribute("data-chart-block");
+    if (!canvasId || !blockKey) return;
+    pieOrDonut(canvasId, blockForPieKey(blockKey), chartKind || readPieKind(canvasId));
+    syncPieToggleUi(wrap);
+  }
+
+  function pieOrDonut(id, block, chartType) {
     var canvas = document.getElementById(id);
-    if (!canvas || !block.labels.length) return;
+    if (!canvas || !block.labels || !block.labels.length) return;
+    var donut = chartType === "doughnut";
+    var prev = Chart.getChart(canvas);
+    if (prev) prev.destroy();
+
+    var circOpts = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: "right", labels: { color: fontColor } },
+      },
+    };
+    if (donut) circOpts.cutout = "54%";
+
     new Chart(canvas.getContext("2d"), {
-      type: "pie",
+      type: donut ? "doughnut" : "pie",
       data: {
         labels: block.labels,
         datasets: [{ data: block.values, backgroundColor: colors(block.labels.length) }],
       },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { position: "right", labels: { color: fontColor } },
-        },
-      },
+      options: circOpts,
     });
   }
 
@@ -130,9 +182,23 @@
   if (kt) kt.textContent = String(k.transacciones || 0);
   if (kp) kp.textContent = "$" + (k.ticket_promedio || 0).toLocaleString("es-CL");
 
-  pie("chart-canal", data.by_canal || { labels: [], values: [] });
-  barHorizontal("chart-clientes", data.top_clientes || { labels: [], values: [] });
-  barVertical("chart-dia", data.by_dia || { labels: [], values: [] });
-  pie("chart-dow", data.by_dow || { labels: [], values: [] });
-  barHorizontal("chart-productos", data.top_productos || { labels: [], values: [] });
+  pieOrDonut("chart-canal", data.by_canal || EMPTY, readPieKind("chart-canal"));
+  barHorizontal("chart-clientes", data.top_clientes || EMPTY);
+  barVertical("chart-dia", data.by_dia || EMPTY);
+  pieOrDonut("chart-dow", data.by_dow || EMPTY, readPieKind("chart-dow"));
+  barHorizontal("chart-productos", data.top_productos || EMPTY);
+
+  document.querySelectorAll(".dashboardPieKindToggle").forEach(syncPieToggleUi);
+
+  document.addEventListener("click", function (ev) {
+    var btn = ev.target.closest(".js-pie-kind");
+    if (!btn) return;
+    var wrap = btn.closest(".dashboardPieKindToggle");
+    if (!wrap) return;
+    var canvasId = wrap.getAttribute("data-chart-target");
+    var kind = btn.getAttribute("data-kind");
+    if (!canvasId || !kind || (kind !== "pie" && kind !== "doughnut")) return;
+    writePieKind(canvasId, kind);
+    rebuildPieFromToggle(wrap, kind);
+  });
 })();
