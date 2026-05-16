@@ -187,40 +187,23 @@ def build_dashboard_xlsx_bytes(
     filter_summary: str,
 ) -> bytes:
     wb = Workbook()
-    ws0 = wb.active
-    if ws0 is None:
-        raise RuntimeError("openpyxl: libro sin hoja activa")
-    ws0.title = "Instrucciones"
-    ws0.append(["RetailStart · Dashboard"])
-    ws0.append([])
-    ws0.append(
-        [
-            "Este archivo contiene, por cada pestaña: la tabla numérica exportada desde el servidor y un gráfico "
-            "(imagen PNG embebida) generado aquí por matplotlib."
-        ]
-    )
-    ws0.append([])
-    ws0.append(
-        [
-            "Si necesita torta/dona igual que Chart.js en pantalla: use desde cada tarjeta los formatos PNG, SVG "
-            "o HTML del navegador."
-        ]
-    )
-    ws0.append([])
-    ws0.append(["Filtros aplicados"])
-    ws0.append([filter_summary or "—"])
-    ws0.column_dimensions["A"].width = 92
+    titles_sheet = {
+        "canal": "Por canal",
+        "clientes": "Top clientes",
+        "dia": "Por día civil",
+        "dow": "Por día semana",
+        "productos": "Top productos",
+    }
 
-    for p in panels:
-        titles_sheet = {
-            "canal": "Por canal",
-            "clientes": "Top clientes",
-            "dia": "Por día civil",
-            "dow": "Por día semana",
-            "productos": "Top productos",
-        }.get(p, p)
-        safe_title = str(titles_sheet)[:31]
-        ws = wb.create_sheet(title=safe_title)
+    for i, p in enumerate(panels):
+        safe_title = str(titles_sheet.get(p, p))[:31]
+        if i == 0:
+            ws = wb.active
+            if ws is None:
+                raise RuntimeError("openpyxl: libro sin hoja activa")
+            ws.title = safe_title
+        else:
+            ws = wb.create_sheet(title=safe_title)
         _write_panel_block(ws, p, list(rows_map.get(p, [])), filter_summary)
         ws.column_dimensions["A"].width = 22
         ws.column_dimensions["B"].width = 18

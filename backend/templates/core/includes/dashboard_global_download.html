@@ -1,0 +1,44 @@
+{% comment %}Descarga global: Gráficos (izq.) · Tablas (der.){% endcomment %}
+<div class="dashboardDownload__menu" role="group" aria-label="Exportaciones del dashboard">
+  <div class="dashboardDownload__megaGrid">
+    <div class="dashboardDownload__megaCol">
+      <div class="dashboardDownload__megaHead">Gráficos</div>
+      <a
+        class="dashboardDownload__item"
+        href="{% url 'dashboard_export' 'xlsx' %}{% if export_querystring %}?{{ export_querystring }}{% endif %}"
+        >Excel (tabla + imagen)</a>
+      <button type="button" class="dashboardDownload__item dashboardDownload__item--btn js-dashboard-bundle-charts-png">
+        PNG (cada panel)
+      </button>
+      <button type="button" class="dashboardDownload__item dashboardDownload__item--btn js-dashboard-bundle-charts-svg">
+        SVG (cada panel)
+      </button>
+      <button type="button" class="dashboardDownload__item dashboardDownload__item--btn js-dashboard-bundle-charts-html">
+        HTML (todos)
+      </button>
+      <button type="button" class="dashboardDownload__item dashboardDownload__item--btn js-dashboard-bundle-charts-pdf">
+        PDF / imprimir (todos)
+      </button>
+    </div>
+    <div class="dashboardDownload__megaCol">
+      <div class="dashboardDownload__megaHead">Tablas</div>
+      <a
+        class="dashboardDownload__item"
+        href="{% url 'dashboard_export' 'csv' %}{% if export_querystring %}?{{ export_querystring }}{% endif %}"
+        >CSV (tabla texto)</a>
+      <a
+        class="dashboardDownload__item"
+        href="{% url 'dashboard_export' 'html' %}{% if export_querystring %}?{{ export_querystring }}{% endif %}"
+        >HTML (tablas)</a>
+      <a
+        class="dashboardDownload__item"
+        href="{% url 'dashboard_export' 'pdf' %}{% if export_querystring %}?{{ export_querystring }}{% endif %}"
+        target="_blank"
+        rel="noopener noreferrer"
+        >PDF / imprimir (tablas)</a>
+      <button type="button" class="dashboardDownload__item dashboardDownload__item--btn js-dashboard-bundle-tables-png">
+        PNG (cada tabla)
+      </button>
+    </div>
+  </div>
+</div>

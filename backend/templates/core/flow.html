@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Flujo - RetailStart</title>
-    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=12" />
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=17" />
   </head>
   <body class="appShell">
     {% include "core/includes/site_sidebar.html" %}
@@ -90,7 +90,7 @@
         </div>
       </section>
     </main>
-    <script src="{% static 'js/site-sidebar.js' %}?v=1" defer></script>
+    {% include "core/includes/site_shell_scripts.html" %}
     </div>
   </body>
 </html>

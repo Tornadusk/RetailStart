@@ -106,21 +106,28 @@ _ANALYTICS_FILTROS_ANCHOR = "#segmentar-ventas"
 _DASHBOARD_FILTERS_ANCHOR = "#dashboard-filters"
 
 
+def _is_filter_todos_token(val: str | None) -> bool:
+    if val is None:
+        return True
+    s = str(val).strip().lower()
+    return s in ("", "todos", "todo", "all", "*")
+
+
 def _parse_optional_year(val: str | None) -> int | None:
-    if val is None or not str(val).strip():
+    if _is_filter_todos_token(val):
         return None
     try:
-        y = int(val)
+        y = int(str(val).strip())
     except ValueError:
         return None
     return y if 1990 <= y <= 2100 else None
 
 
 def _parse_optional_month(val: str | None) -> int | None:
-    if val is None or not str(val).strip():
+    if _is_filter_todos_token(val):
         return None
     try:
-        m = int(val)
+        m = int(str(val).strip())
     except ValueError:
         return None
     return m if 1 <= m <= 12 else None
@@ -225,7 +232,8 @@ def _dw_time_filter_bundle(
     """
     fy = _parse_optional_year(request.GET.get("y"))
     fm = _parse_optional_month(request.GET.get("m"))
-    fd = (request.GET.get("d") or "").strip()
+    raw_d = request.GET.get("d")
+    fd = "" if _is_filter_todos_token(raw_d) else (raw_d or "").strip()
     fde = _parse_iso_date(request.GET.get("fde"))
     fha = _parse_iso_date(request.GET.get("fha"))
     range_active = fde is not None and fha is not None and fde <= fha

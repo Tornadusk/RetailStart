@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Consultas DW — RetailStart</title>
-    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=12" />
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=17" />
   </head>
   <body class="appShell">
     {% include "core/includes/site_sidebar.html" %}
@@ -602,10 +602,10 @@ WHERE t.nombre_dia = 'Lunes'
   AND t.anio = {{ ej_ref_year }};</code></pre>
       </details>
     </main>
-    <script src="{% static 'js/site-sidebar.js' %}?v=1" defer></script>
+    {% include "core/includes/site_shell_scripts.html" %}
     <script src="{% static 'js/analytics-collapsibles.js' %}?v=2" defer></script>
     <script src="{% static 'js/analytics-filtros-anchor.js' %}?v=1" defer></script>
-    <script src="{% static 'js/analytics-tabs.js' %}?v=1" defer></script>
+    <script src="{% static 'js/analytics-tabs.js' %}?v=2" defer></script>
     </div>
   </body>
 </html>

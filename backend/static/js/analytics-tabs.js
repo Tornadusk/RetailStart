@@ -1,11 +1,28 @@
 /**
- * Pestañas Todas | Hechos | Dimensiones | Tiempo en /analytics/.
- * Cada bloque marcado con .js-analytics-view y data-analytics-views="todas hechos ...".
+ * Pestañas Todas | Hechos | Dimensiones | Tiempo en /analytics/ + menú lateral.
  */
 (function () {
+  var STORAGE_MODEL =
+    (window.RetailStartGlobalFilters && window.RetailStartGlobalFilters.STORAGE_MODEL) ||
+    "retailstart.analytics.modelView";
+
   var buttons = document.querySelectorAll("[data-analytics-view]");
   var panels = document.querySelectorAll(".js-analytics-view");
   if (!buttons.length || !panels.length) return;
+
+  function readModelView() {
+    try {
+      var v = localStorage.getItem(STORAGE_MODEL);
+      if (v === "hechos" || v === "dimensiones" || v === "tiempo" || v === "todas") return v;
+    } catch (e) {}
+    return "todas";
+  }
+
+  function writeModelView(view) {
+    try {
+      localStorage.setItem(STORAGE_MODEL, view);
+    } catch (e2) {}
+  }
 
   function visibleFor(view, el) {
     var raw = el.getAttribute("data-analytics-views") || "";
@@ -27,6 +44,7 @@
       btn.classList.toggle("is-active", on);
       btn.setAttribute("aria-pressed", on ? "true" : "false");
     });
+    writeModelView(view);
   }
 
   buttons.forEach(function (btn) {
@@ -36,5 +54,5 @@
     });
   });
 
-  setView("todas");
+  setView(readModelView());
 })();

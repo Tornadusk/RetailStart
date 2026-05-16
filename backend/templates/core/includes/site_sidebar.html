@@ -16,33 +16,46 @@
     <span class="siteSidebar__brand">RetailStart</span>
   </div>
   <nav class="siteSidebar__nav">
-    <a
-      href="{% url 'dashboard' %}"
-      class="siteSidebar__link {% if request.resolver_match.url_name == 'dashboard' %}is-active{% endif %}"
-      {% if request.resolver_match.url_name == 'dashboard' %}aria-current="page"{% endif %}
-      >Dashboard</a>
-    <a
-      href="{% url 'home' %}"
-      class="siteSidebar__link {% if request.resolver_match.url_name == 'home' %}is-active{% endif %}"
-      {% if request.resolver_match.url_name == 'home' %}aria-current="page"{% endif %}
-      >Inicio</a>
-    <a
-      href="{% url 'flow' %}"
-      class="siteSidebar__link {% if request.resolver_match.url_name == 'flow' %}is-active{% endif %}"
-      {% if request.resolver_match.url_name == 'flow' %}aria-current="page"{% endif %}
-      >Flujo</a>
-    <a
-      href="{% url 'analytics' %}"
-      class="siteSidebar__link {% if request.resolver_match.url_name == 'analytics' %}is-active{% endif %}"
-      {% if request.resolver_match.url_name == 'analytics' %}aria-current="page"{% endif %}
-      >Analytics</a>
-    <a
-      href="{% url 'evidence' %}"
-      class="siteSidebar__link {% if request.resolver_match.url_name == 'evidence' or request.resolver_match.url_name == 'evidence_file' %}is-active{% endif %}"
-      {% if request.resolver_match.url_name == 'evidence' %}aria-current="page"{% endif %}
-      >Evidencia</a>
+    <a href="{% url 'dashboard' %}" class="siteSidebar__link {% if request.resolver_match.url_name == 'dashboard' %}is-active{% endif %}" {% if request.resolver_match.url_name == 'dashboard' %}aria-current="page"{% endif %}>Dashboard</a>
+    <a href="{% url 'home' %}" class="siteSidebar__link {% if request.resolver_match.url_name == 'home' %}is-active{% endif %}" {% if request.resolver_match.url_name == 'home' %}aria-current="page"{% endif %}>Inicio</a>
+    <a href="{% url 'flow' %}" class="siteSidebar__link {% if request.resolver_match.url_name == 'flow' %}is-active{% endif %}" {% if request.resolver_match.url_name == 'flow' %}aria-current="page"{% endif %}>Flujo</a>
+    <a href="{% url 'analytics' %}" class="siteSidebar__link {% if request.resolver_match.url_name == 'analytics' %}is-active{% endif %}" {% if request.resolver_match.url_name == 'analytics' %}aria-current="page"{% endif %}>Analytics</a>
+    <a href="{% url 'evidence' %}" class="siteSidebar__link {% if request.resolver_match.url_name == 'evidence' or request.resolver_match.url_name == 'evidence_file' %}is-active{% endif %}" {% if request.resolver_match.url_name == 'evidence' %}aria-current="page"{% endif %}>Evidencia</a>
   </nav>
-  <p class="siteSidebar__foot muted">
-    Menú colapsable · estado en <code>localStorage</code>
-  </p>
+
+  <section class="siteSidebar__panel" id="site-global-filters" aria-labelledby="site-global-filters-title">
+    <h2 class="siteSidebar__panelTitle" id="site-global-filters-title">Filtro global</h2>
+    <p class="siteSidebar__panelStatus muted" id="site-filter-status">Selección: todos</p>
+    <form class="siteSidebar__filterForm" id="site-filter-form" action="#" method="get">
+      <div class="siteSidebar__field">
+        <label for="site-filter-y">Año</label>
+        <input type="text" id="site-filter-y" name="y" class="siteSidebar__input" value="todos" placeholder="todos o 2026" list="site-filter-years" autocomplete="off" />
+        <datalist id="site-filter-years"><option value="todos"></option>{% for yr in sidebar_years %}<option value="{{ yr }}"></option>{% endfor %}</datalist>
+      </div>
+      <div class="siteSidebar__field">
+        <label for="site-filter-m">Mes</label>
+        <input type="text" id="site-filter-m" name="m" class="siteSidebar__input" value="todos" placeholder="todos o 04" list="site-filter-months" autocomplete="off" />
+        <datalist id="site-filter-months"><option value="todos"></option><option value="01"></option><option value="02"></option><option value="03"></option><option value="04"></option><option value="05"></option><option value="06"></option><option value="07"></option><option value="08"></option><option value="09"></option><option value="10"></option><option value="11"></option><option value="12"></option></datalist>
+      </div>
+      <div class="siteSidebar__field">
+        <label for="site-filter-d">Día</label>
+        <input type="text" id="site-filter-d" name="d" class="siteSidebar__input" value="todos" placeholder="todos o Lunes" list="site-filter-dias" autocomplete="off" />
+        <datalist id="site-filter-dias"><option value="todos"></option>{% for dia in sidebar_dias %}<option value="{{ dia }}"></option>{% endfor %}</datalist>
+      </div>
+      <div class="siteSidebar__filterActions">
+        <button type="submit" class="btn btn--inline siteSidebar__btnApply">Aplicar</button>
+        <button type="button" class="btn siteSidebar__btnClear" id="site-filter-clear">Todos</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="siteSidebar__panel" aria-labelledby="site-model-view-title">
+    <h2 class="siteSidebar__panelTitle" id="site-model-view-title">Modelo estrella</h2>
+    <div class="siteSidebar__modelTabs" role="group" aria-label="Vista del modelo en Analytics">
+      <button type="button" class="siteSidebar__modelBtn js-site-model-view is-active" data-analytics-view="todas" aria-pressed="true">Todas</button>
+      <button type="button" class="siteSidebar__modelBtn js-site-model-view" data-analytics-view="hechos" aria-pressed="false">Hechos</button>
+      <button type="button" class="siteSidebar__modelBtn js-site-model-view" data-analytics-view="dimensiones" aria-pressed="false">Dimensiones</button>
+      <button type="button" class="siteSidebar__modelBtn js-site-model-view" data-analytics-view="tiempo" aria-pressed="false">Tiempo</button>
+    </div>
+  </section>
 </aside>

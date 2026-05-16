@@ -1190,6 +1190,124 @@ body.appShell {
   line-height: 1.45;
 }
 
+.siteSidebar__panel {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px dashed rgba(192, 132, 252, 0.28);
+}
+
+.siteSidebar__panelTitle {
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: rgba(186, 210, 255, 0.95);
+}
+
+.siteSidebar__panelStatus {
+  margin: 0 0 10px;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.siteSidebar__filterForm {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.siteSidebar__field label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.siteSidebar__input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(192, 132, 252, 0.35);
+  background: rgba(0, 0, 0, 0.28);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+}
+
+.siteSidebar__input:focus {
+  outline: 2px solid rgba(192, 132, 252, 0.55);
+  outline-offset: 1px;
+}
+
+.siteSidebar__input:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.siteSidebar__filterActions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.siteSidebar__btnApply {
+  width: 100%;
+  justify-content: center;
+}
+
+.siteSidebar__btnClear {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.siteSidebar__btnClear:hover {
+  border-color: rgba(192, 132, 252, 0.45);
+  background: rgba(192, 132, 252, 0.08);
+}
+
+.siteSidebar__modelTabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.siteSidebar__modelBtn {
+  padding: 7px 8px;
+  border-radius: 9px;
+  border: 1px solid rgba(105, 210, 255, 0.22);
+  background: rgba(0, 0, 0, 0.22);
+  color: var(--muted);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.siteSidebar__modelBtn:hover {
+  color: var(--text);
+  border-color: rgba(105, 210, 255, 0.45);
+}
+
+.siteSidebar__modelBtn.is-active {
+  color: var(--text);
+  border-color: var(--sidebar-accent-soft);
+  background: rgba(192, 132, 252, 0.16);
+}
+
 .appShell__main {
   margin-left: var(--sidebar-w);
   transition: margin-left 0.22s ease;
