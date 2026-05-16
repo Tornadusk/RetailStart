@@ -1,0 +1,299 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dashboard — RetailStart</title>
+    <script src="{% static 'js/dashboard-view-prefs.js' %}?v=1"></script>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=13" />
+  </head>
+  <body class="appShell">
+    {% include "core/includes/site_sidebar.html" %}
+    <div class="appShell__main">
+      <main class="container dashboardPage">
+        <header class="header dashboardHeader">
+          <div class="dashboardHeader__top">
+            <div>
+              <h1 class="title">Dashboard</h1>
+              <p class="subtitle">
+                Hechos filtrados · agregados por dimensiones y tiempo · gráficos con
+                <a class="link" href="https://www.chartjs.org/docs/latest/samples/other-charts/pie.html" rel="noopener noreferrer" target="_blank">Chart.js</a>.
+                Cada tarjeta incluye descarga del gráfico (PNG) y de la tabla (CSV / HTML / imprimir PDF).
+              </p>
+            </div>
+            <div class="dashboardHeader__actions">
+              <details class="dashboardDownload">
+                <summary class="btn btn--inline dashboardDownload__summary">Descargar ▾</summary>
+                <div class="dashboardDownload__menu">
+                  <a
+                    class="dashboardDownload__item"
+                    href="{% url 'dashboard_export' 'csv' %}{% if export_querystring %}?{{ export_querystring }}{% endif %}"
+                    >CSV</a>
+                  <a
+                    class="dashboardDownload__item"
+                    href="{% url 'dashboard_export' 'html' %}{% if export_querystring %}?{{ export_querystring }}{% endif %}"
+                    >HTML</a>
+                  <a
+                    class="dashboardDownload__item"
+                    href="{% url 'dashboard_export' 'pdf' %}{% if export_querystring %}?{{ export_querystring }}{% endif %}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >PDF (imprimir)</a>
+                </div>
+              </details>
+            </div>
+          </div>
+        </header>
+
+        <section class="card cardStack" id="dashboard-filters">
+          <h2 class="dashboardH2">Filtros (misma lógica que Analytics)</h2>
+          <p class="muted filterActiveLine"><strong>Vista actual:</strong> {{ filter_summary }}</p>
+          <form method="get" class="analyticsFormRow" action="{% url 'dashboard' %}#dashboard-filters">
+            <input type="hidden" name="view" value="{{ view_mode }}" />
+            {% if filter_range_active %}
+              <input type="hidden" name="fde" value="{{ filter_fde|date:'Y-m-d' }}" />
+              <input type="hidden" name="fha" value="{{ filter_fha|date:'Y-m-d' }}" />
+            {% endif %}
+            <div class="analyticsField">
+              <label for="db_y">Año</label>
+              <select name="y" id="db_y" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
+                <option value="" {% if filter_y == "" %}selected{% endif %}>Todos los años</option>
+                {% for yr in years %}
+                  <option value="{{ yr }}" {% if filter_y == yr %}selected{% endif %}>{{ yr }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="analyticsField">
+              <label for="db_m">Mes</label>
+              <select name="m" id="db_m" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
+                <option value="" {% if filter_m == "" %}selected{% endif %}>Todos los meses</option>
+                {% for mo, mo_label in months %}
+                  <option value="{{ mo }}" {% if filter_m == mo %}selected{% endif %}>{{ mo_label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="analyticsField">
+              <label for="db_d">Día de la semana</label>
+              <select name="d" id="db_d" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
+                {% for val, label in dias_semana %}
+                  <option value="{{ val }}" {% if filter_d == val %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="analyticsFormActions">
+              <button type="submit" class="btn btn--inline">Aplicar filtros</button>
+              <a class="link" href="{% url 'dashboard' %}?view={{ view_mode }}#dashboard-filters">Quitar filtros</a>
+            </div>
+          </form>
+          <p class="muted chipRowCaption">Accesos rápidos:</p>
+          <div class="chipRow">
+            {% for ql in quick_time_links %}
+              <a class="chipLink" href="{% url 'dashboard' %}{{ ql.href }}">{{ ql.label }}</a>
+            {% endfor %}
+          </div>
+        </section>
+
+        <section class="card cardStack dashboardToolbar">
+          <span class="muted dashboardToolbar__label">Visualización:</span>
+          <div class="dashboardViewToggle" role="group" aria-label="Modo de visualización">
+            <a
+              class="dashboardViewToggle__btn {% if view_mode == 'charts' %}is-active{% endif %}"
+              href="{% url 'dashboard' %}?{{ qs_view_charts }}#dashboard-panels"
+              >Gráficos</a>
+            <a
+              class="dashboardViewToggle__btn {% if view_mode == 'tables' %}is-active{% endif %}"
+              href="{% url 'dashboard' %}?{{ qs_view_tables }}#dashboard-panels"
+              >Tablas</a>
+            <a
+              class="dashboardViewToggle__btn {% if view_mode == 'both' %}is-active{% endif %}"
+              href="{% url 'dashboard' %}?{{ qs_view_both }}#dashboard-panels"
+              >Todos</a>
+          </div>
+        </section>
+
+        <section class="dashboardKpis">
+          <div class="dashboardKpiCard">
+            <div class="dashboardKpiCard__label">Monto total (filtro)</div>
+            <div class="dashboardKpiCard__value" id="dashboard-kpi-monto">—</div>
+          </div>
+          <div class="dashboardKpiCard">
+            <div class="dashboardKpiCard__label">Transacciones</div>
+            <div class="dashboardKpiCard__value" id="dashboard-kpi-tx">—</div>
+          </div>
+          <div class="dashboardKpiCard">
+            <div class="dashboardKpiCard__label">Ticket promedio</div>
+            <div class="dashboardKpiCard__value" id="dashboard-kpi-prom">—</div>
+          </div>
+          <div class="dashboardKpiCard dashboardKpiCard--dim">
+            <div class="dashboardKpiCard__label">Hechos filtrados / DW</div>
+            <div class="dashboardKpiCard__value">
+              {{ star_model.hechos_filtrados }} / {{ star_model.fact_ventas }}
+            </div>
+          </div>
+        </section>
+
+        {{ chart_payload|json_script:"dashboard-chart-data" }}
+
+        <div
+          id="dashboard-panels"
+          class="dashboardView dashboardView--{{ view_mode }}"
+          data-view="{{ view_mode }}"
+        >
+          <div class="dashboardGrid">
+            <article class="dashboardCard">
+              <div class="dashboardCard__head">
+                <h3 class="dashboardCard__title">Por canal · torta</h3>
+                {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-canal" export_panel="canal" png_filename="retailstart_dashboard_canal.png" %}
+              </div>
+              <div class="dashboardChartWrap">
+                <div class="dashboardChartSizer">
+                  <canvas id="chart-canal" aria-label="Gráfico por canal"></canvas>
+                </div>
+              </div>
+              <div class="dashboardTableWrap tableWrap">
+                <table class="table table--compact">
+                  <thead><tr><th>Canal</th><th class="right">Total</th></tr></thead>
+                  <tbody>
+                    {% for r in by_canal_rows %}
+                      <tr><td>{{ r.canal__canal }}</td><td class="right">{{ r.total }}</td></tr>
+                    {% empty %}
+                      <tr><td colspan="2" class="muted">Sin datos</td></tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </article>
+
+            <article class="dashboardCard">
+              <div class="dashboardCard__head">
+                <h3 class="dashboardCard__title">Top clientes · barras horizontales</h3>
+                {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-clientes" export_panel="clientes" png_filename="retailstart_dashboard_clientes.png" %}
+              </div>
+              <div class="dashboardChartWrap">
+                <div class="dashboardChartSizer dashboardChartSizer--tall">
+                  <canvas id="chart-clientes" aria-label="Top clientes"></canvas>
+                </div>
+              </div>
+              <div class="dashboardTableWrap tableWrap">
+                <table class="table table--compact">
+                  <thead>
+                    <tr><th>ID</th><th>Cliente</th><th>Segmento</th><th class="right">Total</th></tr>
+                  </thead>
+                  <tbody>
+                    {% for r in top_clientes_rows %}
+                      <tr>
+                        <td>{{ r.cliente__id_cliente }}</td>
+                        <td>{{ r.cliente__nombre }} {{ r.cliente__apellido }}</td>
+                        <td>{{ r.cliente__segmento }}</td>
+                        <td class="right">{{ r.total }}</td>
+                      </tr>
+                    {% empty %}
+                      <tr><td colspan="4" class="muted">Sin datos</td></tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </article>
+
+            <article class="dashboardCard">
+              <div class="dashboardCard__head">
+                <h3 class="dashboardCard__title">Por día civil · barras</h3>
+                {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-dia" export_panel="dia" png_filename="retailstart_dashboard_dia.png" %}
+              </div>
+              <div class="dashboardChartWrap">
+                <div class="dashboardChartSizer">
+                  <canvas id="chart-dia" aria-label="Ventas por día"></canvas>
+                </div>
+              </div>
+              <div class="dashboardTableWrap tableWrap">
+                <table class="table table--compact">
+                  <thead>
+                    <tr><th>Fecha</th><th>Día</th><th class="right">Tx</th><th class="right">Total</th></tr>
+                  </thead>
+                  <tbody>
+                    {% for r in by_dia_rows %}
+                      <tr>
+                        <td>{{ r.fecha__fecha_completa|date:"Y-m-d" }}</td>
+                        <td>{{ r.fecha__nombre_dia }}</td>
+                        <td class="right">{{ r.tx }}</td>
+                        <td class="right">{{ r.total }}</td>
+                      </tr>
+                    {% empty %}
+                      <tr><td colspan="4" class="muted">Sin datos</td></tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </article>
+
+            <article class="dashboardCard">
+              <div class="dashboardCard__head">
+                <h3 class="dashboardCard__title">Por día de la semana · torta</h3>
+                {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-dow" export_panel="dow" png_filename="retailstart_dashboard_dow.png" %}
+              </div>
+              <div class="dashboardChartWrap">
+                <div class="dashboardChartSizer">
+                  <canvas id="chart-dow" aria-label="Por día de semana"></canvas>
+                </div>
+              </div>
+              <div class="dashboardTableWrap tableWrap">
+                <table class="table table--compact">
+                  <thead><tr><th>Día</th><th class="right"># ISO</th><th class="right">Total</th></tr></thead>
+                  <tbody>
+                    {% for r in by_dow_rows %}
+                      <tr>
+                        <td>{{ r.fecha__nombre_dia }}</td>
+                        <td class="right">{{ r.fecha__dia_semana }}</td>
+                        <td class="right">{{ r.total }}</td>
+                      </tr>
+                    {% empty %}
+                      <tr><td colspan="3" class="muted">Sin datos</td></tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </article>
+
+            <article class="dashboardCard dashboardCard--wide">
+              <div class="dashboardCard__head">
+                <h3 class="dashboardCard__title">Top productos · barras horizontales</h3>
+                {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-productos" export_panel="productos" png_filename="retailstart_dashboard_productos.png" %}
+              </div>
+              <div class="dashboardChartWrap">
+                <div class="dashboardChartSizer dashboardChartSizer--tall">
+                  <canvas id="chart-productos" aria-label="Top productos"></canvas>
+                </div>
+              </div>
+              <div class="dashboardTableWrap tableWrap">
+                <table class="table table--compact">
+                  <thead><tr><th>ID</th><th>Producto</th><th class="right">Total</th></tr></thead>
+                  <tbody>
+                    {% for r in top_productos_rows %}
+                      <tr>
+                        <td>{{ r.producto__id_producto|default:"—" }}</td>
+                        <td>{{ r.producto__nombre_producto|default:"Sin producto" }}</td>
+                        <td class="right">{{ r.total }}</td>
+                      </tr>
+                    {% empty %}
+                      <tr><td colspan="3" class="muted">Sin datos</td></tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <p class="muted dashboardFoot">
+          Tablas detalladas y mismos filtros en
+          <a class="link" href="{% url 'analytics' %}">/analytics/</a>.
+        </p>
+      </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js" defer></script>
+    <script src="{% static 'js/site-sidebar.js' %}?v=1" defer></script>
+    <script src="{% static 'js/dashboard-charts.js' %}?v=2" defer></script>
+    <script src="{% static 'js/dashboard-panel-download.js' %}?v=2" defer></script>
+  </body>
+</html>

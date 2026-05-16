@@ -5,9 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>RetailStart</title>
-    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=11" />
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=12" />
   </head>
-  <body>
+  <body class="appShell">
+    {% include "core/includes/site_sidebar.html" %}
+    <div class="appShell__main">
     <main class="container">
       <header class="header">
         <h1 class="title">RetailStart</h1>
@@ -34,6 +36,7 @@
         </p>
 
         <div class="actions">
+          <a class="btn" href="/dashboard/">Dashboard (gráficos)</a>
           <a class="btn" href="/flow/">Abrir Flujo (origen → consumo)</a>
           <a class="btn" href="/analytics/">Abrir Analytics (consultas desde el DW)</a>
           <a class="btn" href="/evidence/">Abrir Evidencia (PNGs + CSV)</a>
@@ -44,7 +47,9 @@
 
     </main>
 
+    <script src="{% static 'js/site-sidebar.js' %}?v=1" defer></script>
     <script src="{% static 'js/analytics-collapsibles.js' %}?v=2" defer></script>
     <script src="{% static 'js/main.js' %}"></script>
+    </div>
   </body>
 </html>

@@ -1,0 +1,48 @@
+{% load static %}
+<button
+  type="button"
+  class="siteSidebar__fab"
+  id="site-sidebar-toggle"
+  aria-controls="site-sidebar"
+  aria-expanded="true"
+  title="Ocultar / mostrar menú"
+>
+  <span class="siteSidebar__fabIcon" aria-hidden="true"></span>
+  <span class="visuallyHidden">Menú</span>
+</button>
+<div class="siteSidebar__backdrop" id="site-sidebar-backdrop" hidden></div>
+<aside class="siteSidebar" id="site-sidebar" aria-label="Menú lateral">
+  <div class="siteSidebar__head">
+    <span class="siteSidebar__brand">RetailStart</span>
+  </div>
+  <nav class="siteSidebar__nav">
+    <a
+      href="{% url 'dashboard' %}"
+      class="siteSidebar__link {% if request.resolver_match.url_name == 'dashboard' %}is-active{% endif %}"
+      {% if request.resolver_match.url_name == 'dashboard' %}aria-current="page"{% endif %}
+      >Dashboard</a>
+    <a
+      href="{% url 'home' %}"
+      class="siteSidebar__link {% if request.resolver_match.url_name == 'home' %}is-active{% endif %}"
+      {% if request.resolver_match.url_name == 'home' %}aria-current="page"{% endif %}
+      >Inicio</a>
+    <a
+      href="{% url 'flow' %}"
+      class="siteSidebar__link {% if request.resolver_match.url_name == 'flow' %}is-active{% endif %}"
+      {% if request.resolver_match.url_name == 'flow' %}aria-current="page"{% endif %}
+      >Flujo</a>
+    <a
+      href="{% url 'analytics' %}"
+      class="siteSidebar__link {% if request.resolver_match.url_name == 'analytics' %}is-active{% endif %}"
+      {% if request.resolver_match.url_name == 'analytics' %}aria-current="page"{% endif %}
+      >Analytics</a>
+    <a
+      href="{% url 'evidence' %}"
+      class="siteSidebar__link {% if request.resolver_match.url_name == 'evidence' or request.resolver_match.url_name == 'evidence_file' %}is-active{% endif %}"
+      {% if request.resolver_match.url_name == 'evidence' %}aria-current="page"{% endif %}
+      >Evidencia</a>
+  </nav>
+  <p class="siteSidebar__foot muted">
+    Menú colapsable · estado en <code>localStorage</code>
+  </p>
+</aside>

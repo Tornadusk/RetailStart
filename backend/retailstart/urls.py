@@ -21,6 +21,8 @@ from core import views
 
 urlpatterns = [
     path("", views.home, name="home"),
+    path("dashboard/", views.dashboard, name="dashboard"),
+    path("dashboard/export/<str:fmt>/", views.dashboard_export, name="dashboard_export"),
     path("flow/", views.flow, name="flow"),
     path("analytics/", views.analytics, name="analytics"),
     path("evidence/", views.evidence, name="evidence"),

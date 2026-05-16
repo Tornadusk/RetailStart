@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>
+      {% if single_panel %}RetailStart — Dashboard ({{ single_panel }}){% else %}RetailStart — Dashboard{% endif %}
+    </title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        padding: 24px;
+        color: #111;
+      }
+      h1 {
+        font-size: 1.25rem;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 28px;
+      }
+      th,
+      td {
+        border: 1px solid #ccc;
+        padding: 6px 8px;
+        text-align: left;
+      }
+      th {
+        background: #f0f0f0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>
+      {% if single_panel %}RetailStart — Dashboard (tabla: {{ single_panel }}){% else %}RetailStart — Dashboard{% endif %}
+    </h1>
+    <p>{{ filter_summary }}</p>
+
+    {% if not single_panel or single_panel == 'canal' %}
+      <h2>Por canal</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Canal</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in by_canal_rows %}
+            <tr>
+              <td>{{ r.canal__canal }}</td>
+              <td>{{ r.total }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+
+    {% if not single_panel or single_panel == 'clientes' %}
+      <h2>Top clientes</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Segmento</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in top_clientes_rows %}
+            <tr>
+              <td>{{ r.cliente__id_cliente }}</td>
+              <td>{{ r.cliente__nombre }}</td>
+              <td>{{ r.cliente__apellido }}</td>
+              <td>{{ r.cliente__segmento }}</td>
+              <td>{{ r.total }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+
+    {% if not single_panel or single_panel == 'dia' %}
+      <h2>Por día civil</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Día</th>
+            <th>Transacciones</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in by_dia_rows %}
+            <tr>
+              <td>{{ r.fecha__fecha_completa|date:"Y-m-d" }}</td>
+              <td>{{ r.fecha__nombre_dia }}</td>
+              <td>{{ r.tx }}</td>
+              <td>{{ r.total }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+
+    {% if not single_panel or single_panel == 'dow' %}
+      <h2>Por día de la semana</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Día</th>
+            <th>Número ISO</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in by_dow_rows %}
+            <tr>
+              <td>{{ r.fecha__nombre_dia }}</td>
+              <td>{{ r.fecha__dia_semana }}</td>
+              <td>{{ r.total }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+
+    {% if not single_panel or single_panel == 'productos' %}
+      <h2>Top productos</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Producto</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in top_productos_rows %}
+            <tr>
+              <td>{{ r.producto__id_producto|default:"—" }}</td>
+              <td>{{ r.producto__nombre_producto|default:"Sin producto" }}</td>
+              <td>{{ r.total }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+
+    <script>
+      window.addEventListener("load", function () {
+        window.print();
+      });
+    </script>
+  </body>
+</html>

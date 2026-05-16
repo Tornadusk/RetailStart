@@ -1,6 +1,10 @@
 from __future__ import annotations
 
+import csv
+import json
 from datetime import date, timedelta
+from html import escape
+from io import StringIO
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlencode
@@ -99,6 +103,7 @@ DIAS_SEMANA_CHOICES: tuple[tuple[str, str], ...] = (
 )
 
 _ANALYTICS_FILTROS_ANCHOR = "#segmentar-ventas"
+_DASHBOARD_FILTERS_ANCHOR = "#dashboard-filters"
 
 
 def _parse_optional_year(val: str | None) -> int | None:
@@ -173,11 +178,12 @@ def _order_prefix(direction: str | None) -> str:
     return "-" if (direction or "asc").lower() == "desc" else ""
 
 
-def _analytics_filter_qs(params: dict[str, Any]) -> str:
+def _analytics_filter_qs(params: dict[str, Any], anchor: str | None = None) -> str:
     """Querystring solo con filtros de tiempo (sin parámetros de orden)."""
     clean = {k: v for k, v in params.items() if v is not None and str(v) != ""}
     base = "?" + urlencode(clean) if clean else "?"
-    return base + _ANALYTICS_FILTROS_ANCHOR
+    suf = anchor if anchor is not None else _ANALYTICS_FILTROS_ANCHOR
+    return base + suf
 
 
 _FACT_PREVIEW_PER_PAGE = 50
@@ -206,6 +212,124 @@ def _toggle_sort_href(request: HttpRequest, group: str, field: str, dir_key: str
         q[group] = field
         q[dir_key] = "asc"
     return "?" + q.urlencode()
+
+
+def _dw_time_filter_bundle(
+    request: HttpRequest,
+    *,
+    preset_anchor: str,
+) -> tuple[QuerySet[FactVentas], dict[str, Any]]:
+    """
+    Filtros de hechos por tiempo (?y=&m=&d= o rango ?fde=&fha=), alineados con /analytics/.
+    `preset_anchor` se anexa a los href de atajos (ej. #segmentar-ventas o #dashboard-filters).
+    """
+    fy = _parse_optional_year(request.GET.get("y"))
+    fm = _parse_optional_month(request.GET.get("m"))
+    fd = (request.GET.get("d") or "").strip()
+    fde = _parse_iso_date(request.GET.get("fde"))
+    fha = _parse_iso_date(request.GET.get("fha"))
+    range_active = fde is not None and fha is not None and fde <= fha
+
+    facts_all = FactVentas.objects.all()
+    agg_dates = facts_all.aggregate(
+        dmin=Min("fecha__fecha_completa"),
+        dmax=Max("fecha__fecha_completa"),
+    )
+    dw_total_unfiltered = facts_all.count()
+    years_with_sales = sorted(
+        {y for y in facts_all.values_list("fecha__anio", flat=True).distinct() if y is not None}
+    )
+    years_for_select = sorted(set(range(2000, 2036)) | set(years_with_sales))
+
+    dmin, dmax = agg_dates["dmin"], agg_dates["dmax"]
+
+    filter_parts: list[str] = []
+    if range_active:
+        assert fde is not None and fha is not None
+        filter_parts.append(
+            f"Rango del {fde.strftime('%d/%m/%Y')} al {fha.strftime('%d/%m/%Y')}"
+        )
+    else:
+        if fy is not None:
+            filter_parts.append(f"Año {fy}")
+        if fm is not None:
+            filter_parts.append(f"Mes {fm:02d}")
+        if fd:
+            filter_parts.append(fd)
+    filter_summary = " · ".join(filter_parts) if filter_parts else "Sin filtros (todos los hechos)"
+
+    quick_time_links: list[dict[str, str]] = []
+    if dmin is not None and dmax is not None:
+        anchor_date = _analytics_anchor_date(date.today(), dmin, dmax)
+        y_ref, m_ref = anchor_date.year, anchor_date.month
+        quick_time_links.append(
+            {"label": "Año actual", "href": _analytics_filter_qs({"y": y_ref}, preset_anchor)}
+        )
+        quick_time_links.append(
+            {
+                "label": "Mes actual",
+                "href": _analytics_filter_qs({"y": y_ref, "m": m_ref}, preset_anchor),
+            }
+        )
+        monday = anchor_date - timedelta(days=anchor_date.weekday())
+        sunday = monday + timedelta(days=6)
+        w0, w1 = max(monday, dmin), min(sunday, dmax)
+        if w0 <= w1:
+            quick_time_links.append(
+                {
+                    "label": "Semana actual",
+                    "href": _analytics_filter_qs(
+                        {"fde": w0.isoformat(), "fha": w1.isoformat()},
+                        preset_anchor,
+                    ),
+                }
+            )
+        quick_time_links.extend(
+            [
+                {"label": "Solo lunes", "href": _analytics_filter_qs({"d": "Lunes"}, preset_anchor)},
+                {"label": "Solo domingos", "href": _analytics_filter_qs({"d": "Domingo"}, preset_anchor)},
+                {
+                    "label": "Domingos del mes actual",
+                    "href": _analytics_filter_qs(
+                        {"y": y_ref, "m": m_ref, "d": "Domingo"},
+                        preset_anchor,
+                    ),
+                },
+            ]
+        )
+    quick_time_links.append({"label": "Quitar filtros", "href": "?" + preset_anchor})
+
+    if range_active:
+        assert fde is not None and fha is not None
+        qs = _filter_fact_qs(facts_all, y=None, m=None, dia="", date_from=fde, date_to=fha)
+        form_select_y: int | str = ""
+        form_select_m: int | str = ""
+        form_select_d = ""
+    else:
+        qs = _filter_fact_qs(facts_all, y=fy, m=fm, dia=fd)
+        form_select_y = fy if fy is not None else ""
+        form_select_m = fm if fm is not None else ""
+        form_select_d = fd
+
+    months = [(i, f"{i:02d}") for i in range(1, 13)]
+    meta: dict[str, Any] = {
+        "filter_range_active": range_active,
+        "filter_fde": fde if range_active else None,
+        "filter_fha": fha if range_active else None,
+        "filter_y": form_select_y,
+        "filter_m": form_select_m,
+        "filter_d": form_select_d,
+        "filter_summary": filter_summary,
+        "dias_semana": DIAS_SEMANA_CHOICES,
+        "years": years_for_select,
+        "months": months,
+        "quick_time_links": quick_time_links,
+        "dw_span_min": dmin,
+        "dw_span_max": dmax,
+        "dw_total_unfiltered": dw_total_unfiltered,
+        "years_with_sales": years_with_sales,
+    }
+    return qs, meta
 
 
 def _count_files_recursive(root: Path) -> int:
@@ -295,7 +419,7 @@ def flow(request: HttpRequest) -> HttpResponse:
         },
         {
             "name": "Consumo",
-            "desc": "Dashboard: PNG + KPIs (/evidence/) y tablas agregadas vía ORM (/analytics/).",
+            "desc": "Dashboard web (/dashboard/: gráficos Chart.js + tablas), PNG + KPIs (/evidence/) y tablas agregadas vía ORM (/analytics/).",
             "tech": ["Django ORM", "Nginx", "matplotlib"],
             "status_ok": evidence_png_count > 0 and dw_fact_count > 0,
             "details": f"PNG: {evidence_png_count} (ver /evidence/) · DW cargado: FactVentas={dw_fact_count} (ver /analytics/)",
@@ -326,90 +450,23 @@ def analytics(request: HttpRequest) -> HttpResponse:
 
         Esta vista (core.views.analytics)
             └─ ORM sobre FactVentas + joins a DimTiempo / DimCliente / …
-               · Querystring ?y=&m=&d= o rango ?fde=&fha= (YYYY-MM-DD, inclusivo) filtra hechos (`_filter_fact_qs`).
+               · Querystring ?y=&m=&d= o rango ?fde=&fha= (YYYY-MM-DD, inclusivo) filtra hechos (`_dw_time_filter_bundle` → `_filter_fact_qs`).
                · Agregaciones `.values(...).annotate(...)` = GROUP BY en SQL.
                · `preview` página de hechos con `select_related` y paginación (`fact_page`).
 
     Parte 5 actividad: mejores clientes, canal, producto; más cortes por dimensión tiempo.
     """
 
-    fy = _parse_optional_year(request.GET.get("y"))
-    fm = _parse_optional_month(request.GET.get("m"))
-    fd = (request.GET.get("d") or "").strip()
-    fde = _parse_iso_date(request.GET.get("fde"))
-    fha = _parse_iso_date(request.GET.get("fha"))
-    range_active = fde is not None and fha is not None and fde <= fha
+    # Filtros de tiempo y meta del formulario compartidos con `dashboard()` via `_dw_time_filter_bundle`:
+    # misma querystring, mismos quick links (anchor distinto: #segmentar-ventas). No se cambió el
+    # comportamiento respecto a la lógica duplicada anterior; solo se unificó la fuente de verdad.
 
-    facts_all = FactVentas.objects.all()
-    agg_dates = facts_all.aggregate(
-        dmin=Min("fecha__fecha_completa"),
-        dmax=Max("fecha__fecha_completa"),
-    )
-    dw_total_unfiltered = facts_all.count()
-    years_with_sales = sorted(
-        {y for y in facts_all.values_list("fecha__anio", flat=True).distinct() if y is not None}
-    )
-    years_for_select = sorted(set(range(2000, 2036)) | set(years_with_sales))
+    qs, meta = _dw_time_filter_bundle(request, preset_anchor=_ANALYTICS_FILTROS_ANCHOR)
 
-    dmin, dmax = agg_dates["dmin"], agg_dates["dmax"]
+    dmin, dmax = meta["dw_span_min"], meta["dw_span_max"]
     ej_ref_year = date.today().year
     if dmin is not None and dmax is not None:
         ej_ref_year = _analytics_anchor_date(date.today(), dmin, dmax).year
-
-    filter_parts: list[str] = []
-    if range_active:
-        assert fde is not None and fha is not None
-        filter_parts.append(
-            f"Rango del {fde.strftime('%d/%m/%Y')} al {fha.strftime('%d/%m/%Y')}"
-        )
-    else:
-        if fy is not None:
-            filter_parts.append(f"Año {fy}")
-        if fm is not None:
-            filter_parts.append(f"Mes {fm:02d}")
-        if fd:
-            filter_parts.append(fd)
-    filter_summary = " · ".join(filter_parts) if filter_parts else "Sin filtros (todos los hechos)"
-
-    quick_time_links: list[dict[str, str]] = []
-    if dmin is not None and dmax is not None:
-        anchor = _analytics_anchor_date(date.today(), dmin, dmax)
-        y_ref, m_ref = anchor.year, anchor.month
-        quick_time_links.append({"label": "Año actual", "href": _analytics_filter_qs({"y": y_ref})})
-        quick_time_links.append({"label": "Mes actual", "href": _analytics_filter_qs({"y": y_ref, "m": m_ref})})
-        monday = anchor - timedelta(days=anchor.weekday())
-        sunday = monday + timedelta(days=6)
-        w0, w1 = max(monday, dmin), min(sunday, dmax)
-        if w0 <= w1:
-            quick_time_links.append(
-                {
-                    "label": "Semana actual",
-                    "href": _analytics_filter_qs({"fde": w0.isoformat(), "fha": w1.isoformat()}),
-                }
-            )
-        quick_time_links.extend(
-            [
-                {"label": "Solo lunes", "href": _analytics_filter_qs({"d": "Lunes"})},
-                {"label": "Solo domingos", "href": _analytics_filter_qs({"d": "Domingo"})},
-                {
-                    "label": "Domingos del mes actual",
-                    "href": _analytics_filter_qs({"y": y_ref, "m": m_ref, "d": "Domingo"}),
-                },
-            ]
-        )
-    quick_time_links.append({"label": "Quitar filtros", "href": "?" + _ANALYTICS_FILTROS_ANCHOR})
-
-    if range_active:
-        assert fde is not None and fha is not None
-        qs = _filter_fact_qs(facts_all, y=None, m=None, dia="", date_from=fde, date_to=fha)
-        form_select_y: int | str = ""
-        form_select_m: int | str = ""
-        form_select_d = ""
-    else:
-        qs = _filter_fact_qs(facts_all, y=fy, m=fm, dia=fd)
-        form_select_y = fy if fy is not None else ""
-        form_select_m = fm if fm is not None else ""
-        form_select_d = fd
 
     # Modelo estrella: qs es FactVentas; cada .values("fecha__…") proyecta DimTiempo vía FK fecha_id.
     star_model = {
@@ -589,12 +646,11 @@ def analytics(request: HttpRequest) -> HttpResponse:
         "mes_tx": _toggle_sort_href(request, "mes_ord", "tx", "mes_dir"),
     }
 
-    months = [(i, f"{i:02d}") for i in range(1, 13)]
-
     return render(
         request,
         "core/analytics.html",
         {
+            **meta,
             "star_model": star_model,
             "dim_tiempo_en_hechos": dim_tiempo_en_hechos,
             "ventas_por_dia_civil": ventas_por_dia_civil,
@@ -608,22 +664,347 @@ def analytics(request: HttpRequest) -> HttpResponse:
             "preview": preview,
             "preview_nav": preview_nav,
             "fact_preview_per_page": _FACT_PREVIEW_PER_PAGE,
-            "filter_range_active": range_active,
-            "filter_fde": fde if range_active else None,
-            "filter_fha": fha if range_active else None,
-            "filter_y": form_select_y,
-            "filter_m": form_select_m,
-            "filter_d": form_select_d,
-            "filter_summary": filter_summary,
-            "dias_semana": DIAS_SEMANA_CHOICES,
-            "years": years_for_select,
-            "months": months,
             "sort_href": sort_href,
-            "dw_span_min": dmin,
-            "dw_span_max": dmax,
-            "dw_total_unfiltered": dw_total_unfiltered,
-            "years_with_sales": years_with_sales,
-            "quick_time_links": quick_time_links,
+        },
+    )
+
+
+def _dashboard_view_qs(request: HttpRequest, view: str) -> str:
+    q = request.GET.copy()
+    q["view"] = view
+    return q.urlencode()
+
+
+_DASHBOARD_PANEL_KEYS: tuple[str, ...] = ("canal", "clientes", "dia", "dow", "productos")
+
+
+def _dashboard_agg_rows(qs: QuerySet) -> dict[str, list]:
+    """Agregaciones del dashboard (mismos límites que los gráficos en pantalla)."""
+    return {
+        "canal": list(qs.values("canal__canal").annotate(total=Sum("monto")).order_by("-total")),
+        "clientes": list(
+            qs.values(
+                "cliente__id_cliente",
+                "cliente__nombre",
+                "cliente__apellido",
+                "cliente__segmento",
+            )
+            .annotate(total=Sum("monto"))
+            .order_by("-total")[:10]
+        ),
+        "dia": list(
+            qs.values("fecha__fecha_completa", "fecha__nombre_dia")
+            .annotate(total=Sum("monto"), tx=Count("id"))
+            .order_by("fecha__fecha_completa")
+        ),
+        "dow": list(
+            qs.values("fecha__nombre_dia", "fecha__dia_semana")
+            .annotate(total=Sum("monto"))
+            .order_by("fecha__dia_semana")
+        ),
+        "productos": list(
+            qs.values(
+                "producto__id_producto",
+                "producto__nombre_producto",
+            )
+            .annotate(total=Sum("monto"))
+            .order_by("-total")[:10]
+        ),
+    }
+
+
+def _dashboard_chart_payload(
+    rows_map: dict[str, list],
+    *,
+    total_monto: int,
+    n_tx: int,
+) -> dict[str, Any]:
+    by_canal = rows_map["canal"]
+    top_clientes = rows_map["clientes"]
+    by_dia = rows_map["dia"]
+    by_dow = rows_map["dow"]
+    top_productos = rows_map["productos"]
+    return {
+        "by_canal": {
+            "labels": [str(r["canal__canal"] or "?") for r in by_canal],
+            "values": [int(r["total"] or 0) for r in by_canal],
+        },
+        "top_clientes": {
+            "labels": [
+                f'{r["cliente__nombre"]} {r["cliente__apellido"]}'.strip()[:40]
+                for r in top_clientes
+            ],
+            "values": [int(r["total"] or 0) for r in top_clientes],
+        },
+        "by_dia": {
+            "labels": [
+                (
+                    r["fecha__fecha_completa"].isoformat()
+                    if r.get("fecha__fecha_completa")
+                    else ""
+                )
+                for r in by_dia
+            ],
+            "values": [int(r["total"] or 0) for r in by_dia],
+        },
+        "by_dow": {
+            "labels": [str(r["fecha__nombre_dia"] or "") for r in by_dow],
+            "values": [int(r["total"] or 0) for r in by_dow],
+        },
+        "top_productos": {
+            "labels": [
+                (
+                    str(r["producto__nombre_producto"])
+                    if r["producto__nombre_producto"]
+                    else "Sin producto"
+                )[:36]
+                for r in top_productos
+            ],
+            "values": [int(r["total"] or 0) for r in top_productos],
+        },
+        "kpis": {
+            "total_monto": int(total_monto),
+            "transacciones": n_tx,
+            "ticket_promedio": int(total_monto // n_tx) if n_tx else 0,
+        },
+    }
+
+
+def _dashboard_export_resolve_panels(request: HttpRequest) -> tuple[list[str], str | None]:
+    """Lista de paneles a incluir en export; `single_panel` solo si es export por tarjeta."""
+    raw = (request.GET.get("panel") or "").strip().lower()
+    all_keys = list(_DASHBOARD_PANEL_KEYS)
+    if not raw or raw == "all":
+        return all_keys, None
+    if raw in _DASHBOARD_PANEL_KEYS:
+        return [raw], raw
+    return all_keys, None
+
+
+def dashboard(request: HttpRequest) -> HttpResponse:
+    qs, meta = _dw_time_filter_bundle(request, preset_anchor=_DASHBOARD_FILTERS_ANCHOR)
+    view_mode = (request.GET.get("view") or "charts").lower()
+    if view_mode not in ("charts", "tables", "both"):
+        view_mode = "charts"
+
+    star_model = {
+        "dim_cliente": DimCliente.objects.count(),
+        "dim_producto": DimProducto.objects.count(),
+        "dim_tiempo": DimTiempo.objects.count(),
+        "dim_canal": DimCanal.objects.count(),
+        "fact_ventas": FactVentas.objects.count(),
+        "hechos_filtrados": qs.count(),
+    }
+
+    rows_map = _dashboard_agg_rows(qs)
+    total_monto = qs.aggregate(t=Sum("monto"))["t"] or 0
+    n_tx = qs.count()
+    chart_payload = _dashboard_chart_payload(
+        rows_map,
+        total_monto=int(total_monto),
+        n_tx=n_tx,
+    )
+
+    ctx = {
+        **meta,
+        "star_model": star_model,
+        "view_mode": view_mode,
+        "by_canal_rows": rows_map["canal"],
+        "top_clientes_rows": rows_map["clientes"],
+        "by_dia_rows": rows_map["dia"],
+        "by_dow_rows": rows_map["dow"],
+        "top_productos_rows": rows_map["productos"],
+        "chart_payload": chart_payload,
+        "export_querystring": request.GET.urlencode(),
+        "qs_view_charts": _dashboard_view_qs(request, "charts"),
+        "qs_view_tables": _dashboard_view_qs(request, "tables"),
+        "qs_view_both": _dashboard_view_qs(request, "both"),
+    }
+    return render(request, "core/dashboard.html", ctx)
+
+
+def _dashboard_export_append_csv_panel(w: csv.writer, panel: str, rows_map: dict[str, list]) -> None:
+    rows = rows_map[panel]
+    if panel == "canal":
+        w.writerow(["Por canal"])
+        w.writerow(["Canal", "Total"])
+        for r in rows:
+            w.writerow([r["canal__canal"], r["total"]])
+        return
+    if panel == "clientes":
+        w.writerow(["Top clientes"])
+        w.writerow(["Cliente id", "Nombre", "Apellido", "Segmento", "Total"])
+        for r in rows:
+            w.writerow(
+                [
+                    r["cliente__id_cliente"],
+                    r["cliente__nombre"],
+                    r["cliente__apellido"],
+                    r["cliente__segmento"],
+                    r["total"],
+                ]
+            )
+        return
+    if panel == "dia":
+        w.writerow(["Por día civil"])
+        w.writerow(["Fecha", "Día", "Transacciones", "Total"])
+        for r in rows:
+            fc = r["fecha__fecha_completa"]
+            w.writerow(
+                [
+                    fc.isoformat() if fc else "",
+                    r["fecha__nombre_dia"],
+                    r["tx"],
+                    r["total"],
+                ]
+            )
+        return
+    if panel == "dow":
+        w.writerow(["Por día de la semana"])
+        w.writerow(["Día", "Número ISO (día)", "Total"])
+        for r in rows:
+            w.writerow([r["fecha__nombre_dia"], r["fecha__dia_semana"], r["total"]])
+        return
+    if panel == "productos":
+        w.writerow(["Top productos"])
+        w.writerow(["Producto id", "Nombre", "Total"])
+        for r in rows:
+            w.writerow([r["producto__id_producto"], r["producto__nombre_producto"], r["total"]])
+
+
+def _dashboard_export_append_html_panel(parts: list[str], panel: str, rows_map: dict[str, list]) -> None:
+    rows = rows_map[panel]
+    if panel == "canal":
+        parts.append("<h2>Por canal</h2><table><tr><th>Canal</th><th>Total</th></tr>")
+        for r in rows:
+            parts.append(
+                f"<tr><td>{escape(str(r['canal__canal'] or ''))}</td>"
+                f"<td>{r['total']}</td></tr>"
+            )
+        parts.append("</table>")
+        return
+    if panel == "clientes":
+        parts.append(
+            "<h2>Top clientes</h2><table><tr>"
+            "<th>ID</th><th>Nombre</th><th>Apellido</th><th>Segmento</th><th>Total</th></tr>"
+        )
+        for r in rows:
+            parts.append(
+                "<tr>"
+                f"<td>{r['cliente__id_cliente']}</td>"
+                f"<td>{escape(str(r['cliente__nombre'] or ''))}</td>"
+                f"<td>{escape(str(r['cliente__apellido'] or ''))}</td>"
+                f"<td>{escape(str(r['cliente__segmento'] or ''))}</td>"
+                f"<td>{r['total']}</td>"
+                "</tr>"
+            )
+        parts.append("</table>")
+        return
+    if panel == "dia":
+        parts.append(
+            "<h2>Por día civil</h2><table><tr>"
+            "<th>Fecha</th><th>Día</th><th>Transacciones</th><th>Total</th></tr>"
+        )
+        for r in rows:
+            fc = r["fecha__fecha_completa"]
+            fds = fc.isoformat() if fc else ""
+            parts.append(
+                "<tr>"
+                f"<td>{escape(fds)}</td>"
+                f"<td>{escape(str(r['fecha__nombre_dia'] or ''))}</td>"
+                f"<td>{r['tx']}</td>"
+                f"<td>{r['total']}</td>"
+                "</tr>"
+            )
+        parts.append("</table>")
+        return
+    if panel == "dow":
+        parts.append(
+            "<h2>Por día de la semana</h2><table><tr>"
+            "<th>Día</th><th>Número ISO</th><th>Total</th></tr>"
+        )
+        for r in rows:
+            parts.append(
+                "<tr>"
+                f"<td>{escape(str(r['fecha__nombre_dia'] or ''))}</td>"
+                f"<td>{r['fecha__dia_semana']}</td>"
+                f"<td>{r['total']}</td>"
+                "</tr>"
+            )
+        parts.append("</table>")
+        return
+    if panel == "productos":
+        parts.append("<h2>Top productos</h2><table><tr><th>ID</th><th>Producto</th><th>Total</th></tr>")
+        for r in rows:
+            parts.append(
+                "<tr>"
+                f"<td>{escape(str(r['producto__id_producto'] or ''))}</td>"
+                f"<td>{escape(str(r['producto__nombre_producto'] or ''))}</td>"
+                f"<td>{r['total']}</td>"
+                "</tr>"
+            )
+        parts.append("</table>")
+        return
+
+
+def dashboard_export(request: HttpRequest, fmt: str) -> HttpResponse:
+    fmt_norm = fmt.lower().strip()
+    if fmt_norm not in ("csv", "html", "pdf"):
+        raise Http404("Unsupported format")
+
+    qs, meta = _dw_time_filter_bundle(request, preset_anchor=_DASHBOARD_FILTERS_ANCHOR)
+    panels, single_panel = _dashboard_export_resolve_panels(request)
+    rows_map = _dashboard_agg_rows(qs)
+    summary_html = escape(meta.get("filter_summary") or "")
+    slug = "dashboard" if len(panels) > 1 else f"dashboard_{panels[0]}"
+
+    if fmt_norm == "csv":
+        buf = StringIO()
+        w = csv.writer(buf)
+        w.writerow(["RetailStart dashboard export"])
+        w.writerow([meta.get("filter_summary") or ""])
+        w.writerow([])
+        for i, panel in enumerate(panels):
+            if i:
+                w.writerow([])
+            _dashboard_export_append_csv_panel(w, panel, rows_map)
+        resp = HttpResponse(buf.getvalue(), content_type="text/csv; charset=utf-8")
+        resp["Content-Disposition"] = f'attachment; filename="retailstart_{slug}.csv"'
+        return resp
+
+    if fmt_norm == "html":
+        doc_title = (
+            "RetailStart — Dashboard"
+            if len(panels) > 1
+            else f"RetailStart — Dashboard ({panels[0]})"
+        )
+        parts = [
+            "<!DOCTYPE html><html lang='es'><head><meta charset='utf-8'>",
+            f"<title>{escape(doc_title)}</title>",
+            "<style>body{font-family:system-ui,sans-serif;background:#111;color:#eee;padding:24px;}",
+            "table{border-collapse:collapse;width:100%;margin-bottom:28px;}th,td{border:1px solid #444;padding:8px;text-align:left;}",
+            "th{background:#222;color:#9cf;}h1{color:#9cf;}h2{font-size:1rem;color:#aad;}</style></head><body>",
+            f"<h1>{escape(doc_title)}</h1><p>{summary_html}</p>",
+        ]
+        for panel in panels:
+            _dashboard_export_append_html_panel(parts, panel, rows_map)
+        parts.append("</body></html>")
+        html = "".join(parts)
+        resp = HttpResponse(html, content_type="text/html; charset=utf-8")
+        resp["Content-Disposition"] = f'attachment; filename="retailstart_{slug}.html"'
+        return resp
+
+    return render(
+        request,
+        "core/dashboard_print.html",
+        {
+            "filter_summary": meta.get("filter_summary") or "",
+            "single_panel": single_panel,
+            "by_canal_rows": rows_map["canal"],
+            "top_clientes_rows": rows_map["clientes"],
+            "by_dia_rows": rows_map["dia"],
+            "by_dow_rows": rows_map["dow"],
+            "top_productos_rows": rows_map["productos"],
         },
     )
 

@@ -5,9 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Evidencia - RetailStart</title>
-    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=11" />
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=12" />
   </head>
-  <body>
+  <body class="appShell">
+    {% include "core/includes/site_sidebar.html" %}
+    <div class="appShell__main">
     <main class="container">
       <header class="header">
         <h1 class="title">Evidencia</h1>
@@ -107,6 +109,8 @@
         </div>
       </section>
     </main>
+    <script src="{% static 'js/site-sidebar.js' %}?v=1" defer></script>
     <script src="{% static 'js/analytics-collapsibles.js' %}?v=2" defer></script>
+    </div>
   </body>
 </html>
