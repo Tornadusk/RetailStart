@@ -1245,6 +1245,9 @@ body.appShell {
 .dashboardDownload__summary {
   list-style: none;
   cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  color: var(--text);
 }
 
 .dashboardDownload__summary::-webkit-details-marker {
@@ -1262,6 +1265,7 @@ body.appShell {
   border: 1px solid rgba(192, 132, 252, 0.28);
   box-shadow: 0 18px 44px rgba(0, 0, 0, 0.45);
   z-index: 20;
+  color: var(--text);
 }
 
 .dashboardDownload__item {
@@ -1399,16 +1403,28 @@ body.appShell {
 .dashboardDownload__item--btn {
   display: block;
   width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 8px 10px;
   border: none;
-  background: transparent;
+  border-radius: 8px;
+  -webkit-appearance: none;
+  appearance: none;
   font: inherit;
-  color: inherit;
+  font-size: 13px;
+  color: var(--text);
+  background: transparent;
   cursor: pointer;
   text-align: left;
 }
 
 .dashboardDownload__item--btn:hover {
   background: rgba(192, 132, 252, 0.12);
+}
+
+.dashboardDownload__item--btn:focus-visible {
+  outline: 2px solid rgba(192, 132, 252, 0.65);
+  outline-offset: 2px;
 }
 
 .dashboardChartSizer {

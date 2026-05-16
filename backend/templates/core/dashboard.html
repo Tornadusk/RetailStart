@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Dashboard — RetailStart</title>
     <script src="{% static 'js/dashboard-view-prefs.js' %}?v=1"></script>
-    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=13" />
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=14" />
   </head>
   <body class="appShell">
     {% include "core/includes/site_sidebar.html" %}
@@ -19,7 +19,7 @@
               <p class="subtitle">
                 Hechos filtrados · agregados por dimensiones y tiempo · gráficos con
                 <a class="link" href="https://www.chartjs.org/docs/latest/samples/other-charts/pie.html" rel="noopener noreferrer" target="_blank">Chart.js</a>.
-                Cada tarjeta incluye descarga del gráfico (PNG) y de la tabla (CSV / HTML / imprimir PDF).
+                Cada tarjeta: en vista Gráficos o Todos, CSV/HTML/PDF exportan el gráfico (serie en CSV e imagen en HTML/PDF); en vista solo Tablas, CSV/HTML/PDF son la tabla del servidor.
               </p>
             </div>
             <div class="dashboardHeader__actions">
@@ -144,7 +144,7 @@
             <article class="dashboardCard">
               <div class="dashboardCard__head">
                 <h3 class="dashboardCard__title">Por canal · torta</h3>
-                {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-canal" export_panel="canal" png_filename="retailstart_dashboard_canal.png" %}
+                {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-canal" export_panel="canal" export_stem="retailstart_dashboard_canal" chart_export_title="Por canal · torta" %}
               </div>
               <div class="dashboardChartWrap">
                 <div class="dashboardChartSizer">
@@ -168,7 +168,7 @@
             <article class="dashboardCard">
               <div class="dashboardCard__head">
                 <h3 class="dashboardCard__title">Top clientes · barras horizontales</h3>
-                {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-clientes" export_panel="clientes" png_filename="retailstart_dashboard_clientes.png" %}
+                {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-clientes" export_panel="clientes" export_stem="retailstart_dashboard_clientes" chart_export_title="Top clientes · barras horizontales" %}
               </div>
               <div class="dashboardChartWrap">
                 <div class="dashboardChartSizer dashboardChartSizer--tall">
@@ -199,7 +199,7 @@
             <article class="dashboardCard">
               <div class="dashboardCard__head">
                 <h3 class="dashboardCard__title">Por día civil · barras</h3>
-                {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-dia" export_panel="dia" png_filename="retailstart_dashboard_dia.png" %}
+                {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-dia" export_panel="dia" export_stem="retailstart_dashboard_dia" chart_export_title="Por día civil · barras" %}
               </div>
               <div class="dashboardChartWrap">
                 <div class="dashboardChartSizer">
@@ -230,7 +230,7 @@
             <article class="dashboardCard">
               <div class="dashboardCard__head">
                 <h3 class="dashboardCard__title">Por día de la semana · torta</h3>
-                {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-dow" export_panel="dow" png_filename="retailstart_dashboard_dow.png" %}
+                {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-dow" export_panel="dow" export_stem="retailstart_dashboard_dow" chart_export_title="Por día de la semana · torta" %}
               </div>
               <div class="dashboardChartWrap">
                 <div class="dashboardChartSizer">
@@ -258,7 +258,7 @@
             <article class="dashboardCard dashboardCard--wide">
               <div class="dashboardCard__head">
                 <h3 class="dashboardCard__title">Top productos · barras horizontales</h3>
-                {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-productos" export_panel="productos" png_filename="retailstart_dashboard_productos.png" %}
+                {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-productos" export_panel="productos" export_stem="retailstart_dashboard_productos" chart_export_title="Top productos · barras horizontales" %}
               </div>
               <div class="dashboardChartWrap">
                 <div class="dashboardChartSizer dashboardChartSizer--tall">
@@ -294,6 +294,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js" defer></script>
     <script src="{% static 'js/site-sidebar.js' %}?v=1" defer></script>
     <script src="{% static 'js/dashboard-charts.js' %}?v=2" defer></script>
-    <script src="{% static 'js/dashboard-panel-download.js' %}?v=2" defer></script>
+    <script src="{% static 'js/dashboard-panel-download.js' %}?v=3" defer></script>
   </body>
 </html>

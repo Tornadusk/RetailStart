@@ -1,30 +1,52 @@
 {% comment %}
-  Descarga por tarjeta: PNG del canvas Chart.js (cliente) + CSV/HTML/PDF de la tabla (servidor ?panel=).
+  PNG / CSV / HTML / PDF del gráfico (Chart.js en cliente) si view_mode es charts o both.
+  CSV / HTML / PDF de tabla vía servidor si view_mode es solo tables.
 {% endcomment %}
-<details class="dashboardDownload dashboardDownload--card">
+<details
+  class="dashboardDownload dashboardDownload--card"
+  data-chart-canvas="{{ chart_canvas_id }}"
+  data-chart-title="{{ chart_export_title }}"
+  data-export-stem="{{ export_stem }}"
+>
   <summary class="btn btn--inline dashboardDownload__summary dashboardDownload__summary--sm">Descargar ▾</summary>
   <div class="dashboardDownload__menu">
-    <button
-      type="button"
-      class="dashboardDownload__item dashboardDownload__item--btn js-dashboard-chart-png"
-      data-chart-canvas="{{ chart_canvas_id }}"
-      data-download-filename="{{ png_filename }}"
-    >
-      PNG (gráfico)
-    </button>
-    <a
-      class="dashboardDownload__item"
-      href="{% url 'dashboard_export' 'csv' %}?panel={{ export_panel }}{% if export_querystring %}&{{ export_querystring }}{% endif %}"
-      >CSV (tabla)</a>
-    <a
-      class="dashboardDownload__item"
-      href="{% url 'dashboard_export' 'html' %}?panel={{ export_panel }}{% if export_querystring %}&{{ export_querystring }}{% endif %}"
-      >HTML (tabla)</a>
-    <a
-      class="dashboardDownload__item"
-      href="{% url 'dashboard_export' 'pdf' %}?panel={{ export_panel }}{% if export_querystring %}&{{ export_querystring }}{% endif %}"
-      target="_blank"
-      rel="noopener noreferrer"
-      >PDF / imprimir (tabla)</a>
+    {% if view_mode == "tables" %}
+      <button
+        type="button"
+        class="dashboardDownload__item dashboardDownload__item--btn js-dashboard-chart-png"
+      >
+        PNG (gráfico)
+      </button>
+      <a
+        class="dashboardDownload__item"
+        href="{% url 'dashboard_export' 'csv' %}?panel={{ export_panel }}{% if export_querystring %}&{{ export_querystring }}{% endif %}"
+        >CSV (tabla)</a>
+      <a
+        class="dashboardDownload__item"
+        href="{% url 'dashboard_export' 'html' %}?panel={{ export_panel }}{% if export_querystring %}&{{ export_querystring }}{% endif %}"
+        >HTML (tabla)</a>
+      <a
+        class="dashboardDownload__item"
+        href="{% url 'dashboard_export' 'pdf' %}?panel={{ export_panel }}{% if export_querystring %}&{{ export_querystring }}{% endif %}"
+        target="_blank"
+        rel="noopener noreferrer"
+        >PDF / imprimir (tabla)</a>
+    {% else %}
+      <button
+        type="button"
+        class="dashboardDownload__item dashboardDownload__item--btn js-dashboard-chart-png"
+      >
+        PNG (gráfico)
+      </button>
+      <button type="button" class="dashboardDownload__item dashboardDownload__item--btn js-dashboard-chart-csv">
+        CSV (gráfico — serie)
+      </button>
+      <button type="button" class="dashboardDownload__item dashboardDownload__item--btn js-dashboard-chart-html">
+        HTML (gráfico)
+      </button>
+      <button type="button" class="dashboardDownload__item dashboardDownload__item--btn js-dashboard-chart-pdf">
+        PDF / imprimir (gráfico)
+      </button>
+    {% endif %}
   </div>
 </details>
