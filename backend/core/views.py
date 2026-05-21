@@ -27,6 +27,10 @@ _LAKE_SOURCE_ROLE: dict[str, str] = {
     "eventos_app.json": "App — eventos (opcional)",
     "logistica.xml": "Logística — pedidos (opcional)",
     "logs_sistema.txt": "Infra — logs (opcional)",
+    "callcenter.csv": "Call center — atención (opcional)",
+    "redes_sociales.json": "Redes sociales — reseñas (opcional)",
+    "proveedores.csv": "ERP — proveedores (opcional)",
+    "multimedia.csv": "Catálogo — multimedia (opcional)",
 }
 
 

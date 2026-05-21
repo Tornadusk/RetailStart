@@ -1,0 +1,96 @@
+// RetailStart Chile SA — Data Warehouse (modelo en estrella)
+// Alineado con backend/core/models.py · Postgres · load_dw
+//
+// INFORME — orden de figuras ER (misma definición, dos herramientas):
+//   1) Exportar PNG/PDF desde dbdiagram.io (este .dbml)
+//   2) Exportar PNG/PDF desde diagrams/modelo-er-retailstart.drawio (versión draw.io)
+//
+// Importar en https://dbdiagram.io/d/new  (pegar este archivo o subir .dbml)
+// Tablas físicas Django: core_factventas, core_dimcliente, core_dimproducto,
+// core_dimtiempo, core_dimcanal
+
+Project retailstart_dw {
+  database_type: 'PostgreSQL'
+  Note: '''
+    Hecho central: FactVentas (métricas cantidad, precio_unitario, monto).
+    Dimensiones: Cliente, Producto, Tiempo, Canal.
+    Sin DimPago ni DimCategoria (no aplican al anexo / prototipo).
+  '''
+}
+
+TableGroup estrella {
+  FactVentas
+  DimCliente
+  DimProducto
+  DimTiempo
+  DimCanal
+}
+
+// ——— Dimensiones ———
+
+Table DimCliente {
+  id int [pk, increment, note: 'PK surrogate Django']
+  id_cliente int [unique, not null, note: 'UK negocio · clientes_crm.csv']
+  nombre varchar(100) [not null]
+  apellido varchar(100) [not null]
+  email varchar(254) [not null]
+  segmento varchar(50) [not null]
+  ciudad varchar(100) [not null]
+
+  Note: 'Dimensión cliente (CRM)'
+}
+
+Table DimProducto {
+  id int [pk, increment]
+  id_producto int [unique, not null, note: 'UK negocio · productos_erp.csv']
+  nombre_producto varchar(200) [not null]
+  categoria varchar(100) [not null, note: 'Atributo descriptivo, no tabla DimCategoria']
+  precio_base int [not null]
+  proveedor varchar(100) [not null]
+
+  Note: 'Dimensión producto (ERP)'
+}
+
+Table DimTiempo {
+  id_tiempo int [pk, not null, note: 'AAAAMMDD ej. 20260401']
+  fecha_completa date [unique, not null]
+  dia_semana int [not null, note: '1=Lunes … 7=Domingo ISO']
+  nombre_dia varchar(12) [not null]
+  dia_mes int [not null]
+  mes int [not null]
+  nombre_mes varchar(16) [not null]
+  trimestre int [not null]
+  anio int [not null]
+  es_fin_semana boolean [not null, default: false]
+
+  Note: 'Calendario pre-generado (seed_dim_tiempo_calendar)'
+}
+
+Table DimCanal {
+  id int [pk, increment]
+  canal varchar(30) [unique, not null, note: 'pos | web | app']
+
+  Note: 'Dimensión canal (derivado ventas unificadas)'
+}
+
+// ——— Hechos ———
+
+Table FactVentas {
+  id int [pk, increment]
+  id_venta_origen int [not null, note: 'id_venta POS o id_orden online']
+  fecha_id int [not null, ref: > DimTiempo.id_tiempo]
+  cliente_id int [not null, ref: > DimCliente.id]
+  producto_id int [ref: > DimProducto.id, null, note: 'Null en ventas online sin detalle producto']
+  canal_id int [not null, ref: > DimCanal.id]
+  cantidad int [not null, note: 'Medida']
+  precio_unitario int [not null, note: 'Medida']
+  monto int [not null, note: 'Medida · cantidad × precio o total online']
+
+  indexes {
+    (cliente_id, fecha_id)
+    (canal_id, fecha_id)
+    (producto_id, fecha_id)
+  }
+
+  Note: 'Tabla de hechos · ventas omnicanal (POS + web + app)'
+}

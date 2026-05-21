@@ -107,6 +107,10 @@ def extract_from_lake(lake: LakePaths) -> dict[str, pd.DataFrame]:
         "eventos_app": _read_json(_latest_raw_sidecar(r, "eventos_app", ".json")),
         "logistica": _read_xml_logistica(_latest_raw_sidecar(r, "logistica", ".xml")),
         "logs_sistema": _read_logs_txt(_latest_raw_sidecar(r, "logs_sistema", ".txt")),
+        "callcenter": _read_csv(_latest_raw_sidecar(r, "callcenter", ".csv")),
+        "redes_sociales": _read_json(_latest_raw_sidecar(r, "redes_sociales", ".json")),
+        "proveedores": _read_csv(_latest_raw_sidecar(r, "proveedores", ".csv")),
+        "multimedia": _read_csv(_latest_raw_sidecar(r, "multimedia", ".csv")),
     }
 
 
@@ -188,6 +192,27 @@ def transform(dfs: dict[str, pd.DataFrame]) -> dict[str, pd.DataFrame]:
         .sort_values("monto", ascending=False)
     )
 
+    clientes_frecuentes = (
+        ventas_enriquecidas.groupby(["id_cliente", "nombre", "apellido", "segmento"], dropna=False)
+        .agg(n_transacciones=("id_venta", "count"), monto_total=("monto", "sum"))
+        .reset_index()
+        .sort_values(["n_transacciones", "monto_total"], ascending=False)
+    )
+
+    callcenter = dfs["callcenter"].copy()
+    callcenter["fecha"] = pd.to_datetime(callcenter["fecha"], errors="coerce")
+    callcenter["duracion"] = pd.to_numeric(callcenter["duracion"], errors="coerce").fillna(0).astype(int)
+    callcenter = callcenter.drop_duplicates(subset=["id_llamada"], keep="first")
+
+    redes_sociales = dfs["redes_sociales"].copy()
+    redes_sociales["rating"] = pd.to_numeric(redes_sociales["rating"], errors="coerce").fillna(0).astype(int)
+
+    proveedores = dfs["proveedores"].copy()
+    proveedores = proveedores.drop_duplicates(subset=["id_proveedor"], keep="first")
+
+    multimedia = dfs["multimedia"].copy()
+    multimedia = multimedia.drop_duplicates(subset=["id_producto"], keep="first")
+
     return {
         "clientes_limpio": clientes,
         "productos_limpio": productos,
@@ -196,9 +221,14 @@ def transform(dfs: dict[str, pd.DataFrame]) -> dict[str, pd.DataFrame]:
         "total_por_cliente": total_por_cliente,
         "total_por_canal": total_por_canal,
         "total_por_producto": total_por_producto,
+        "clientes_frecuentes": clientes_frecuentes,
         "eventos_app": dfs["eventos_app"],
         "logistica": dfs["logistica"],
         "logs_sistema": dfs["logs_sistema"],
+        "callcenter": callcenter,
+        "redes_sociales": redes_sociales,
+        "proveedores": proveedores,
+        "multimedia": multimedia,
     }
 
 

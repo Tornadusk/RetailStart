@@ -1,0 +1,77 @@
+<mxfile host="app.diagrams.net" modified="2026-05-16T12:00:00.000Z" agent="RetailStart" version="22.1.0" type="device">
+  <diagram id="er-retailstart" name="ER RetailStart (par a dbdiagram)">
+    <mxGraphModel dx="1200" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="TITLE" value="&lt;b&gt;&lt;font style=&quot;font-size: 20px&quot;&gt;MODELO ENTIDAD-RELACIÓN — RetailStart&lt;/font&gt;&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 11px; color: #475569&quot;&gt;Data Warehouse · esquema estrella · Postgres · Misma definición que &lt;code&gt;modelo-estrella-retailstart.dbml&lt;/code&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="80" y="12" width="940" height="52" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="DC" value="DimCliente" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=28;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="80" width="268" height="200" as="geometry"/>
+        </mxCell>
+        <mxCell id="DC0" value="id : int  &lt;b&gt;PK&lt;/b&gt;" style="text;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="DC"><mxGeometry y="28" width="268" height="24" as="geometry"/></mxCell>
+        <mxCell id="DC1" value="id_cliente : int  &lt;b&gt;NN&lt;/b&gt;" style="text;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="DC"><mxGeometry y="52" width="268" height="24" as="geometry"/></mxCell>
+        <mxCell id="DC2" value="nombre : varchar(100)  &lt;b&gt;NN&lt;/b&gt;" style="text;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="DC"><mxGeometry y="76" width="268" height="24" as="geometry"/></mxCell>
+        <mxCell id="DC3" value="apellido : varchar(100)  &lt;b&gt;NN&lt;/b&gt;" style="text;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="DC"><mxGeometry y="100" width="268" height="24" as="geometry"/></mxCell>
+        <mxCell id="DC4" value="email : varchar(254)  &lt;b&gt;NN&lt;/b&gt;" style="text;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="DC"><mxGeometry y="124" width="268" height="24" as="geometry"/></mxCell>
+        <mxCell id="DC5" value="segmento : varchar(50)  &lt;b&gt;NN&lt;/b&gt;" style="text;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="DC"><mxGeometry y="148" width="268" height="24" as="geometry"/></mxCell>
+        <mxCell id="DC6" value="ciudad : varchar(100)  &lt;b&gt;NN&lt;/b&gt;" style="text;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="DC"><mxGeometry y="172" width="268" height="24" as="geometry"/></mxCell>
+
+        <mxCell id="DP" value="DimProducto" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=28;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="300" width="268" height="176" as="geometry"/>
+        </mxCell>
+        <mxCell id="DP0" value="id : int  &lt;b&gt;PK&lt;/b&gt;" style="text;fillColor=#d5e8d4;strokeColor=#82b366;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="DP"><mxGeometry y="28" width="268" height="24" as="geometry"/></mxCell>
+        <mxCell id="DP1" value="id_producto : int  &lt;b&gt;NN&lt;/b&gt;" style="text;fillColor=#d5e8d4;strokeColor=#82b366;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="DP"><mxGeometry y="52" width="268" height="24" as="geometry"/></mxCell>
+        <mxCell id="DP2" value="nombre_producto : varchar(200)  &lt;b&gt;NN&lt;/b&gt;" style="text;fillColor=#d5e8d4;strokeColor=#82b366;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="DP"><mxGeometry y="76" width="268" height="24" as="geometry"/></mxCell>
+        <mxCell id="DP3" value="categoria : varchar(100)  &lt;b&gt;NN&lt;/b&gt;" style="text;fillColor=#d5e8d4;strokeColor=#82b366;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="DP"><mxGeometry y="100" width="268" height="24" as="geometry"/></mxCell>
+        <mxCell id="DP4" value="precio_base : int  &lt;b&gt;NN&lt;/b&gt;" style="text;fillColor=#d5e8d4;strokeColor=#82b366;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="DP"><mxGeometry y="124" width="268" height="24" as="geometry"/></mxCell>
+        <mxCell id="DP5" value="proveedor : varchar(100)  &lt;b&gt;NN&lt;/b&gt;" style="text;fillColor=#d5e8d4;strokeColor=#82b366;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="DP"><mxGeometry y="148" width="268" height="24" as="geometry"/></mxCell>
+
+        <mxCell id="DT" value="DimTiempo" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=28;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="496" width="268" height="272" as="geometry"/>
+        </mxCell>
+        <mxCell id="DT0" value="id_tiempo : int  &lt;b&gt;PK&lt;/b&gt;" style="text;fillColor=#f8cecc;strokeColor=#b85450;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="DT"><mxGeometry y="28" width="268" height="24" as="geometry"/></mxCell>
+        <mxCell id="DT1" value="fecha_completa : date  &lt;b&gt;NN&lt;/b&gt;" style="text;fillColor=#f8cecc;strokeColor=#b85450;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="DT"><mxGeometry y="52" width="268" height="24" as="geometry"/></mxCell>
+        <mxCell id="DT2" value="dia_semana : int  &lt;b&gt;NN&lt;/b&gt;" style="text;fillColor=#f8cecc;strokeColor=#b85450;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="DT"><mxGeometry y="76" width="268" height="24" as="geometry"/></mxCell>
+        <mxCell id="DT3" value="nombre_dia : varchar(12)  &lt;b&gt;NN&lt;/b&gt;" style="text;fillColor=#f8cecc;strokeColor=#b85450;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="DT"><mxGeometry y="100" width="268" height="24" as="geometry"/></mxCell>
+        <mxCell id="DT4" value="dia_mes : int  &lt;b&gt;NN&lt;/b&gt;" style="text;fillColor=#f8cecc;strokeColor=#b85450;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="DT"><mxGeometry y="124" width="268" height="24" as="geometry"/></mxCell>
+        <mxCell id="DT5" value="mes : int  &lt;b&gt;NN&lt;/b&gt;" style="text;fillColor=#f8cecc;strokeColor=#b85450;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="DT"><mxGeometry y="148" width="268" height="24" as="geometry"/></mxCell>
+        <mxCell id="DT6" value="nombre_mes : varchar(16)  &lt;b&gt;NN&lt;/b&gt;" style="text;fillColor=#f8cecc;strokeColor=#b85450;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="DT"><mxGeometry y="172" width="268" height="24" as="geometry"/></mxCell>
+        <mxCell id="DT7" value="trimestre : int  &lt;b&gt;NN&lt;/b&gt;" style="text;fillColor=#f8cecc;strokeColor=#b85450;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="DT"><mxGeometry y="196" width="268" height="24" as="geometry"/></mxCell>
+        <mxCell id="DT8" value="anio : int  &lt;b&gt;NN&lt;/b&gt;" style="text;fillColor=#f8cecc;strokeColor=#b85450;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="DT"><mxGeometry y="220" width="268" height="24" as="geometry"/></mxCell>
+        <mxCell id="DT9" value="es_fin_semana : boolean  &lt;b&gt;NN&lt;/b&gt;" style="text;fillColor=#f8cecc;strokeColor=#b85450;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="DT"><mxGeometry y="244" width="268" height="24" as="geometry"/></mxCell>
+
+        <mxCell id="F" value="FactVentas" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=28;fillColor=#f5f5f5;strokeColor=#666666;strokeWidth=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="180" width="292" height="248" as="geometry"/>
+        </mxCell>
+        <mxCell id="F0" value="id : int  &lt;b&gt;PK&lt;/b&gt;" style="text;fillColor=#f5f5f5;strokeColor=#666666;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="F"><mxGeometry y="28" width="292" height="24" as="geometry"/></mxCell>
+        <mxCell id="F1" value="id_venta_origen : int  &lt;b&gt;NN&lt;/b&gt;" style="text;fillColor=#f5f5f5;strokeColor=#666666;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="F"><mxGeometry y="52" width="292" height="24" as="geometry"/></mxCell>
+        <mxCell id="F2" value="fecha_id : int  &lt;b&gt;NN FK&lt;/b&gt;" style="text;fillColor=#fff9e6;strokeColor=#666666;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="F"><mxGeometry y="76" width="292" height="24" as="geometry"/></mxCell>
+        <mxCell id="F3" value="cliente_id : int  &lt;b&gt;NN FK&lt;/b&gt;" style="text;fillColor=#fff9e6;strokeColor=#666666;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="F"><mxGeometry y="100" width="292" height="24" as="geometry"/></mxCell>
+        <mxCell id="F4" value="producto_id : int  FK" style="text;fillColor=#fff9e6;strokeColor=#666666;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="F"><mxGeometry y="124" width="292" height="24" as="geometry"/></mxCell>
+        <mxCell id="F5" value="canal_id : int  &lt;b&gt;NN FK&lt;/b&gt;" style="text;fillColor=#fff9e6;strokeColor=#666666;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="F"><mxGeometry y="148" width="292" height="24" as="geometry"/></mxCell>
+        <mxCell id="F6" value="cantidad : int  &lt;b&gt;NN&lt;/b&gt;" style="text;fillColor=#fff2cc;strokeColor=#666666;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="F"><mxGeometry y="172" width="292" height="24" as="geometry"/></mxCell>
+        <mxCell id="F7" value="precio_unitario : int  &lt;b&gt;NN&lt;/b&gt;" style="text;fillColor=#fff2cc;strokeColor=#666666;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="F"><mxGeometry y="196" width="292" height="24" as="geometry"/></mxCell>
+        <mxCell id="F8" value="monto : int  &lt;b&gt;NN&lt;/b&gt;" style="text;fillColor=#fff2cc;strokeColor=#666666;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="F"><mxGeometry y="220" width="292" height="24" as="geometry"/></mxCell>
+
+        <mxCell id="DK" value="DimCanal" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=28;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="460" width="292" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="DK0" value="id : int  &lt;b&gt;PK&lt;/b&gt;" style="text;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="DK"><mxGeometry y="28" width="292" height="24" as="geometry"/></mxCell>
+        <mxCell id="DK1" value="canal : varchar(30)  &lt;b&gt;NN&lt;/b&gt;" style="text;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;spacingLeft=8;html=1;fontSize=11;" vertex="1" parent="DK"><mxGeometry y="52" width="292" height="24" as="geometry"/></mxCell>
+
+        <mxCell id="E1" style="edgeStyle=entityRelationEdgeStyle;endArrow=ERzeroToMany;startArrow=ERone;endFill=1;html=1;rounded=0;exitX=1;exitY=0.5;entryX=0;entryY=0.4;" edge="1" parent="1" source="DC" target="F"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="E2" style="edgeStyle=entityRelationEdgeStyle;endArrow=ERzeroToMany;startArrow=ERone;endFill=1;html=1;rounded=0;exitX=1;exitY=0.5;entryX=0;entryY=0.55;" edge="1" parent="1" source="DP" target="F"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="E3" style="edgeStyle=entityRelationEdgeStyle;endArrow=ERzeroToMany;startArrow=ERone;endFill=1;html=1;rounded=0;exitX=1;exitY=0.5;entryX=0;entryY=0.28;" edge="1" parent="1" source="DT" target="F"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="E4" style="edgeStyle=entityRelationEdgeStyle;endArrow=ERzeroToMany;startArrow=ERone;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.7;entryY=1;" edge="1" parent="1" source="DK" target="F"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="CAPTION" value="&lt;i&gt;Figura sugerida para el informe: colocar &lt;b&gt;después&lt;/b&gt; de la captura exportada desde dbdiagram.io (&lt;code&gt;modelo-estrella-retailstart.dbml&lt;/code&gt;). Mismo esquema estrella; distinta herramienta de diagramación.&lt;/i&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=10;fontColor=#64748b;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="40" y="790" width="1020" height="36" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
