@@ -54,39 +54,38 @@ Incluida desde analytics, home, evidence y flow.
   <p class="muted pipelineCard__minihead"><strong>Día 1</strong> — datos del 2026-04-01</p>
   <ol class="commandSteps commandSteps--compact">
     <li class="commandSteps__item">
-      <code class="commandSteps__cmd">docker compose exec backend python manage.py run_elt_ingest --sources-root /data_sources/dia_1 --ingest-date 2026-04-01</code>
-      <p class="commandSteps__what muted">ELT: copia fuentes del día → <code>data_lake/raw/*_20260401.*</code></p>
+      <code class="commandSteps__cmd">docker compose exec backend python manage.py run_elt_ingest --sources-root /data_sources/dia_1 --ingest-date 2026-04-01  # ELT: origen → raw</code>
     </li>
     <li class="commandSteps__item">
-      <code class="commandSteps__cmd">docker compose exec backend python manage.py run_etl --append-master</code>
-      <p class="commandSteps__what muted">ETL: limpia/unifica → snapshot + <code>ventas_unificadas_maestro.csv</code> (acumula).</p>
+      <code class="commandSteps__cmd">docker compose exec backend python manage.py run_etl --append-master  # ETL: raw → processed (maestro)</code>
     </li>
     <li class="commandSteps__item">
-      <code class="commandSteps__cmd">docker compose exec backend python manage.py load_dw --incremental --ventas-file maestro</code>
-      <p class="commandSteps__what muted">Carga al DW sin eliminar hechos previos (<code>update_or_create</code> por venta+canal).</p>
+      <code class="commandSteps__cmd">docker compose exec backend python manage.py load_dw --incremental --ventas-file maestro  # processed → DW</code>
+    </li>
+    <li class="commandSteps__item">
+      <code class="commandSteps__cmd">docker compose exec backend python manage.py audit_pipeline  # evidencia (captura informe)</code>
     </li>
   </ol>
   <p class="muted pipelineCard__minihead"><strong>Día 2</strong> — datos del 2026-04-02</p>
   <ol class="commandSteps commandSteps--compact">
     <li class="commandSteps__item">
-      <code class="commandSteps__cmd">docker compose exec backend python manage.py run_elt_ingest --sources-root /data_sources/dia_2 --ingest-date 2026-04-02</code>
+      <code class="commandSteps__cmd">docker compose exec backend python manage.py run_elt_ingest --sources-root /data_sources/dia_2 --ingest-date 2026-04-02  # ELT: origen → raw</code>
     </li>
     <li class="commandSteps__item">
-      <code class="commandSteps__cmd">docker compose exec backend python manage.py run_etl --append-master</code>
+      <code class="commandSteps__cmd">docker compose exec backend python manage.py run_etl --append-master  # ETL: raw → processed (maestro)</code>
     </li>
     <li class="commandSteps__item">
-      <code class="commandSteps__cmd">docker compose exec backend python manage.py load_dw --incremental --ventas-file maestro</code>
+      <code class="commandSteps__cmd">docker compose exec backend python manage.py load_dw --incremental --ventas-file maestro  # processed → DW</code>
     </li>
     <li class="commandSteps__item">
-      <code class="commandSteps__cmd">docker compose exec backend python manage.py audit_pipeline</code>
+      <code class="commandSteps__cmd">docker compose exec backend python manage.py audit_pipeline  # evidencia (captura informe)</code>
     </li>
   </ol>
 
   <h4 class="pipelineCard__subhead">Opcional — gráficos de respaldo</h4>
   <ol class="commandSteps commandSteps--compact">
     <li class="commandSteps__item">
-      <code class="commandSteps__cmd">docker compose exec backend python manage.py analyze_dw</code>
-      <p class="commandSteps__what muted">PNG en <code>processed/evidence/</code> (no evaluado en esta instancia de la rúbrica).</p>
+      <code class="commandSteps__cmd">docker compose exec backend python manage.py analyze_dw  # PNG en processed/evidence/</code>
     </li>
   </ol>
 
