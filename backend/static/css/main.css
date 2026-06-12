@@ -963,6 +963,32 @@ aside .analyticsCollapsible:not(.card) {
   line-height: 1.45;
 }
 
+.pipelineChain {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(105, 210, 255, 0.06);
+  border: 1px solid rgba(105, 210, 255, 0.18);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.pipelineChain__step {
+  flex: 1 1 120px;
+  min-width: 110px;
+}
+
+.pipelineChain__arrow {
+  flex: 0 0 auto;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
 .pipelineCard__subhead {
   margin: 18px 0 10px;
   font-size: 15px;

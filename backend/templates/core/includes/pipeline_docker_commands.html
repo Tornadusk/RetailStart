@@ -8,8 +8,20 @@ Incluida desde analytics, home, evidence y flow.
   <h3 class="h3 pipelineCard__title">Pipeline y comandos Docker</h3>
   <p class="muted pipelineCard__lead">
     Desde la raíz del repo (junto a <code>docker-compose.yml</code>), con <code>docker compose up</code> en marcha.
-    La rúbrica exige <strong>carga Día 1</strong> y luego <strong>Día 2</strong>: cada paso suma datos en
-    <code>raw/</code>, en el maestro <code>processed/</code> y en <code>FactVentas</code> <em>sin borrar el histórico</em>.
+    Cada carga recorre <strong>las cuatro capas en orden</strong> (la rúbrica pide ver este crecimiento Día 1 → Día 2):
+  </p>
+  <div class="pipelineChain" aria-label="Flujo de datos">
+    <span class="pipelineChain__step"><strong>1. Origen</strong><br><code>data_sources/dia_N/</code></span>
+    <span class="pipelineChain__arrow" aria-hidden="true">→</span>
+    <span class="pipelineChain__step"><strong>2. Raw</strong><br><code>data_lake/raw/</code></span>
+    <span class="pipelineChain__arrow" aria-hidden="true">→</span>
+    <span class="pipelineChain__step"><strong>3. Processed</strong><br><code>processed/maestro</code></span>
+    <span class="pipelineChain__arrow" aria-hidden="true">→</span>
+    <span class="pipelineChain__step"><strong>4. DW</strong><br><code>FactVentas</code> (Postgres)</span>
+  </div>
+  <p class="muted pipelineCard__lead">
+    <code>run_incremental_day</code> ejecuta los pasos 1→4 en un solo comando. <code>audit_pipeline</code> muestra
+    conteos en raw, processed y DW para la evidencia del informe.
   </p>
 
   <h4 class="pipelineCard__subhead">Opción A — Un comando por día (recomendado en la demo)</h4>
