@@ -4,7 +4,7 @@ data_sources/dia_N -> run_elt_ingest -> raw -> run_etl --append-master -> proces
 -> load_dw --incremental -> Postgres -> audit_pipeline (evidencia).
 Incluida desde analytics, home, evidence y flow.
 {% endcomment %}
-<div class="pipelineCard mt-2{% if pipeline_aside %} pipelineCard--aside{% endif %}">
+<div class="mt-2 w-full">
   
   <p class="text-lg text-stone-700 mb-8 leading-relaxed">
     Desde la raíz del repo (junto a <code class="bg-[#20131a] text-[#ff5722] px-2 py-1 rounded text-sm shadow-sm">docker-compose.yml</code>), con <code class="bg-[#20131a] text-[#ff5722] px-2 py-1 rounded text-sm shadow-sm">docker compose up</code> en marcha.
