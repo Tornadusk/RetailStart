@@ -1,0 +1,7 @@
+[
+{"usuario":"cliente1","comentario":"Buen producto","rating":5},
+{"usuario":"cliente2","comentario":"Mala calidad","rating":2},
+{"usuario":"cliente3","comentario":"Excelente servicio","rating":5},
+{"usuario":"cliente4","comentario":"Envio rapido","rating":4},
+{"usuario":"cliente5","comentario":"Recomendado","rating":5}
+]

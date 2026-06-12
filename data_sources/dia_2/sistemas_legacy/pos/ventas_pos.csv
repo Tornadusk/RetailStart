@@ -1,0 +1,6 @@
+id_venta,fecha,id_cliente,id_producto,cantidad,precio_unitario,tienda
+6,2026-04-02,106,2006,1,120000,Ñuñoa
+7,2026-04-02,107,2007,2,50000,Santiago
+8,2026-04-02,108,2008,1,80000,Providencia
+9,2026-04-02,109,2009,1,120000,Maipu
+10,2026-04-02,110,2010,3,25000,Las Condes

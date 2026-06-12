@@ -1,0 +1,6 @@
+id_llamada,id_cliente,fecha,motivo,duracion
+6,106,2026-04-02,Consulta,6
+7,107,2026-04-02,Reclamo,8
+8,108,2026-04-02,Soporte,5
+9,109,2026-04-02,Consulta,9
+10,110,2026-04-02,Reclamo,11

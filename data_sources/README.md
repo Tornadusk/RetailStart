@@ -3,7 +3,7 @@
 Este proyecto incluye un comando ELT que copia archivos “tal cual” desde una estructura
 de carpetas dispersa hacia `data_lake/raw/`.
 
-### Estructura esperada
+### Estructura base (anexo completo)
 
 Coloca tus archivos en estas rutas (relativas a `data_sources/`):
 
@@ -24,35 +24,63 @@ Coloca tus archivos en estas rutas (relativas a `data_sources/`):
 - `erp_snapshot/proveedores.csv`
 - `catalogo_multimedia/multimedia.csv`
 
-### Ejecutar ELT (dentro de Docker)
+### Cargas incrementales — Día 1 y Día 2 (rúbrica Evaluación)
+
+Carpetas listas para la demostración obligatoria (≥5 registros por archivo, un día por lote):
+
+| Carpeta | Fecha simulada | Contenido |
+|---------|----------------|-----------|
+| `dia_1/` | 2026-04-01 | Todas las fuentes obligatorias + opcionales |
+| `dia_2/` | 2026-04-02 | Nuevo lote (ventas y dimensiones del día 2) |
+
+**Demo limpia (recomendada para la presentación):** si ya cargaste datos de prueba anteriores,
+reinicia el DW y el maestro antes de grabar la evidencia Día 1 → Día 2:
+
+```powershell
+docker compose exec backend python manage.py shell -c "from core.models import FactVentas; FactVentas.objects.all().delete(); print('FactVentas vacía')"
+# Opcional: borrar data_lake/raw/* y processed/ventas_unificadas_maestro.csv en el host
+```
+
+**Demo recomendada (un comando por día):**
+
+```powershell
+docker compose exec backend python manage.py run_incremental_day --day dia_1 --ingest-date 2026-04-01
+docker compose exec backend python manage.py audit_pipeline
+
+docker compose exec backend python manage.py run_incremental_day --day dia_2 --ingest-date 2026-04-02
+docker compose exec backend python manage.py audit_pipeline
+```
+
+Tras Día 1 espera ~10 hechos en `FactVentas`; tras Día 2 ~20 (5 POS + 5 online por día).
+
+**Paso a paso (mismo resultado):**
+
+```powershell
+# Día 1
+docker compose exec backend python manage.py run_elt_ingest --sources-root /data_sources/dia_1 --ingest-date 2026-04-01
+docker compose exec backend python manage.py run_etl --append-master
+docker compose exec backend python manage.py load_dw --incremental --ventas-file maestro
+
+# Día 2
+docker compose exec backend python manage.py run_elt_ingest --sources-root /data_sources/dia_2 --ingest-date 2026-04-02
+docker compose exec backend python manage.py run_etl --append-master
+docker compose exec backend python manage.py load_dw --incremental --ventas-file maestro
+docker compose exec backend python manage.py audit_pipeline
+```
+
+- `run_etl --append-master` mantiene `data_lake/processed/ventas_unificadas_maestro.csv` (acumula, dedup `id_venta`+`canal`).
+- `load_dw --incremental` **no borra** hechos previos (histórico preservado).
+- `audit_pipeline` evidencia crecimiento en raw, processed y `FactVentas` por día/mes/año.
+
+Ver también comandos en la web: **/flow/** o **/analytics/**.
+
+### Ejecutar ELT completo (anexo de una vez)
 
 ```powershell
 docker compose exec backend python manage.py run_elt_ingest
 docker compose exec backend python manage.py run_etl
+docker compose exec backend python manage.py load_dw
 ```
 
 El ETL escribe CSV en `data_lake/processed/` (incluye fuentes opcionales limpias; el modelo
 estrella en Postgres sigue usando ventas + dimensiones obligatorias).
-
-### Carga incremental (acumular días lote a lote)
-
-Para demostrar cómo `FactVentas` recopila y ordena la información por día/mes/año:
-
-```powershell
-# Carga inicial con archivo maestro acumulativo
-docker compose exec backend python manage.py run_elt_ingest --ingest-date 2026-04-05
-docker compose exec backend python manage.py run_etl --append-master
-docker compose exec backend python manage.py load_dw --incremental --ventas-file maestro
-docker compose exec backend python manage.py audit_pipeline
-
-# Lote de días nuevos (ver simulacion_semana/README.md)
-docker compose exec backend python manage.py ingest_sales_batch --batch lote_2 --ingest-date 2026-04-08
-docker compose exec backend python manage.py run_etl --append-master
-docker compose exec backend python manage.py load_dw --incremental --ventas-file maestro
-docker compose exec backend python manage.py audit_pipeline
-```
-
-- `run_etl --append-master` mantiene `data_lake/processed/ventas_unificadas_maestro.csv`
-  (acumula días, deduplica por `id_venta` + `canal`).
-- `load_dw --incremental` hace upsert de hechos sin borrar la historia previa.
-- `audit_pipeline` muestra conteos por capa (raw → maestro → FactVentas por día/mes/año).

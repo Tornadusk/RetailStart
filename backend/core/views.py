@@ -411,8 +411,9 @@ def flow(request: HttpRequest) -> HttpResponse:
             "tech": ["ELT: run_elt_ingest", "ETL: run_etl", "pandas"],
             "status_ok": raw_total > 0,
             "details": (
-                "1) python manage.py run_elt_ingest → consolida `data_sources/` en `data_lake/raw/`. "
-                "2) python manage.py run_etl → escribe `data_lake/processed/`."
+                "Incremental (rúbrica): `run_incremental_day --day dia_1|dia_2 --ingest-date YYYY-MM-DD` "
+                "o paso a paso: run_elt_ingest → run_etl --append-master → load_dw --incremental. "
+                "Ver /flow/ o /analytics/ para comandos Docker."
             ),
         },
         {
@@ -427,7 +428,10 @@ def flow(request: HttpRequest) -> HttpResponse:
             "desc": "Transformación (batch) + carga del modelo estrella en el DW.",
             "tech": ["Scripts Python", "Django commands"],
             "status_ok": processed_csv_count > 0 and dw_counts["fact_ventas"] > 0,
-            "details": "Comandos: run_etl → load_dw",
+            "details": (
+                "run_etl --append-master → ventas_unificadas_maestro.csv · "
+                "load_dw --incremental --ventas-file maestro · audit_pipeline"
+            ),
         },
         {
             "name": "Consumo",

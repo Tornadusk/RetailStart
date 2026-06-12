@@ -1,0 +1,6 @@
+id_cliente,nombre,apellido,email,segmento,ciudad
+106,Laura,Martinez,laura@email.com,Premium,Santiago
+107,Diego,Soto,diego@email.com,Nuevo,Antofagasta
+108,Sofia,Reyes,sofia@email.com,Regular,Santiago
+109,Andres,Castro,andres@email.com,Premium,La Serena
+110,Camila,Vega,camila@email.com,Nuevo,Santiago
