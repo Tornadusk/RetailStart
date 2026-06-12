@@ -232,6 +232,13 @@ def transform(dfs: dict[str, pd.DataFrame]) -> dict[str, pd.DataFrame]:
     }
 
 
+# Nombre del archivo maestro acumulativo de ventas (crece lote a lote, sin duplicar).
+MASTER_VENTAS_NAME = "ventas_unificadas_maestro.csv"
+
+# Clave de negocio para deduplicar una venta entre lotes (id de origen + canal).
+MASTER_VENTAS_KEY = ["id_venta", "canal"]
+
+
 def load_to_processed(lake: LakePaths, transformed: dict[str, pd.DataFrame]) -> list[Path]:
     lake.processed.mkdir(parents=True, exist_ok=True)
     stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -243,9 +250,43 @@ def load_to_processed(lake: LakePaths, transformed: dict[str, pd.DataFrame]) -> 
     return out_paths
 
 
-def run_pipeline(lake_root: Path) -> list[Path]:
+def append_to_master(processed_dir: Path, ventas: pd.DataFrame) -> Path:
+    """
+    Acumula las ventas del lote actual en `ventas_unificadas_maestro.csv`.
+
+    Estrategia incremental: concatenar lo previo + lo nuevo y deduplicar por
+    `(id_venta, canal)` (`keep="last"` deja la versión más reciente de una venta
+    re-procesada). El resultado queda ordenado por fecha para reflejar el avance
+    cronológico que consume el Data Warehouse.
+    """
+    processed_dir.mkdir(parents=True, exist_ok=True)
+    master = processed_dir / MASTER_VENTAS_NAME
+
+    frames: list[pd.DataFrame] = []
+    if master.is_file():
+        frames.append(pd.read_csv(master, parse_dates=["fecha"]))
+    frames.append(ventas.copy())
+
+    combined = pd.concat(frames, ignore_index=True)
+    combined["fecha"] = pd.to_datetime(combined["fecha"], errors="coerce")
+    combined = combined.drop_duplicates(subset=MASTER_VENTAS_KEY, keep="last")
+    combined = combined.sort_values(["fecha", "id_venta"]).reset_index(drop=True)
+    combined.to_csv(master, index=False)
+    return master
+
+
+def run_pipeline(lake_root: Path, *, append_master: bool = False) -> list[Path]:
+    """
+    Ejecuta extract → transform → load (a archivos processed).
+
+    Si `append_master=True`, además acumula las ventas unificadas en el archivo
+    maestro `ventas_unificadas_maestro.csv` (carga incremental lote a lote).
+    """
     lake = LakePaths(raw=lake_root / "raw", processed=lake_root / "processed")
     dfs = extract_from_lake(lake)
     transformed = transform(dfs)
-    return load_to_processed(lake, transformed)
+    out_paths = load_to_processed(lake, transformed)
+    if append_master:
+        out_paths.append(append_to_master(lake.processed, transformed["ventas_unificadas"]))
+    return out_paths
 

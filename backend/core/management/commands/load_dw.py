@@ -8,6 +8,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 
 from core.dw_calendar import fecha_a_id_tiempo, seed_dim_tiempo_calendar
+from core.etl.ingest_transform import MASTER_VENTAS_NAME
 from core.models import DimCanal, DimCliente, DimProducto, DimTiempo, FactVentas
 
 
@@ -19,17 +20,40 @@ class ProcessedFiles:
 
 
 def _latest_processed(processed_dir: Path, prefix: str) -> Path:
-    candidates = sorted(processed_dir.glob(f"{prefix}_*.csv"))
+    # Excluir el maestro acumulativo: se selecciona aparte con --ventas-file maestro.
+    candidates = sorted(
+        p
+        for p in processed_dir.glob(f"{prefix}_*.csv")
+        if p.name != MASTER_VENTAS_NAME
+    )
     if not candidates:
         raise FileNotFoundError(f"No processed files found for prefix '{prefix}' in {processed_dir}")
     return candidates[-1]
 
 
-def _pick_files(processed_dir: Path) -> ProcessedFiles:
+def _resolve_ventas_file(processed_dir: Path, choice: str) -> Path:
+    """`auto` = último snapshot; `maestro` = archivo acumulativo; o ruta explícita."""
+    choice = (choice or "auto").strip()
+    if choice == "maestro":
+        master = processed_dir / MASTER_VENTAS_NAME
+        if not master.is_file():
+            raise FileNotFoundError(
+                f"No existe {master}. Ejecuta antes: run_etl --append-master."
+            )
+        return master
+    if choice not in ("auto", ""):
+        p = Path(choice)
+        if not p.is_file():
+            raise FileNotFoundError(f"Archivo de ventas no encontrado: {p}")
+        return p
+    return _latest_processed(processed_dir, "ventas_unificadas")
+
+
+def _pick_files(processed_dir: Path, ventas_choice: str = "auto") -> ProcessedFiles:
     return ProcessedFiles(
         clientes=_latest_processed(processed_dir, "clientes_limpio"),
         productos=_latest_processed(processed_dir, "productos_limpio"),
-        ventas=_latest_processed(processed_dir, "ventas_unificadas"),
+        ventas=_resolve_ventas_file(processed_dir, ventas_choice),
     )
 
 
@@ -63,6 +87,22 @@ class Command(BaseCommand):
             default=2030,
             help="Año final (inclusive) para pre-generar DimTiempo (default: 2030).",
         )
+        parser.add_argument(
+            "--incremental",
+            action="store_true",
+            help=(
+                "Upsert de hechos por (id_venta_origen, canal) sin borrar FactVentas. "
+                "Suma lotes nuevos conservando la historia previa."
+            ),
+        )
+        parser.add_argument(
+            "--ventas-file",
+            default="auto",
+            help=(
+                "Origen de ventas processed: 'auto' (último snapshot, default), "
+                "'maestro' (ventas_unificadas_maestro.csv) o una ruta CSV explícita."
+            ),
+        )
 
     @transaction.atomic
     def handle(self, *args, **options):
@@ -78,7 +118,9 @@ class Command(BaseCommand):
             f"filas en tabla: {DimTiempo.objects.count()}"
         )
 
-        files = _pick_files(processed_dir)
+        incremental = bool(options["incremental"])
+        files = _pick_files(processed_dir, ventas_choice=options["ventas_file"])
+        self.stdout.write(f"Ventas processed: {files.ventas.name} (incremental={incremental})")
 
         clientes = pd.read_csv(files.clientes)
         productos = pd.read_csv(files.productos)
@@ -112,8 +154,9 @@ class Command(BaseCommand):
         for c in sorted(set(ventas["canal"].dropna().astype(str))):
             DimCanal.objects.update_or_create(canal=c)
 
-        # Facts (idempotent-ish: delete and reload)
-        FactVentas.objects.all().delete()
+        # Facts: full reload (delete + bulk) o incremental (upsert por venta+canal).
+        if not incremental:
+            FactVentas.objects.all().delete()
 
         tiempo_by_id = {t.id_tiempo: t for t in DimTiempo.objects.all()}
         canal_by_name = {c.canal: c for c in DimCanal.objects.all()}
@@ -121,6 +164,8 @@ class Command(BaseCommand):
         producto_by_id = {p.id_producto: p for p in DimProducto.objects.all()}
 
         facts: list[FactVentas] = []
+        n_nuevos = 0
+        n_actualizados = 0
         for _, r in ventas.iterrows():
             fecha_dt = r["fecha"]
             if pd.isna(fecha_dt):
@@ -140,22 +185,44 @@ class Command(BaseCommand):
             if not pd.isna(id_producto_val):
                 producto = producto_by_id.get(int(id_producto_val))
 
-            facts.append(
-                FactVentas(
+            campos = {
+                "fecha": tiempo_by_id[id_tiempo],
+                "cliente": cliente_by_id[id_cliente],
+                "producto": producto,
+                "cantidad": int(r.get("cantidad", 0)),
+                "precio_unitario": int(r.get("precio_unitario", 0)),
+                "monto": int(r.get("monto", 0)),
+            }
+
+            if incremental:
+                # Clave de negocio: misma venta de origen en el mismo canal = mismo hecho.
+                _, created = FactVentas.objects.update_or_create(
                     id_venta_origen=int(r["id_venta"]),
-                    fecha=tiempo_by_id[id_tiempo],
-                    cliente=cliente_by_id[id_cliente],
-                    producto=producto,
                     canal=canal_by_name[canal],
-                    cantidad=int(r.get("cantidad", 0)),
-                    precio_unitario=int(r.get("precio_unitario", 0)),
-                    monto=int(r.get("monto", 0)),
+                    defaults=campos,
+                )
+                if created:
+                    n_nuevos += 1
+                else:
+                    n_actualizados += 1
+            else:
+                facts.append(
+                    FactVentas(
+                        id_venta_origen=int(r["id_venta"]),
+                        canal=canal_by_name[canal],
+                        **campos,
+                    )
+                )
+
+        if not incremental:
+            FactVentas.objects.bulk_create(facts, batch_size=1000)
+            self.stdout.write(self.style.SUCCESS(f"DW load OK (full reload: {len(facts)} hechos)."))
+        else:
+            self.stdout.write(
+                self.style.SUCCESS(
+                    f"DW load OK (incremental: {n_nuevos} nuevos, {n_actualizados} actualizados)."
                 )
             )
-
-        FactVentas.objects.bulk_create(facts, batch_size=1000)
-
-        self.stdout.write(self.style.SUCCESS("DW load OK."))
         self.stdout.write(f"- DimCliente: {DimCliente.objects.count()}")
         self.stdout.write(f"- DimProducto: {DimProducto.objects.count()}")
         self.stdout.write(f"- DimTiempo: {DimTiempo.objects.count()}")

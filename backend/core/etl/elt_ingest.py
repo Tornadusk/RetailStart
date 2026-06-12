@@ -42,10 +42,43 @@ DEFAULT_SCATTERED_SOURCES: tuple[SourceFile, ...] = (
 )
 
 
+# Archivos de ventas que cambian en cada lote diario/semanal (carga incremental).
+SALES_BATCH_FILES: tuple[str, ...] = ("ventas_pos.csv", "ventas_online.csv")
+
+
 def _dated_filename(lake_raw_name: str, ingest_stamp: str) -> str:
     """`ventas_pos.csv` → `ventas_pos_20260508.csv` con sufijo AAAAMMDD."""
     p = Path(lake_raw_name)
     return f"{p.stem}_{ingest_stamp}{p.suffix}"
+
+
+def ingest_sales_batch(
+    batch_dir: Path,
+    lake_raw: Path,
+    sales_files: tuple[str, ...] = SALES_BATCH_FILES,
+    ingest_day: date | None = None,
+) -> list[Path]:
+    """
+    Ingiere SOLO los archivos de ventas de un lote (un día / una semana nueva) a `raw/`.
+
+    Las dimensiones (clientes, productos) se asumen ya landed por `ingest_scattered_sources`.
+    Cada archivo se copia con sufijo de fecha para trazabilidad incremental.
+    """
+    when = ingest_day or date.today()
+    ingest_stamp = when.strftime("%Y%m%d")
+
+    lake_raw.mkdir(parents=True, exist_ok=True)
+    written: list[Path] = []
+    for name in sales_files:
+        src = batch_dir / name
+        if not src.is_file():
+            raise FileNotFoundError(
+                f"Lote de ventas: no existe {src} (esperaba {name} dentro de {batch_dir})."
+            )
+        dest = lake_raw / _dated_filename(name, ingest_stamp)
+        shutil.copy2(src, dest)
+        written.append(dest)
+    return written
 
 
 def ingest_scattered_sources(
