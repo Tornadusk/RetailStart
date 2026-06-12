@@ -36,11 +36,20 @@
           Ver flujo completo (Origen → Consumo): <a class="link text-mars-accent hover:text-mars-secondary transition-colors underline" href="/flow/">/flow/</a>
         </p>
 
-        <div class="actions">
-          <a class="btn bg-mars-sidebar text-white hover:bg-mars-surface shadow-sm rounded-md px-4 py-2 transition-colors" href="/dashboard/">Dashboard (gráficos)</a>
-          <a class="btn bg-mars-sidebar text-white hover:bg-mars-surface shadow-sm rounded-md px-4 py-2 transition-colors" href="/flow/">Abrir Flujo (origen → consumo)</a>
-          <a class="btn bg-mars-sidebar text-white hover:bg-mars-surface shadow-sm rounded-md px-4 py-2 transition-colors" href="/analytics/">Abrir Analytics (consultas desde el DW)</a>
-          <a class="btn bg-mars-sidebar text-white hover:bg-mars-surface shadow-sm rounded-md px-4 py-2 transition-colors" href="/evidence/">Abrir Evidencia (PNGs + CSV)</a>
+        <div class="flex flex-wrap gap-3 mt-6">
+          <a class="bg-[#ff5722] text-white shadow-md hover:bg-[#e64a19] hover:shadow-lg hover:-translate-y-0.5 active:scale-95 transition-all rounded-xl px-5 py-2.5 font-semibold flex items-center justify-center" href="/dashboard/">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+            Dashboard (gráficos)
+          </a>
+          <a class="bg-white text-stone-700 border border-stone-200 shadow-sm hover:border-[#ff5722]/40 hover:text-[#ff5722] hover:shadow hover:-translate-y-0.5 active:scale-95 transition-all rounded-xl px-5 py-2.5 font-medium flex items-center justify-center" href="/flow/">
+            Abrir Flujo (origen → consumo)
+          </a>
+          <a class="bg-white text-stone-700 border border-stone-200 shadow-sm hover:border-[#ff5722]/40 hover:text-[#ff5722] hover:shadow hover:-translate-y-0.5 active:scale-95 transition-all rounded-xl px-5 py-2.5 font-medium flex items-center justify-center" href="/analytics/">
+            Abrir Analytics (consultas DW)
+          </a>
+          <a class="bg-white text-stone-700 border border-stone-200 shadow-sm hover:border-[#ff5722]/40 hover:text-[#ff5722] hover:shadow hover:-translate-y-0.5 active:scale-95 transition-all rounded-xl px-5 py-2.5 font-medium flex items-center justify-center" href="/evidence/">
+            Abrir Evidencia (PNGs + CSV)
+          </a>
         </div>
       </section>
 
