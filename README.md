@@ -141,6 +141,23 @@ Abrir en el navegador:
 
 Nota: este proyecto **no se usa en `http://127.0.0.1:8000/`** cuando estás en Docker; ese puerto es típico de `runserver` local.
 
+### Cambios en código o plantillas (sin `docker compose build`)
+
+`docker-compose.yml` monta `./backend` en el contenedor, así que **no hace falta reconstruir la imagen** cuando editas Python, HTML, CSS o JS en `backend/`.
+
+| Qué cambiaste | Qué hacer |
+|---------------|-----------|
+| Archivos **`.py`** (vistas, comandos, ETL) | Gunicorn usa `--reload`: suele aplicarse solo. Si no ves el cambio, reinicia el backend. |
+| Plantillas **`.html`** en `backend/templates/` | Gunicorn **no** recarga HTML automáticamente. Ejecuta: `docker compose restart backend` y recarga el navegador (`Ctrl+Shift+R`). |
+| **CSS/JS** en `backend/static/` | Tras reiniciar (si hace falta), fuerza recarga en el navegador; las URLs llevan `?v=` para romper caché. |
+| **`requirements.txt`** o **`Dockerfile`** | Sí necesitas: `docker compose up --build` |
+
+```powershell
+docker compose restart backend
+```
+
+Luego abre de nuevo `http://localhost:8080/flow/` (o `/analytics/`) con recarga forzada.
+
 Para bajar contenedores:
 
 ```powershell
@@ -151,6 +168,19 @@ Para borrar también la data persistida de Postgres:
 
 ```powershell
 docker compose down -v
+```
+
+## Cargas incrementales (Día 1 → Día 2)
+
+Para la evidencia de la rúbrica (raw → processed → DW sin borrar histórico), ver **`data_sources/README.md`** y la sección **Pipeline y comandos Docker** en la web (`/flow/`, `/analytics/`).
+
+Resumen:
+
+```powershell
+docker compose exec backend python manage.py run_incremental_day --day dia_1 --ingest-date 2026-04-01
+docker compose exec backend python manage.py audit_pipeline
+docker compose exec backend python manage.py run_incremental_day --day dia_2 --ingest-date 2026-04-02
+docker compose exec backend python manage.py audit_pipeline
 ```
 
 ## Actividad 2 (ETL + DW + Visualización)
