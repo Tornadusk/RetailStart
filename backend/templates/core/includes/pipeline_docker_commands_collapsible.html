@@ -3,7 +3,7 @@ Comandos Docker en bloque plegable (+ / ^') con estado en localStorage (misma lg
 Uso desde otras plantillas: include con storage_key (obligatorio), opcional wrap_card, pipeline_aside, default_open, heading.
 {% endcomment %}
 <details
-  class="analyticsCollapsible{% if wrap_card %} !bg-bone-light !border-stone-300/40 border rounded-xl shadow-sm p-5 mt-4{% else %} !bg-bone-light !border-stone-300/40 border rounded-xl shadow-sm mt-3{% endif %}"
+  class="analyticsCollapsible{% if wrap_card %} bg-transparent mt-4{% else %} bg-transparent mt-3{% endif %}"
   id="collapsible-pipeline-{{ storage_key }}"
   data-storage-key="{{ storage_key }}"
   data-default-open="{% if default_open == 'true' %}true{% else %}false{% endif %}"
