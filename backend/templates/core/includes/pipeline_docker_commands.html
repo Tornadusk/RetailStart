@@ -1,100 +1,165 @@
 {% comment %}
 Árbol de datos (rúbrica — cargas incrementales Día 1 / Día 2):
-data_sources/dia_N → run_elt_ingest → raw → run_etl --append-master → processed/maestro
-→ load_dw --incremental → Postgres → audit_pipeline (evidencia).
+data_sources/dia_N -> run_elt_ingest -> raw -> run_etl --append-master -> processed/maestro
+-> load_dw --incremental -> Postgres -> audit_pipeline (evidencia).
 Incluida desde analytics, home, evidence y flow.
 {% endcomment %}
 <div class="pipelineCard{% if pipeline_aside %} pipelineCard--aside{% endif %}">
-  <h3 class="h3 pipelineCard__title">Pipeline y comandos Docker</h3>
-  <p class="muted pipelineCard__lead">
-    Desde la raíz del repo (junto a <code>docker-compose.yml</code>), con <code>docker compose up</code> en marcha.
-    Cada carga recorre <strong>las cuatro capas en orden</strong> (la rúbrica pide ver este crecimiento Día 1 → Día 2):
+  
+  <p class="text-lg text-stone-700 mb-8 leading-relaxed">
+    Desde la raíz del repo (junto a <code class="bg-mars-bg text-mars-accent px-2 py-1 rounded shadow-sm">docker-compose.yml</code>), con <code class="bg-mars-bg text-mars-accent px-2 py-1 rounded shadow-sm">docker compose up</code> en marcha.
+    Cada carga recorre <strong class="border-b-2 border-mars-accent pb-0.5 text-stone-900">las cuatro capas en orden</strong> (la rúbrica pide ver este crecimiento Día 1 -> Día 2):
   </p>
-  <div class="pipelineChain" aria-label="Flujo de datos">
-    <span class="pipelineChain__step"><strong>1. Origen</strong><br><code>data_sources/dia_N/</code></span>
-    <span class="pipelineChain__arrow" aria-hidden="true">→</span>
-    <span class="pipelineChain__step"><strong>2. Raw</strong><br><code>data_lake/raw/</code></span>
-    <span class="pipelineChain__arrow" aria-hidden="true">→</span>
-    <span class="pipelineChain__step"><strong>3. Processed</strong><br><code>processed/maestro</code></span>
-    <span class="pipelineChain__arrow" aria-hidden="true">→</span>
-    <span class="pipelineChain__step"><strong>4. DW</strong><br><code>FactVentas</code> (Postgres)</span>
+  
+  <div class="bg-[#f4f1ee] rounded-2xl p-6 flex flex-col md:flex-row items-center md:items-stretch gap-4 overflow-x-auto mb-10 shadow-inner">
+    <div class="bg-white rounded-xl shadow-sm p-4 flex-1 min-w-[200px] flex flex-col border border-stone-200">
+      <div class="text-mars-accent font-bold text-lg mb-3 flex items-center">
+        <span class="bg-mars-accent/10 text-mars-accent font-bold w-6 h-6 inline-flex items-center justify-center rounded-full text-sm mr-2">1</span>
+        Origen
+      </div>
+      <div class="bg-stone-50 border border-stone-200 text-stone-500 font-mono text-sm p-2 rounded mt-auto break-all">data_sources/dia_N/</div>
+    </div>
+    
+    <div class="text-stone-400 font-bold text-2xl flex items-center justify-center rotate-90 md:rotate-0" aria-hidden="true">&#8594;</div>
+    
+    <div class="bg-white rounded-xl shadow-sm p-4 flex-1 min-w-[200px] flex flex-col border border-stone-200">
+      <div class="text-mars-accent font-bold text-lg mb-3 flex items-center">
+        <span class="bg-mars-accent/10 text-mars-accent font-bold w-6 h-6 inline-flex items-center justify-center rounded-full text-sm mr-2">2</span>
+        Raw
+      </div>
+      <div class="bg-stone-50 border border-stone-200 text-stone-500 font-mono text-sm p-2 rounded mt-auto break-all">data_lake/raw/</div>
+    </div>
+    
+    <div class="text-stone-400 font-bold text-2xl flex items-center justify-center rotate-90 md:rotate-0" aria-hidden="true">&#8594;</div>
+    
+    <div class="bg-white rounded-xl shadow-sm p-4 flex-1 min-w-[200px] flex flex-col border border-stone-200">
+      <div class="text-mars-accent font-bold text-lg mb-3 flex items-center">
+        <span class="bg-mars-accent/10 text-mars-accent font-bold w-6 h-6 inline-flex items-center justify-center rounded-full text-sm mr-2">3</span>
+        Processed
+      </div>
+      <div class="bg-stone-50 border border-stone-200 text-stone-500 font-mono text-sm p-2 rounded mt-auto break-all">processed/maestro</div>
+    </div>
+    
+    <div class="text-stone-400 font-bold text-2xl flex items-center justify-center rotate-90 md:rotate-0" aria-hidden="true">&#8594;</div>
+    
+    <div class="bg-white rounded-xl shadow-sm p-4 flex-1 min-w-[200px] flex flex-col border border-stone-200">
+      <div class="text-mars-accent font-bold text-lg mb-3 flex items-center">
+        <span class="bg-mars-accent/10 text-mars-accent font-bold w-6 h-6 inline-flex items-center justify-center rounded-full text-sm mr-2">4</span>
+        DW
+      </div>
+      <div class="bg-stone-50 border border-stone-200 text-stone-500 font-mono text-sm p-2 rounded mt-auto break-all">FactVentas (Postgres)</div>
+    </div>
   </div>
-  <p class="muted pipelineCard__lead">
-    <code>run_incremental_day</code> ejecuta los pasos 1→4 en un solo comando. <code>audit_pipeline</code> muestra
-    conteos en raw, processed y DW para la evidencia del informe.
+  
+  <p class="text-stone-600 mb-10 leading-relaxed text-lg">
+    <code class="bg-mars-bg text-mars-textMain font-mono rounded px-1.5 py-0.5 text-sm">run_incremental_day</code> ejecuta los pasos 1-4 en un solo comando. 
+    <code class="bg-mars-bg text-mars-textMain font-mono rounded px-1.5 py-0.5 text-sm">audit_pipeline</code> muestra conteos en raw, processed y DW para la evidencia del informe.
   </p>
 
-  <h4 class="pipelineCard__subhead">Opción A — Un comando por día (recomendado en la demo)</h4>
-  <ol class="commandSteps">
-    <li class="commandSteps__item">
-      <span class="commandSteps__label">Día 1</span>
-      <code class="commandSteps__cmd">docker compose exec backend python manage.py run_incremental_day --day dia_1 --ingest-date 2026-04-01</code>
-      <p class="commandSteps__what muted">
-        Fuentes en <code>data_sources/dia_1/</code> (≥5 registros por archivo) → ELT → ETL maestro → DW incremental → auditoría.
-      </p>
-    </li>
-    <li class="commandSteps__item">
-      <span class="commandSteps__label">Día 2</span>
-      <code class="commandSteps__cmd">docker compose exec backend python manage.py run_incremental_day --day dia_2 --ingest-date 2026-04-02</code>
-      <p class="commandSteps__what muted">
-        Fuentes en <code>data_sources/dia_2/</code> → mismos pasos. <code>FactVentas</code> crece; el Día 1 se conserva.
-      </p>
-    </li>
-    <li class="commandSteps__item">
-      <span class="commandSteps__label">Evidencia</span>
-      <code class="commandSteps__cmd">docker compose exec backend python manage.py audit_pipeline</code>
-      <p class="commandSteps__what muted">
-        Conteos por capa: archivos en <code>raw/</code>, filas del maestro por fecha, hechos en Postgres por día/mes/año.
-        Ejecutar <strong>antes y después</strong> de cada día para el informe.
-      </p>
-    </li>
-  </ol>
+  <h4 class="text-mars-secondary font-bold text-2xl mb-8">Opción A — Un comando por día (recomendado en la demo)</h4>
+  <div class="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-stone-200 before:to-transparent">
+    
+    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between md:even:flex-row-reverse group">
+      <div class="flex items-center md:w-1/2 mb-3 md:mb-0 justify-start md:pr-8 md:even:pr-0 md:even:pl-8 md:even:justify-end">
+        <div class="w-10 h-10 rounded-full border border-stone-300 bg-white text-stone-600 font-bold flex items-center justify-center z-10 shadow-sm mr-4 md:mr-0 md:group-even:mr-4 md:group-odd:ml-4 shrink-0 text-lg md:absolute md:left-1/2 md:-translate-x-1/2">1</div>
+        <span class="font-bold text-stone-900 tracking-wide text-lg uppercase">DÍA 1</span>
+      </div>
+      <div class="w-full md:w-1/2 ml-14 md:ml-0 md:pl-8 md:group-even:pl-0 md:group-even:pr-8">
+        <div class="bg-[#1e1116] text-stone-300 font-mono p-5 rounded-2xl shadow-md overflow-x-auto mb-4 border border-mars-border/50">
+          <span class="text-white">docker compose exec backend python manage.py</span> <span class="text-mars-secondary">run_incremental_day</span> --day dia_1 --ingest-date 2026-04-01
+        </div>
+        <p class="text-stone-600 leading-relaxed text-sm">
+          Fuentes en <code class="bg-stone-100 border border-stone-200 text-stone-600 font-mono rounded px-1 py-0.5">data_sources/dia_1/</code> (~5 registros por archivo) -> ELT -> ETL maestro -> DW incremental -> auditoría.
+        </p>
+      </div>
+    </div>
+    
+    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between md:even:flex-row-reverse group">
+      <div class="flex items-center md:w-1/2 mb-3 md:mb-0 justify-start md:pr-8 md:even:pr-0 md:even:pl-8 md:even:justify-end">
+        <div class="w-10 h-10 rounded-full border border-stone-300 bg-white text-stone-600 font-bold flex items-center justify-center z-10 shadow-sm mr-4 md:mr-0 md:group-even:mr-4 md:group-odd:ml-4 shrink-0 text-lg md:absolute md:left-1/2 md:-translate-x-1/2">2</div>
+        <span class="font-bold text-stone-900 tracking-wide text-lg uppercase">DÍA 2</span>
+      </div>
+      <div class="w-full md:w-1/2 ml-14 md:ml-0 md:pl-8 md:group-even:pl-0 md:group-even:pr-8">
+        <div class="bg-[#1e1116] text-stone-300 font-mono p-5 rounded-2xl shadow-md overflow-x-auto mb-4 border border-mars-border/50">
+          <span class="text-white">docker compose exec backend python manage.py</span> <span class="text-mars-secondary">run_incremental_day</span> --day dia_2 --ingest-date 2026-04-02
+        </div>
+        <p class="text-stone-600 leading-relaxed text-sm">
+          Fuentes en <code class="bg-stone-100 border border-stone-200 text-stone-600 font-mono rounded px-1 py-0.5">data_sources/dia_2/</code> -> mismos pasos. <code class="bg-stone-100 border border-stone-200 text-stone-600 font-mono rounded px-1 py-0.5">FactVentas</code> crece; el Día 1 se conserva.
+        </p>
+      </div>
+    </div>
+    
+    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between md:even:flex-row-reverse group">
+      <div class="flex items-center md:w-1/2 mb-3 md:mb-0 justify-start md:pr-8 md:even:pr-0 md:even:pl-8 md:even:justify-end">
+        <div class="w-10 h-10 rounded-full border border-stone-300 bg-white text-stone-600 font-bold flex items-center justify-center z-10 shadow-sm mr-4 md:mr-0 md:group-even:mr-4 md:group-odd:ml-4 shrink-0 text-lg md:absolute md:left-1/2 md:-translate-x-1/2">3</div>
+        <span class="font-bold text-stone-900 tracking-wide text-lg uppercase">Evidencia</span>
+      </div>
+      <div class="w-full md:w-1/2 ml-14 md:ml-0 md:pl-8 md:group-even:pl-0 md:group-even:pr-8">
+        <div class="bg-[#1e1116] text-stone-300 font-mono p-5 rounded-2xl shadow-md overflow-x-auto mb-4 border border-mars-border/50">
+          <span class="text-white">docker compose exec backend python manage.py</span> <span class="text-mars-secondary">audit_pipeline</span>
+        </div>
+        <p class="text-stone-600 leading-relaxed text-sm">
+          Conteos por capa: archivos en <code class="bg-stone-100 border border-stone-200 text-stone-600 font-mono rounded px-1 py-0.5">raw/</code>, filas del maestro por fecha, hechos en Postgres por día/mes/año.
+          Ejecutar <strong class="text-stone-900">antes y después</strong> de cada día para el informe.
+        </p>
+      </div>
+    </div>
 
-  <h4 class="pipelineCard__subhead">Opción B — Paso a paso (mismo flujo, más detalle)</h4>
-  <p class="muted pipelineCard__minihead"><strong>Día 1</strong> — datos del 2026-04-01</p>
-  <ol class="commandSteps commandSteps--compact">
-    <li class="commandSteps__item">
-      <code class="commandSteps__cmd">docker compose exec backend python manage.py run_elt_ingest --sources-root /data_sources/dia_1 --ingest-date 2026-04-01  # ELT: origen → raw</code>
-    </li>
-    <li class="commandSteps__item">
-      <code class="commandSteps__cmd">docker compose exec backend python manage.py run_etl --append-master  # ETL: raw → processed (maestro)</code>
-    </li>
-    <li class="commandSteps__item">
-      <code class="commandSteps__cmd">docker compose exec backend python manage.py load_dw --incremental --ventas-file maestro  # processed → DW</code>
-    </li>
-    <li class="commandSteps__item">
-      <code class="commandSteps__cmd">docker compose exec backend python manage.py audit_pipeline  # evidencia (captura informe)</code>
-    </li>
-  </ol>
-  <p class="muted pipelineCard__minihead"><strong>Día 2</strong> — datos del 2026-04-02</p>
-  <ol class="commandSteps commandSteps--compact">
-    <li class="commandSteps__item">
-      <code class="commandSteps__cmd">docker compose exec backend python manage.py run_elt_ingest --sources-root /data_sources/dia_2 --ingest-date 2026-04-02  # ELT: origen → raw</code>
-    </li>
-    <li class="commandSteps__item">
-      <code class="commandSteps__cmd">docker compose exec backend python manage.py run_etl --append-master  # ETL: raw → processed (maestro)</code>
-    </li>
-    <li class="commandSteps__item">
-      <code class="commandSteps__cmd">docker compose exec backend python manage.py load_dw --incremental --ventas-file maestro  # processed → DW</code>
-    </li>
-    <li class="commandSteps__item">
-      <code class="commandSteps__cmd">docker compose exec backend python manage.py audit_pipeline  # evidencia (captura informe)</code>
-    </li>
-  </ol>
+  </div>
 
-  <h4 class="pipelineCard__subhead">Opcional — gráficos de respaldo</h4>
-  <ol class="commandSteps commandSteps--compact">
-    <li class="commandSteps__item">
-      <code class="commandSteps__cmd">docker compose exec backend python manage.py analyze_dw  # PNG en processed/evidence/</code>
-    </li>
-  </ol>
+  <hr class="my-12 border-stone-200">
 
-  <p class="muted pipelineCard__paths">
-    Rutas en el proyecto:
-    <code>data_sources/dia_1/</code>,
-    <code>data_sources/dia_2/</code>,
-    <code>data_lake/raw/</code>,
-    <code>data_lake/processed/ventas_unificadas_maestro.csv</code>,
-    Postgres <code>FactVentas</code>.
+  <h4 class="text-stone-800 font-bold text-xl mb-6">Opción B — Paso a paso (mismo flujo, más detalle)</h4>
+  
+  <div class="mb-8">
+    <p class="text-stone-600 font-bold mb-3 bg-stone-100 inline-block px-3 py-1 rounded-full text-sm">Día 1 — datos del 2026-04-01</p>
+    <div class="space-y-3 pl-4 border-l-2 border-stone-200">
+      <div class="bg-[#1e1116] text-stone-300 font-mono p-4 rounded-xl overflow-x-auto text-sm border border-mars-border/30 hover:border-mars-border transition-colors">
+        <span class="text-white">docker compose exec backend python manage.py</span> <span class="text-mars-accent">run_elt_ingest</span> --sources-root /data_sources/dia_1 --ingest-date 2026-04-01  <span class="text-stone-500"># ELT: origen -> raw</span>
+      </div>
+      <div class="bg-[#1e1116] text-stone-300 font-mono p-4 rounded-xl overflow-x-auto text-sm border border-mars-border/30 hover:border-mars-border transition-colors">
+        <span class="text-white">docker compose exec backend python manage.py</span> <span class="text-mars-accent">run_etl</span> --append-master  <span class="text-stone-500"># ETL: raw -> processed (maestro)</span>
+      </div>
+      <div class="bg-[#1e1116] text-stone-300 font-mono p-4 rounded-xl overflow-x-auto text-sm border border-mars-border/30 hover:border-mars-border transition-colors">
+        <span class="text-white">docker compose exec backend python manage.py</span> <span class="text-mars-accent">load_dw</span> --incremental --ventas-file maestro  <span class="text-stone-500"># processed -> DW</span>
+      </div>
+      <div class="bg-[#1e1116] text-stone-300 font-mono p-4 rounded-xl overflow-x-auto text-sm border border-mars-border/30 hover:border-mars-border transition-colors">
+        <span class="text-white">docker compose exec backend python manage.py</span> <span class="text-mars-secondary">audit_pipeline</span>  <span class="text-stone-500"># evidencia (captura informe)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mb-8">
+    <p class="text-stone-600 font-bold mb-3 bg-stone-100 inline-block px-3 py-1 rounded-full text-sm">Día 2 — datos del 2026-04-02</p>
+    <div class="space-y-3 pl-4 border-l-2 border-stone-200">
+      <div class="bg-[#1e1116] text-stone-300 font-mono p-4 rounded-xl overflow-x-auto text-sm border border-mars-border/30 hover:border-mars-border transition-colors">
+        <span class="text-white">docker compose exec backend python manage.py</span> <span class="text-mars-accent">run_elt_ingest</span> --sources-root /data_sources/dia_2 --ingest-date 2026-04-02  <span class="text-stone-500"># ELT: origen -> raw</span>
+      </div>
+      <div class="bg-[#1e1116] text-stone-300 font-mono p-4 rounded-xl overflow-x-auto text-sm border border-mars-border/30 hover:border-mars-border transition-colors">
+        <span class="text-white">docker compose exec backend python manage.py</span> <span class="text-mars-accent">run_etl</span> --append-master  <span class="text-stone-500"># ETL: raw -> processed (maestro)</span>
+      </div>
+      <div class="bg-[#1e1116] text-stone-300 font-mono p-4 rounded-xl overflow-x-auto text-sm border border-mars-border/30 hover:border-mars-border transition-colors">
+        <span class="text-white">docker compose exec backend python manage.py</span> <span class="text-mars-accent">load_dw</span> --incremental --ventas-file maestro  <span class="text-stone-500"># processed -> DW</span>
+      </div>
+      <div class="bg-[#1e1116] text-stone-300 font-mono p-4 rounded-xl overflow-x-auto text-sm border border-mars-border/30 hover:border-mars-border transition-colors">
+        <span class="text-white">docker compose exec backend python manage.py</span> <span class="text-mars-secondary">audit_pipeline</span>  <span class="text-stone-500"># evidencia (captura informe)</span>
+      </div>
+    </div>
+  </div>
+
+  <h4 class="text-stone-800 font-bold text-xl mb-4">Opcional — gráficos de respaldo</h4>
+  <div class="space-y-3 pl-4 border-l-2 border-stone-200 mb-8">
+    <div class="bg-[#1e1116] text-stone-300 font-mono p-4 rounded-xl overflow-x-auto text-sm border border-mars-border/30 hover:border-mars-border transition-colors">
+      <span class="text-white">docker compose exec backend python manage.py</span> <span class="text-mars-accent">analyze_dw</span>  <span class="text-stone-500"># PNG en processed/evidence/</span>
+    </div>
+  </div>
+
+  <p class="text-stone-500 text-sm bg-stone-50 p-4 rounded-xl border border-stone-200">
+    <strong>Rutas en el proyecto:</strong><br>
+    <code class="text-stone-600 bg-white border border-stone-200 px-1 py-0.5 rounded mr-1">data_sources/dia_1/</code>
+    <code class="text-stone-600 bg-white border border-stone-200 px-1 py-0.5 rounded mr-1">data_sources/dia_2/</code>
+    <code class="text-stone-600 bg-white border border-stone-200 px-1 py-0.5 rounded mr-1">data_lake/raw/</code>
+    <code class="text-stone-600 bg-white border border-stone-200 px-1 py-0.5 rounded mr-1">data_lake/processed/ventas_unificadas_maestro.csv</code>
+    Postgres <code class="text-stone-600 bg-white border border-stone-200 px-1 py-0.5 rounded">FactVentas</code>.
   </p>
 </div>
