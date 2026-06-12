@@ -3,14 +3,14 @@ Comandos Docker en bloque plegable (+ / ^') con estado en localStorage (misma lg
 Uso desde otras plantillas: include con storage_key (obligatorio), opcional wrap_card, pipeline_aside, default_open, heading.
 {% endcomment %}
 <details
-  class="analyticsCollapsible{% if wrap_card %} bg-transparent mt-4{% else %} bg-transparent mt-3{% endif %}"
+  class="analyticsCollapsible{% if wrap_card %} bg-[#F8F5F2] border border-stone-300/40 rounded-xl shadow-sm p-5 mt-4{% else %} mt-3{% endif %}"
   id="collapsible-pipeline-{{ storage_key }}"
   data-storage-key="{{ storage_key }}"
   data-default-open="{% if default_open == 'true' %}true{% else %}false{% endif %}"
   {% if default_open == 'true' %}open{% endif %}
 >
   <summary class="analyticsCollapsible__summary flex items-center cursor-pointer mb-6 group">
-    <span class="analyticsCollapsible__toggle bg-mars-bg text-white w-10 h-10 flex items-center justify-center rounded-lg mr-4 shadow-sm group-hover:bg-mars-surface transition-colors" aria-hidden="true"></span>
+    <span class="analyticsCollapsible__toggle bg-[#20131a] text-white w-10 h-10 flex items-center justify-center rounded-lg mr-4 shadow-sm group-hover:bg-mars-surface transition-colors" aria-hidden="true"></span>
     <h2 class="analyticsCollapsible__heading text-2xl font-bold text-stone-900 m-0">{% if heading %}{{ heading }}{% else %}Pipeline y comandos Docker{% endif %}</h2>
   </summary>
   <div class="analyticsCollapsible__body">
