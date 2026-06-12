@@ -1,0 +1,32 @@
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Inter', 'sans-serif'] },
+        colors: {
+          mars: {
+            bg: '#1a0f14',
+            sidebar: '#20131a',
+            surface: '#2d1a24',
+            border: '#4a2c3f',
+            accent: '#ff5722',
+            secondary: '#e91e63',
+            textMain: '#ffffff',
+            textMuted: '#ccaab8'
+          }
+        }
+      }
+    }
+  }
+</script>
+<style type="text/tailwindcss">
+  @layer utilities {
+    .bg-bone-light { background-color: #F8F5F2; }
+    .bg-bone-darker { background-color: #EAE4DD; }
+  }
+  body {
+    @apply font-sans;
+  }
+</style>

@@ -6,41 +6,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Evidencia - RetailStart</title>
     <link rel="stylesheet" href="{% static 'css/main.css' %}?v=17" />
+      {% include "core/includes/tailwind_head.html" %}
   </head>
   <body class="appShell">
     {% include "core/includes/site_sidebar.html" %}
-    <div class="appShell__main">
+    <div class="appShell__main bg-bone-darker font-sans text-stone-700 min-h-screen">
     <main class="container">
       <header class="header">
-        <h1 class="title">Evidencia</h1>
-        <p class="subtitle">
-          Pipeline: ELT (<code>data_sources</code> → raw) → ETL (raw → processed) → DW → gráficos
+        <h1 class="title font-bold tracking-tight text-3xl text-stone-900 mb-2">Evidencia</h1>
+        <p class="subtitle text-lg text-stone-900 mb-4">
+          Pipeline: ELT (<code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">data_sources</code> → raw) → ETL (raw → processed) → DW → gráficos
         </p>
         {% include "core/includes/site_quick_nav.html" %}
       </header>
 
       <section class="layout">
-        <aside class="card">
-          <h2>Estado del flujo</h2>
+        <aside class="card bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5">
+          <h2 class="text-xl font-bold text-stone-900 mb-4">Estado del flujo</h2>
 
           <div class="kpiGrid">
-            <div class="kpi">
+            <div class="kpi bg-white border-l-4 border-l-mars-secondary border-y border-r border-stone-300/40 rounded-r-xl shadow-sm p-4">
               <div class="kpiLabel">DW FactVentas</div>
               <div class="kpiValue">{{ dw_counts.fact_ventas }}</div>
             </div>
-            <div class="kpi">
+            <div class="kpi bg-white border-l-4 border-l-mars-secondary border-y border-r border-stone-300/40 rounded-r-xl shadow-sm p-4">
               <div class="kpiLabel">DimCliente</div>
               <div class="kpiValue">{{ dw_counts.dim_cliente }}</div>
             </div>
-            <div class="kpi">
+            <div class="kpi bg-white border-l-4 border-l-mars-secondary border-y border-r border-stone-300/40 rounded-r-xl shadow-sm p-4">
               <div class="kpiLabel">DimProducto</div>
               <div class="kpiValue">{{ dw_counts.dim_producto }}</div>
             </div>
-            <div class="kpi">
+            <div class="kpi bg-white border-l-4 border-l-mars-secondary border-y border-r border-stone-300/40 rounded-r-xl shadow-sm p-4">
               <div class="kpiLabel">DimTiempo</div>
               <div class="kpiValue">{{ dw_counts.dim_tiempo }}</div>
             </div>
-            <div class="kpi">
+            <div class="kpi bg-white border-l-4 border-l-mars-secondary border-y border-r border-stone-300/40 rounded-r-xl shadow-sm p-4">
               <div class="kpiLabel">DimCanal</div>
               <div class="kpiValue">{{ dw_counts.dim_canal }}</div>
             </div>
@@ -51,38 +52,38 @@
           {% include "core/includes/pipeline_docker_commands_collapsible.html" with storage_key="evidence-pipeline" pipeline_aside=True default_open='true' %}
 
           <div class="evidenceFileMeta">
-            <p class="muted">
+            <p class="muted text-stone-500">
               Último CSV: <span class="badge">{% if latest_processed %}{{ latest_processed }}{% else %}—{% endif %}</span>
             </p>
-            <p class="muted">
+            <p class="muted text-stone-500">
               Último gráfico: <span class="badge">{% if latest_chart %}{{ latest_chart }}{% else %}—{% endif %}</span>
             </p>
           </div>
         </aside>
 
         <div class="stack">
-          <section class="card">
-            <h2>Gráficos (PNG)</h2>
+          <section class="card bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5">
+            <h2 class="text-xl font-bold text-stone-900 mb-4">Gráficos (PNG)</h2>
             {% if images %}
               <div class="charts">
                 {% for img in images %}
-                  <figure class="tile chartTile">
+                  <figure class="tile chartTile bg-bone-light border border-stone-300/40 rounded-xl shadow-sm">
                     <a class="chartLink" href="{{ img.url }}">
                       <div class="chartFrame">
                         <img class="chartImg" src="{{ img.url }}" alt="{{ img.name }}" loading="lazy" />
                       </div>
                     </a>
-                    <figcaption class="muted">{{ img.name }}</figcaption>
+                    <figcaption class="muted text-stone-500">{{ img.name }}</figcaption>
                   </figure>
                 {% endfor %}
               </div>
             {% else %}
-              <p class="muted">No hay gráficos aún. Ejecuta: <code>python manage.py analyze_dw</code></p>
+              <p class="muted text-stone-500">No hay gráficos aún. Ejecuta: <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">python manage.py analyze_dw</code></p>
             {% endif %}
           </section>
 
-          <section class="card cardStack">
-            <h2>Archivos procesados (CSV)</h2>
+          <section class="card bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5 cardStack">
+            <h2 class="text-xl font-bold text-stone-900 mb-4">Archivos procesados (CSV)</h2>
             {% if files %}
               <div class="tableWrap">
                 <table class="table">
@@ -95,7 +96,7 @@
                   <tbody>
                     {% for f in files %}
                       <tr>
-                        <td><a class="link" href="{{ f.url }}">{{ f.name }}</a></td>
+                        <td><a class="link text-mars-accent hover:text-mars-secondary transition-colors underline" href="{{ f.url }}">{{ f.name }}</a></td>
                         <td class="right muted">{{ f.size_kb }}</td>
                       </tr>
                     {% endfor %}
@@ -103,7 +104,7 @@
                 </table>
               </div>
             {% else %}
-              <p class="muted">No hay CSV procesados aún. Ejecutá <code>run_elt_ingest</code> si usás <code>data_sources/</code>, luego <code>run_etl</code>.</p>
+              <p class="muted text-stone-500">No hay CSV procesados aún. Ejecutá <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">run_elt_ingest</code> si usás <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">data_sources/</code>, luego <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">run_etl</code>.</p>
             {% endif %}
           </section>
         </div>

@@ -11,51 +11,51 @@
   <span class="visuallyHidden">Menú</span>
 </button>
 <div class="siteSidebar__backdrop" id="site-sidebar-backdrop" hidden></div>
-<aside class="siteSidebar" id="site-sidebar" aria-label="Menú lateral">
-  <div class="siteSidebar__head">
-    <span class="siteSidebar__brand">RetailStart</span>
+<aside class="siteSidebar bg-mars-sidebar border-r border-mars-border text-mars-textMuted" id="site-sidebar" aria-label="Menú lateral">
+  <div class="siteSidebar__head border-b border-mars-border p-4">
+    <span class="siteSidebar__brand text-mars-textMain font-bold tracking-tight text-xl">RetailStart</span>
   </div>
   <nav class="siteSidebar__nav">
-    <a href="{% url 'dashboard' %}" class="siteSidebar__link {% if request.resolver_match.url_name == 'dashboard' %}is-active{% endif %}" {% if request.resolver_match.url_name == 'dashboard' %}aria-current="page"{% endif %}>Dashboard</a>
-    <a href="{% url 'home' %}" class="siteSidebar__link {% if request.resolver_match.url_name == 'home' %}is-active{% endif %}" {% if request.resolver_match.url_name == 'home' %}aria-current="page"{% endif %}>Inicio</a>
-    <a href="{% url 'flow' %}" class="siteSidebar__link {% if request.resolver_match.url_name == 'flow' %}is-active{% endif %}" {% if request.resolver_match.url_name == 'flow' %}aria-current="page"{% endif %}>Flujo</a>
-    <a href="{% url 'analytics' %}" class="siteSidebar__link {% if request.resolver_match.url_name == 'analytics' %}is-active{% endif %}" {% if request.resolver_match.url_name == 'analytics' %}aria-current="page"{% endif %}>Analytics</a>
-    <a href="{% url 'evidence' %}" class="siteSidebar__link {% if request.resolver_match.url_name == 'evidence' or request.resolver_match.url_name == 'evidence_file' %}is-active{% endif %}" {% if request.resolver_match.url_name == 'evidence' %}aria-current="page"{% endif %}>Evidencia</a>
+    <a href="{% url 'dashboard' %}" class="siteSidebar__link px-3 py-2 rounded-md transition-colors block {% if request.resolver_match.url_name == 'dashboard' %}is-active bg-mars-accent/10 text-mars-accent shadow-[inset_0_0_12px_rgba(255,87,34,0.1)]{% else %}text-mars-textMuted hover:text-white{% endif %}" {% if request.resolver_match.url_name == 'dashboard' %}aria-current="page"{% endif %}>Dashboard</a>
+    <a href="{% url 'home' %}" class="siteSidebar__link px-3 py-2 rounded-md transition-colors block {% if request.resolver_match.url_name == 'home' %}is-active bg-mars-accent/10 text-mars-accent shadow-[inset_0_0_12px_rgba(255,87,34,0.1)]{% else %}text-mars-textMuted hover:text-white{% endif %}" {% if request.resolver_match.url_name == 'home' %}aria-current="page"{% endif %}>Inicio</a>
+    <a href="{% url 'flow' %}" class="siteSidebar__link px-3 py-2 rounded-md transition-colors block {% if request.resolver_match.url_name == 'flow' %}is-active bg-mars-accent/10 text-mars-accent shadow-[inset_0_0_12px_rgba(255,87,34,0.1)]{% else %}text-mars-textMuted hover:text-white{% endif %}" {% if request.resolver_match.url_name == 'flow' %}aria-current="page"{% endif %}>Flujo</a>
+    <a href="{% url 'analytics' %}" class="siteSidebar__link px-3 py-2 rounded-md transition-colors block {% if request.resolver_match.url_name == 'analytics' %}is-active bg-mars-accent/10 text-mars-accent shadow-[inset_0_0_12px_rgba(255,87,34,0.1)]{% else %}text-mars-textMuted hover:text-white{% endif %}" {% if request.resolver_match.url_name == 'analytics' %}aria-current="page"{% endif %}>Analytics</a>
+    <a href="{% url 'evidence' %}" class="siteSidebar__link px-3 py-2 rounded-md transition-colors block {% if request.resolver_match.url_name == 'evidence' or request.resolver_match.url_name == 'evidence_file' %}is-active bg-mars-accent/10 text-mars-accent shadow-[inset_0_0_12px_rgba(255,87,34,0.1)]{% else %}text-mars-textMuted hover:text-white{% endif %}" {% if request.resolver_match.url_name == 'evidence' %}aria-current="page"{% endif %}>Evidencia</a>
   </nav>
 
-  <section class="siteSidebar__panel" id="site-global-filters" aria-labelledby="site-global-filters-title">
-    <h2 class="siteSidebar__panelTitle" id="site-global-filters-title">Filtro global</h2>
-    <p class="siteSidebar__panelStatus muted" id="site-filter-status">Selección: todos</p>
+  <section class="siteSidebar__panel border-t border-mars-border p-4" id="site-global-filters" aria-labelledby="site-global-filters-title">
+    <h2 class="siteSidebar__panelTitle text-mars-textMain font-bold text-sm uppercase tracking-wider mb-2" id="site-global-filters-title">Filtro global</h2>
+    <p class="siteSidebar__panelStatus text-mars-textMuted text-sm mb-4" id="site-filter-status">Selección: todos</p>
     <form class="siteSidebar__filterForm" id="site-filter-form" action="#" method="get">
-      <div class="siteSidebar__field">
-        <label for="site-filter-y">Año</label>
-        <input type="text" id="site-filter-y" name="y" class="siteSidebar__input" value="todos" placeholder="todos o 2026" list="site-filter-years" autocomplete="off" />
+      <div class="siteSidebar__field mb-3 flex flex-col">
+        <label for="site-filter-y" class="text-xs text-mars-textMuted mb-1">Año</label>
+        <input type="text" id="site-filter-y" name="y" class="siteSidebar__input bg-mars-surface border border-mars-border text-white focus:border-mars-accent focus:outline-none focus:ring-1 focus:ring-mars-accent rounded px-2 py-1 text-sm transition-colors" value="todos" placeholder="todos o 2026" list="site-filter-years" autocomplete="off" />
         <datalist id="site-filter-years"><option value="todos"></option>{% for yr in sidebar_years %}<option value="{{ yr }}"></option>{% endfor %}</datalist>
       </div>
-      <div class="siteSidebar__field">
-        <label for="site-filter-m">Mes</label>
-        <input type="text" id="site-filter-m" name="m" class="siteSidebar__input" value="todos" placeholder="todos o 04" list="site-filter-months" autocomplete="off" />
+      <div class="siteSidebar__field mb-3 flex flex-col">
+        <label for="site-filter-m" class="text-xs text-mars-textMuted mb-1">Mes</label>
+        <input type="text" id="site-filter-m" name="m" class="siteSidebar__input bg-mars-surface border border-mars-border text-white focus:border-mars-accent focus:outline-none focus:ring-1 focus:ring-mars-accent rounded px-2 py-1 text-sm transition-colors" value="todos" placeholder="todos o 04" list="site-filter-months" autocomplete="off" />
         <datalist id="site-filter-months"><option value="todos"></option><option value="01"></option><option value="02"></option><option value="03"></option><option value="04"></option><option value="05"></option><option value="06"></option><option value="07"></option><option value="08"></option><option value="09"></option><option value="10"></option><option value="11"></option><option value="12"></option></datalist>
       </div>
-      <div class="siteSidebar__field">
-        <label for="site-filter-d">Día</label>
-        <input type="text" id="site-filter-d" name="d" class="siteSidebar__input" value="todos" placeholder="todos o Lunes" list="site-filter-dias" autocomplete="off" />
+      <div class="siteSidebar__field mb-4 flex flex-col">
+        <label for="site-filter-d" class="text-xs text-mars-textMuted mb-1">Día</label>
+        <input type="text" id="site-filter-d" name="d" class="siteSidebar__input bg-mars-surface border border-mars-border text-white focus:border-mars-accent focus:outline-none focus:ring-1 focus:ring-mars-accent rounded px-2 py-1 text-sm transition-colors" value="todos" placeholder="todos o Lunes" list="site-filter-dias" autocomplete="off" />
         <datalist id="site-filter-dias"><option value="todos"></option>{% for dia in sidebar_dias %}<option value="{{ dia }}"></option>{% endfor %}</datalist>
       </div>
-      <div class="siteSidebar__filterActions">
-        <button type="submit" class="btn btn--inline siteSidebar__btnApply">Aplicar</button>
-        <button type="button" class="btn siteSidebar__btnClear" id="site-filter-clear">Todos</button>
+      <div class="siteSidebar__filterActions flex space-x-2">
+        <button type="submit" class="btn btn--inline siteSidebar__btnApply bg-mars-accent text-white hover:bg-[#e64a19] shadow-sm rounded-md px-3 py-1 text-sm transition-colors flex-1">Aplicar</button>
+        <button type="button" class="btn siteSidebar__btnClear bg-transparent border border-mars-border text-mars-textMuted hover:text-white hover:border-mars-textMain rounded-md px-3 py-1 text-sm transition-colors flex-1" id="site-filter-clear">Todos</button>
       </div>
     </form>
   </section>
 
-  <section class="siteSidebar__panel" aria-labelledby="site-model-view-title">
-    <h2 class="siteSidebar__panelTitle" id="site-model-view-title">Modelo estrella</h2>
-    <div class="siteSidebar__modelTabs" role="group" aria-label="Vista del modelo en Analytics">
-      <button type="button" class="siteSidebar__modelBtn js-site-model-view is-active" data-analytics-view="todas" aria-pressed="true">Todas</button>
-      <button type="button" class="siteSidebar__modelBtn js-site-model-view" data-analytics-view="hechos" aria-pressed="false">Hechos</button>
-      <button type="button" class="siteSidebar__modelBtn js-site-model-view" data-analytics-view="dimensiones" aria-pressed="false">Dimensiones</button>
-      <button type="button" class="siteSidebar__modelBtn js-site-model-view" data-analytics-view="tiempo" aria-pressed="false">Tiempo</button>
+  <section class="siteSidebar__panel border-t border-mars-border p-4" aria-labelledby="site-model-view-title">
+    <h2 class="siteSidebar__panelTitle text-mars-textMain font-bold text-sm uppercase tracking-wider mb-2" id="site-model-view-title">Modelo estrella</h2>
+    <div class="siteSidebar__modelTabs flex flex-col space-y-1" role="group" aria-label="Vista del modelo en Analytics">
+      <button type="button" class="siteSidebar__modelBtn js-site-model-view is-active bg-mars-surface border border-mars-border text-white px-2 py-1 text-sm rounded hover:border-mars-accent transition-colors" data-analytics-view="todas" aria-pressed="true">Todas</button>
+      <button type="button" class="siteSidebar__modelBtn js-site-model-view bg-transparent border border-mars-border text-mars-textMuted px-2 py-1 text-sm rounded hover:text-white hover:border-mars-textMain transition-colors" data-analytics-view="hechos" aria-pressed="false">Hechos</button>
+      <button type="button" class="siteSidebar__modelBtn js-site-model-view bg-transparent border border-mars-border text-mars-textMuted px-2 py-1 text-sm rounded hover:text-white hover:border-mars-textMain transition-colors" data-analytics-view="dimensiones" aria-pressed="false">Dimensiones</button>
+      <button type="button" class="siteSidebar__modelBtn js-site-model-view bg-transparent border border-mars-border text-mars-textMuted px-2 py-1 text-sm rounded hover:text-white hover:border-mars-textMain transition-colors" data-analytics-view="tiempo" aria-pressed="false">Tiempo</button>
     </div>
   </section>
 </aside>

@@ -6,40 +6,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>RetailStart</title>
     <link rel="stylesheet" href="{% static 'css/main.css' %}?v=18" />
+      {% include "core/includes/tailwind_head.html" %}
   </head>
   <body class="appShell">
     {% include "core/includes/site_sidebar.html" %}
-    <div class="appShell__main">
+    <div class="appShell__main bg-bone-darker font-sans text-stone-700 min-h-screen">
     <main class="container">
       <header class="header">
-        <h1 class="title">RetailStart</h1>
-        <p class="subtitle">Django + Postgres + Nginx (Docker)</p>
+        <h1 class="title font-bold tracking-tight text-3xl text-stone-900 mb-2">RetailStart</h1>
+        <p class="subtitle text-lg text-stone-900 mb-4">Django + Postgres + Nginx (Docker)</p>
         {% include "core/includes/site_quick_nav.html" %}
       </header>
 
-      <section class="card">
-        <h2>Data Lake (carpetas)</h2>
+      <section class="card bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5">
+        <h2 class="text-xl font-bold text-stone-900 mb-4">Data Lake (carpetas)</h2>
         <ul>
-          <li><code>/data_sources/</code>: orígenes dispersos (aquí pones los CSV/JSON/XML/TXT para probar)</li>
-          <li><code>/data_lake/raw/</code>: landing tras <code>run_elt_ingest</code> (archivos con sufijo de fecha)</li>
-          <li><code>/data_lake/processed/</code>: salida de <code>run_etl</code> (CSVs con timestamp)</li>
-          <li><code>/data_lake/processed/evidence/</code>: PNG de <code>analyze_dw</code></li>
+          <li><code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">/data_sources/</code>: orígenes dispersos (aquí pones los CSV/JSON/XML/TXT para probar)</li>
+          <li><code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">/data_lake/raw/</code>: landing tras <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">run_elt_ingest</code> (archivos con sufijo de fecha)</li>
+          <li><code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">/data_lake/processed/</code>: salida de <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">run_etl</code> (CSVs con timestamp)</li>
+          <li><code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">/data_lake/processed/evidence/</code>: PNG de <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">analyze_dw</code></li>
         </ul>
-        <p class="muted">
-          Ver evidencia (CSVs + gráficos): <a class="link" href="/evidence/">/evidence/</a>
+        <p class="muted text-stone-500">
+          Ver evidencia (CSVs + gráficos): <a class="link text-mars-accent hover:text-mars-secondary transition-colors underline" href="/evidence/">/evidence/</a>
         </p>
-        <p class="muted">
-          Ver analytics (consultas/tablas desde el DW): <a class="link" href="/analytics/">/analytics/</a>
+        <p class="muted text-stone-500">
+          Ver analytics (consultas/tablas desde el DW): <a class="link text-mars-accent hover:text-mars-secondary transition-colors underline" href="/analytics/">/analytics/</a>
         </p>
-        <p class="muted">
-          Ver flujo completo (Origen → Consumo): <a class="link" href="/flow/">/flow/</a>
+        <p class="muted text-stone-500">
+          Ver flujo completo (Origen → Consumo): <a class="link text-mars-accent hover:text-mars-secondary transition-colors underline" href="/flow/">/flow/</a>
         </p>
 
         <div class="actions">
-          <a class="btn" href="/dashboard/">Dashboard (gráficos)</a>
-          <a class="btn" href="/flow/">Abrir Flujo (origen → consumo)</a>
-          <a class="btn" href="/analytics/">Abrir Analytics (consultas desde el DW)</a>
-          <a class="btn" href="/evidence/">Abrir Evidencia (PNGs + CSV)</a>
+          <a class="btn bg-mars-sidebar text-white hover:bg-mars-surface shadow-sm rounded-md px-4 py-2 transition-colors" href="/dashboard/">Dashboard (gráficos)</a>
+          <a class="btn bg-mars-sidebar text-white hover:bg-mars-surface shadow-sm rounded-md px-4 py-2 transition-colors" href="/flow/">Abrir Flujo (origen → consumo)</a>
+          <a class="btn bg-mars-sidebar text-white hover:bg-mars-surface shadow-sm rounded-md px-4 py-2 transition-colors" href="/analytics/">Abrir Analytics (consultas desde el DW)</a>
+          <a class="btn bg-mars-sidebar text-white hover:bg-mars-surface shadow-sm rounded-md px-4 py-2 transition-colors" href="/evidence/">Abrir Evidencia (PNGs + CSV)</a>
         </div>
       </section>
 

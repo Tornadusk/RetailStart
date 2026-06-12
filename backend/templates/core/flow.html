@@ -6,45 +6,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Flujo - RetailStart</title>
     <link rel="stylesheet" href="{% static 'css/main.css' %}?v=18" />
+      {% include "core/includes/tailwind_head.html" %}
   </head>
   <body class="appShell">
     {% include "core/includes/site_sidebar.html" %}
-    <div class="appShell__main">
+    <div class="appShell__main bg-bone-darker font-sans text-stone-700 min-h-screen">
     <main class="container">
       <header class="header">
-        <h1 class="title">Flujo completo</h1>
-        <p class="subtitle">
+        <h1 class="title font-bold tracking-tight text-3xl text-stone-900 mb-2">Flujo completo</h1>
+        <p class="subtitle text-lg text-stone-900 mb-4">
           Origen → ELT (a raw) → ETL (a processed) → DW → consumo
         </p>
         {% include "core/includes/site_quick_nav.html" %}
       </header>
 
-      <section class="card">
-        <h2>Checklist (lo que pide la guía)</h2>
-        <p class="muted">
+      <section class="card bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5">
+        <h2 class="text-xl font-bold text-stone-900 mb-4">Checklist (lo que pide la guía)</h2>
+        <p class="muted text-stone-500">
           Esta pantalla demuestra en la plataforma los 5 bloques solicitados, con estado y tecnologías simuladas.
         </p>
       </section>
 
-      <section class="card cardStack">
-        <h2>Tabla: origen disperso → Data Lake (<code>raw/</code>)</h2>
-        <p class="muted">
-          Mapeo alineado con <code>DEFAULT_SCATTERED_SOURCES</code> en <code>core/etl/elt_ingest.py</code>.
-          <code>run_elt_ingest</code> copia el archivo <em>sin transformar</em>; en <code>raw/</code> el nombre incluye
-          <code>_YYYYMMDD</code> (fecha de ingesta) para auditoría.
+      <section class="card bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5 cardStack">
+        <h2 class="text-xl font-bold text-stone-900 mb-4">Tabla: origen disperso → Data Lake (<code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">raw/</code>)</h2>
+        <p class="muted text-stone-500">
+          Mapeo alineado con <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">DEFAULT_SCATTERED_SOURCES</code> en <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">core/etl/elt_ingest.py</code>.
+          <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">run_elt_ingest</code> copia el archivo <em>sin transformar</em>; en <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">raw/</code> el nombre incluye
+          <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">_YYYYMMDD</code> (fecha de ingesta) para auditoría.
         </p>
-        <p class="muted flowLakehouseNote">
+        <p class="muted text-stone-500 flowLakehouseNote">
           Tu diagrama Lakehouse separa <strong>streaming</strong> y <strong>batch</strong>. En este proyecto la ingesta al lake está
           <strong>simulada en batch</strong> (ELT por comando). El streaming lo podés describir en la reflexión de la actividad como evolución
-          (p. ej. Kafka, CDC) sin que falte una tabla en la app: esta grilla cubre el camino <code>data_sources</code> → <code>raw</code>.
+          (p. ej. Kafka, CDC) sin que falte una tabla en la app: esta grilla cubre el camino <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">data_sources</code> → <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">raw</code>.
         </p>
         <div class="tableWrap lakeRouteTableWrap">
           <table class="table">
             <thead>
               <tr>
                 <th>Rol (anexo / simulación)</th>
-                <th>Ruta bajo <code>data_sources/</code></th>
-                <th>Nombre en <code>data_lake/raw/</code></th>
+                <th>Ruta bajo <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">data_sources/</code></th>
+                <th>Nombre en <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">data_lake/raw/</code></th>
                 <th>Formato</th>
               </tr>
             </thead>
@@ -52,8 +53,8 @@
               {% for row in lake_route_rows %}
                 <tr>
                   <td>{{ row.rol }}</td>
-                  <td><code>{{ row.sources_path }}</code></td>
-                  <td><code>{{ row.raw_landing }}</code></td>
+                  <td><code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">{{ row.sources_path }}</code></td>
+                  <td><code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">{{ row.raw_landing }}</code></td>
                   <td>{{ row.formato }}</td>
                 </tr>
               {% endfor %}
@@ -62,8 +63,8 @@
         </div>
       </section>
 
-      <section class="card cardStack">
-        <h2>Flujo</h2>
+      <section class="card bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5 cardStack">
+        <h2 class="text-xl font-bold text-stone-900 mb-4">Flujo</h2>
         <div class="flow">
           {% for s in steps %}
             <div class="flowRow">
@@ -80,7 +81,7 @@
                     <span class="pill">{{ t }}</span>
                   {% endfor %}
                 </div>
-                <p class="muted flowDetailsMuted">{{ s.details }}</p>
+                <p class="muted text-stone-500 flowDetailsMuted">{{ s.details }}</p>
               </div>
             </div>
             {% if not forloop.last %}
@@ -90,11 +91,11 @@
         </div>
       </section>
 
-      <section class="card cardStack">
-        <h2>Pipeline y cargas incrementales (Día 1 → Día 2)</h2>
-        <p class="muted">
-          Evidencia obligatoria de la rúbrica: cada día agrega archivos en <code>raw/</code>,
-          filas en el maestro <code>processed/</code> y hechos en <code>FactVentas</code> sin borrar el histórico.
+      <section class="card bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5 cardStack">
+        <h2 class="text-xl font-bold text-stone-900 mb-4">Pipeline y cargas incrementales (Día 1 → Día 2)</h2>
+        <p class="muted text-stone-500">
+          Evidencia obligatoria de la rúbrica: cada día agrega archivos en <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">raw/</code>,
+          filas en el maestro <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">processed/</code> y hechos en <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">FactVentas</code> sin borrar el histórico.
         </p>
         {% include "core/includes/pipeline_docker_commands.html" %}
       </section>

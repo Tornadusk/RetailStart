@@ -7,28 +7,29 @@
     <title>Dashboard — RetailStart</title>
     <script src="{% static 'js/dashboard-view-prefs.js' %}?v=1"></script>
     <link rel="stylesheet" href="{% static 'css/main.css' %}?v=17" />
+      {% include "core/includes/tailwind_head.html" %}
   </head>
   <body class="appShell">
     {% include "core/includes/site_sidebar.html" %}
-    <div class="appShell__main">
+    <div class="appShell__main bg-bone-darker font-sans text-stone-700 min-h-screen">
       <main class="container dashboardPage">
         <header class="header dashboardHeader">
           <div class="dashboardHeader__top">
             <div>
-              <h1 class="title">Dashboard</h1>
+              <h1 class="title font-bold tracking-tight text-3xl text-stone-900 mb-2">Dashboard</h1>
             </div>
             <div class="dashboardHeader__actions">
               <details class="dashboardDownload dashboardDownload--mega">
-                <summary class="btn btn--inline dashboardDownload__summary">Descargar ▾</summary>
+                <summary class="btn btn--inline bg-white border border-stone-300 text-stone-700 hover:border-mars-accent hover:text-mars-accent shadow-sm rounded-md px-3 py-1 transition-colors dashboardDownload__summary">Descargar ▾</summary>
                 {% include "core/includes/dashboard_global_download.html" %}
               </details>
             </div>
           </div>
         </header>
 
-        <section class="card cardStack" id="dashboard-filters">
+        <section class="card bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5 cardStack" id="dashboard-filters">
           <h2 class="dashboardH2">Filtros (misma lógica que Analytics)</h2>
-          <p class="muted filterActiveLine"><strong>Vista actual:</strong> {{ filter_summary }}</p>
+          <p class="muted text-stone-500 filterActiveLine"><strong>Vista actual:</strong> {{ filter_summary }}</p>
           <form method="get" class="analyticsFormRow" action="{% url 'dashboard' %}#dashboard-filters">
             <input type="hidden" name="view" value="{{ view_mode }}" />
             {% if filter_range_active %}
@@ -62,11 +63,11 @@
               </select>
             </div>
             <div class="analyticsFormActions">
-              <button type="submit" class="btn btn--inline">Aplicar filtros</button>
-              <a class="link" href="{% url 'dashboard' %}?view={{ view_mode }}#dashboard-filters">Quitar filtros</a>
+              <button type="submit" class="btn btn--inline bg-white border border-stone-300 text-stone-700 hover:border-mars-accent hover:text-mars-accent shadow-sm rounded-md px-3 py-1 transition-colors">Aplicar filtros</button>
+              <a class="link text-mars-accent hover:text-mars-secondary transition-colors underline" href="{% url 'dashboard' %}?view={{ view_mode }}#dashboard-filters">Quitar filtros</a>
             </div>
           </form>
-          <p class="muted chipRowCaption">Accesos rápidos:</p>
+          <p class="muted text-stone-500 chipRowCaption">Accesos rápidos:</p>
           <div class="chipRow">
             {% for ql in quick_time_links %}
               <a class="chipLink" href="{% url 'dashboard' %}{{ ql.href }}">{{ ql.label }}</a>
@@ -74,8 +75,8 @@
           </div>
         </section>
 
-        <section class="card cardStack dashboardToolbar">
-          <span class="muted dashboardToolbar__label">Visualización:</span>
+        <section class="card bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5 cardStack dashboardToolbar">
+          <span class="muted text-stone-500 dashboardToolbar__label">Visualización:</span>
           <div class="dashboardViewToggle" role="group" aria-label="Modo de visualización">
             <a
               class="dashboardViewToggle__btn {% if view_mode == 'charts' %}is-active{% endif %}"
@@ -142,7 +143,7 @@
                     {% for r in by_canal_rows %}
                       <tr><td>{{ r.canal__canal }}</td><td class="right">{{ r.total }}</td></tr>
                     {% empty %}
-                      <tr><td colspan="2" class="muted">Sin datos</td></tr>
+                      <tr><td colspan="2" class="muted text-stone-500">Sin datos</td></tr>
                     {% endfor %}
                   </tbody>
                 </table>
@@ -175,7 +176,7 @@
                         <td class="right">{{ r.total }}</td>
                       </tr>
                     {% empty %}
-                      <tr><td colspan="4" class="muted">Sin datos</td></tr>
+                      <tr><td colspan="4" class="muted text-stone-500">Sin datos</td></tr>
                     {% endfor %}
                   </tbody>
                 </table>
@@ -208,7 +209,7 @@
                         <td class="right">{{ r.total }}</td>
                       </tr>
                     {% empty %}
-                      <tr><td colspan="4" class="muted">Sin datos</td></tr>
+                      <tr><td colspan="4" class="muted text-stone-500">Sin datos</td></tr>
                     {% endfor %}
                   </tbody>
                 </table>
@@ -239,7 +240,7 @@
                         <td class="right">{{ r.total }}</td>
                       </tr>
                     {% empty %}
-                      <tr><td colspan="3" class="muted">Sin datos</td></tr>
+                      <tr><td colspan="3" class="muted text-stone-500">Sin datos</td></tr>
                     {% endfor %}
                   </tbody>
                 </table>
@@ -269,7 +270,7 @@
                         <td class="right">{{ r.total }}</td>
                       </tr>
                     {% empty %}
-                      <tr><td colspan="3" class="muted">Sin datos</td></tr>
+                      <tr><td colspan="3" class="muted text-stone-500">Sin datos</td></tr>
                     {% endfor %}
                   </tbody>
                 </table>
@@ -278,9 +279,9 @@
           </div>
         </div>
 
-        <p class="muted dashboardFoot">
+        <p class="muted text-stone-500 dashboardFoot">
           Tablas detalladas y mismos filtros en
-          <a class="link" href="{% url 'analytics' %}">/analytics/</a>.
+          <a class="link text-mars-accent hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}">/analytics/</a>.
         </p>
       </main>
     </div>
