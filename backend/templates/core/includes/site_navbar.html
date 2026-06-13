@@ -1,0 +1,28 @@
+{% load static %}
+<nav class="siteNavbar fixed top-0 left-0 w-full z-[60] bg-[#1a122e] border-b border-[rgba(192,132,252,0.22)] flex items-center px-4 h-[64px]" aria-label="Navegación principal">
+  <div class="flex items-center gap-5">
+    <span class="text-mars-accent font-bold tracking-wide text-[13px] uppercase">RETAILSTART</span>
+    
+    <button type="button" id="site-nav-switch-to-sidebar" class="flex items-center justify-center w-8 h-8 rounded-md border border-[rgba(192,132,252,0.45)] bg-[#121b2f] hover:border-[rgba(192,132,252,0.75)] transition-colors text-[#94a3b8] hover:text-white shadow-sm" aria-label="Abrir Menú Lateral y Filtros" title="Abrir Menú Lateral y Filtros">
+      <i class="fa-solid fa-bars text-sm"></i>
+    </button>
+
+    <div class="hidden lg:flex space-x-1 ml-2">
+      <a href="{% url 'home' %}" class="flex items-center px-3 py-2 text-sm font-semibold transition-colors rounded-lg {% if request.resolver_match.url_name == 'home' %}bg-[rgba(192,132,252,0.14)] border border-[rgba(192,132,252,0.45)] text-white shadow-[inset_0_0_0_1px_rgba(192,132,252,0.12)]{% else %}text-slate-400 hover:text-white hover:bg-[rgba(192,132,252,0.08)] border border-transparent hover:border-[rgba(192,132,252,0.18)]{% endif %}">
+        <i class="fa-solid fa-house w-5 text-center mr-1"></i> Inicio
+      </a>
+      <a href="{% url 'dashboard' %}" class="flex items-center px-3 py-2 text-sm font-semibold transition-colors rounded-lg {% if request.resolver_match.url_name == 'dashboard' %}bg-[rgba(192,132,252,0.14)] border border-[rgba(192,132,252,0.45)] text-white shadow-[inset_0_0_0_1px_rgba(192,132,252,0.12)]{% else %}text-slate-400 hover:text-white hover:bg-[rgba(192,132,252,0.08)] border border-transparent hover:border-[rgba(192,132,252,0.18)]{% endif %}">
+        <i class="fa-solid fa-chart-line w-5 text-center mr-1"></i> Dashboard
+      </a>
+      <a href="{% url 'flow' %}" class="flex items-center px-3 py-2 text-sm font-semibold transition-colors rounded-lg {% if request.resolver_match.url_name == 'flow' %}bg-[rgba(192,132,252,0.14)] border border-[rgba(192,132,252,0.45)] text-white shadow-[inset_0_0_0_1px_rgba(192,132,252,0.12)]{% else %}text-slate-400 hover:text-white hover:bg-[rgba(192,132,252,0.08)] border border-transparent hover:border-[rgba(192,132,252,0.18)]{% endif %}">
+        <i class="fa-solid fa-arrows-turn-right w-5 text-center mr-1"></i> Flujo
+      </a>
+      <a href="{% url 'analytics' %}" class="flex items-center px-3 py-2 text-sm font-semibold transition-colors rounded-lg {% if request.resolver_match.url_name == 'analytics' %}bg-[rgba(192,132,252,0.14)] border border-[rgba(192,132,252,0.45)] text-white shadow-[inset_0_0_0_1px_rgba(192,132,252,0.12)]{% else %}text-slate-400 hover:text-white hover:bg-[rgba(192,132,252,0.08)] border border-transparent hover:border-[rgba(192,132,252,0.18)]{% endif %}">
+        <i class="fa-solid fa-magnifying-glass-chart w-5 text-center mr-1"></i> Analytics
+      </a>
+      <a href="{% url 'evidence' %}" class="flex items-center px-3 py-2 text-sm font-semibold transition-colors rounded-lg {% if request.resolver_match.url_name == 'evidence' or request.resolver_match.url_name == 'evidence_file' %}bg-[rgba(192,132,252,0.14)] border border-[rgba(192,132,252,0.45)] text-white shadow-[inset_0_0_0_1px_rgba(192,132,252,0.12)]{% else %}text-slate-400 hover:text-white hover:bg-[rgba(192,132,252,0.08)] border border-transparent hover:border-[rgba(192,132,252,0.18)]{% endif %}">
+        <i class="fa-solid fa-file-contract w-5 text-center mr-1"></i> Evidencia
+      </a>
+    </div>
+  </div>
+</nav>

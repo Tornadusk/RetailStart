@@ -1,78 +1,53 @@
 /**
- * Barra lateral global: ocultar / mostrar + overlay en viewport estrecho.
+ * Navegación Dual: Alternar entre Franja Superior (navbar) y Menú Lateral (sidebar)
  */
 (function () {
-  var KEY = "retailstart.sidebar.collapsed";
-  var sidebar = document.getElementById("site-sidebar");
-  var toggle = document.getElementById("site-sidebar-toggle");
-  var backdrop = document.getElementById("site-sidebar-backdrop");
-  if (!sidebar || !toggle) return;
-
-  function isMobile() {
-    return window.matchMedia("(max-width: 900px)").matches;
-  }
-
-  function readCollapsed() {
+  var KEY = "retailstart.ui.nav_mode";
+  
+  function getMode() {
     try {
-      return localStorage.getItem(KEY) === "1";
+      var m = localStorage.getItem(KEY);
+      return m === 'sidebar' ? 'sidebar' : 'navbar';
     } catch (e) {
-      return false;
+      return 'navbar';
     }
   }
 
-  function writeCollapsed(on) {
+  function setMode(mode) {
     try {
-      localStorage.setItem(KEY, on ? "1" : "0");
+      localStorage.setItem(KEY, mode);
     } catch (e) {}
+    applyMode(mode);
   }
 
-  function applyDesktop(collapsed) {
-    document.body.classList.toggle("sidebarCollapsed", collapsed);
-    toggle.setAttribute("aria-expanded", collapsed ? "false" : "true");
-    toggle.setAttribute(
-      "title",
-      collapsed ? "Mostrar menú lateral" : "Ocultar menú lateral"
-    );
-    if (backdrop) backdrop.hidden = true;
-    document.body.classList.remove("sidebarDrawerOpen");
-  }
-
-  function applyMobile(open) {
-    document.body.classList.toggle("sidebarDrawerOpen", open);
-    toggle.setAttribute("aria-expanded", open ? "true" : "false");
-    if (backdrop) backdrop.hidden = !open;
-    document.body.classList.remove("sidebarCollapsed");
-  }
-
-  function sync() {
-    if (isMobile()) {
-      document.body.classList.add("sidebarMobile");
-      applyMobile(document.body.classList.contains("sidebarDrawerOpen"));
+  function applyMode(mode) {
+    if (mode === 'sidebar') {
+      document.body.classList.remove('nav-mode-navbar');
+      document.body.classList.add('nav-mode-sidebar');
     } else {
-      document.body.classList.remove("sidebarMobile", "sidebarDrawerOpen");
-      if (backdrop) backdrop.hidden = true;
-      applyDesktop(readCollapsed());
+      document.body.classList.remove('nav-mode-sidebar');
+      document.body.classList.add('nav-mode-navbar');
     }
   }
 
-  toggle.addEventListener("click", function () {
-    if (isMobile()) {
-      var open = !document.body.classList.contains("sidebarDrawerOpen");
-      applyMobile(open);
-    } else {
-      var collapsed = !document.body.classList.contains("sidebarCollapsed");
-      applyDesktop(collapsed);
-      writeCollapsed(collapsed);
+  // Set initial mode synchronously before render to avoid flicker if possible
+  // (though the script has 'defer' in HTML, it will run early enough)
+  applyMode(getMode());
+
+  // Attach event listeners when DOM is fully ready
+  document.addEventListener('DOMContentLoaded', function() {
+    var btnToSidebar = document.getElementById('site-nav-switch-to-sidebar');
+    if (btnToSidebar) {
+      btnToSidebar.addEventListener('click', function() {
+        setMode('sidebar');
+      });
+    }
+
+    var btnToNavbar = document.getElementById('site-nav-switch-to-navbar');
+    if (btnToNavbar) {
+      btnToNavbar.addEventListener('click', function() {
+        setMode('navbar');
+      });
     }
   });
-
-  if (backdrop) {
-    backdrop.addEventListener("click", function () {
-      applyMobile(false);
-    });
-  }
-
-  window.addEventListener("resize", sync);
-  sync();
-
 })();

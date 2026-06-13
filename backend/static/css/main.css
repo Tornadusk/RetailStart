@@ -1361,39 +1361,41 @@ body.appShell {
 }
 
 .appShell__main {
-  margin-left: var(--sidebar-w);
-  transition: margin-left 0.22s ease;
   min-height: 100vh;
+  transition: margin-left 0.22s ease, padding-top 0.22s ease;
 }
 
-@media (max-width: 900px) {
-  .appShell__main {
-    padding-top: 56px;
-  }
+/* Modo Nav-Bar (Franja Superior) */
+body.nav-mode-navbar .siteNavbar {
+  display: flex;
+}
+body.nav-mode-navbar .siteSidebar {
+  transform: translateX(-100%);
+}
+body.nav-mode-navbar .appShell__main {
+  margin-left: 0;
+  padding-top: 64px; /* Altura de la navbar */
 }
 
+/* Modo Nav-Sidebar (Menú Lateral Clásico) */
+body.nav-mode-sidebar .siteNavbar {
+  display: none;
+}
+body.nav-mode-sidebar .siteSidebar {
+  transform: translateX(0);
+}
 @media (min-width: 901px) {
-  body.appShell.sidebarCollapsed .siteSidebar {
-    transform: translateX(calc(-1 * var(--sidebar-w)));
-  }
-
-  body.appShell.sidebarCollapsed .appShell__main {
-    margin-left: 0;
+  body.nav-mode-sidebar .appShell__main {
+    margin-left: var(--sidebar-w);
+    padding-top: 0;
   }
 }
-
 @media (max-width: 900px) {
-  body.appShell.sidebarDrawerOpen .siteSidebar {
-    transform: translateX(0);
-  }
-
-  body.appShell:not(.sidebarDrawerOpen) .siteSidebar {
-    transform: translateX(calc(-1 * var(--sidebar-w)));
-  }
-
-  .appShell__main {
+  body.nav-mode-sidebar .appShell__main {
     margin-left: 0;
+    padding-top: 0; /* o lo que se necesite si no hay navbar */
   }
+  /* On mobile, we might want to overlay a backdrop if they switch to sidebar mode */
 }
 
 .container.dashboardPage {
