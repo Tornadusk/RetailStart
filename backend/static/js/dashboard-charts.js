@@ -110,8 +110,8 @@
           {
             label: "Total ($)",
             data: block.values,
-            backgroundColor: "rgba(255, 87, 34, 0.75)",
-            borderColor: "#ff5722",
+            backgroundColor: colors(block.labels.length),
+            borderColor: colors(block.labels.length),
             borderWidth: 1,
           },
         ],
@@ -148,8 +148,8 @@
           {
             label: "Total ($)",
             data: block.values,
-            backgroundColor: "rgba(233, 30, 99, 0.75)",
-            borderColor: "#e91e63",
+            backgroundColor: colors(block.labels.length),
+            borderColor: colors(block.labels.length),
             borderWidth: 1,
           },
         ],
