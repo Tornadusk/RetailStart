@@ -37,8 +37,8 @@
               <input type="hidden" name="fha" value="{{ filter_fha|date:'Y-m-d' }}" />
             {% endif %}
             <div class="analyticsField">
-              <label for="db_y">Año</label>
-              <select name="y" id="db_y" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
+              <label for="db_y" class="text-xs text-stone-500 font-medium uppercase tracking-wider mb-1 block">Año</label>
+              <select name="y" id="db_y" class="bg-white text-stone-700 border border-stone-300 rounded-md px-3 py-1.5 text-sm focus:border-mars-accent focus:outline-none focus:ring-1 focus:ring-mars-accent w-full" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
                 <option value="" {% if filter_y == "" %}selected{% endif %}>Todos los años</option>
                 {% for yr in years %}
                   <option value="{{ yr }}" {% if filter_y == yr %}selected{% endif %}>{{ yr }}</option>
@@ -46,8 +46,8 @@
               </select>
             </div>
             <div class="analyticsField">
-              <label for="db_m">Mes</label>
-              <select name="m" id="db_m" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
+              <label for="db_m" class="text-xs text-stone-500 font-medium uppercase tracking-wider mb-1 block">Mes</label>
+              <select name="m" id="db_m" class="bg-white text-stone-700 border border-stone-300 rounded-md px-3 py-1.5 text-sm focus:border-mars-accent focus:outline-none focus:ring-1 focus:ring-mars-accent w-full" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
                 <option value="" {% if filter_m == "" %}selected{% endif %}>Todos los meses</option>
                 {% for mo, mo_label in months %}
                   <option value="{{ mo }}" {% if filter_m == mo %}selected{% endif %}>{{ mo_label }}</option>
@@ -55,60 +55,60 @@
               </select>
             </div>
             <div class="analyticsField">
-              <label for="db_d">Día de la semana</label>
-              <select name="d" id="db_d" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
+              <label for="db_d" class="text-xs text-stone-500 font-medium uppercase tracking-wider mb-1 block">Día de la semana</label>
+              <select name="d" id="db_d" class="bg-white text-stone-700 border border-stone-300 rounded-md px-3 py-1.5 text-sm focus:border-mars-accent focus:outline-none focus:ring-1 focus:ring-mars-accent w-full" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
                 {% for val, label in dias_semana %}
                   <option value="{{ val }}" {% if filter_d == val %}selected{% endif %}>{{ label }}</option>
                 {% endfor %}
               </select>
             </div>
-            <div class="analyticsFormActions">
-              <button type="submit" class="btn btn--inline bg-white border border-stone-300 text-stone-700 hover:border-mars-accent hover:text-mars-accent shadow-sm rounded-md px-3 py-1 transition-colors">Aplicar filtros</button>
-              <a class="link text-mars-accent hover:text-mars-secondary transition-colors underline" href="{% url 'dashboard' %}?view={{ view_mode }}#dashboard-filters">Quitar filtros</a>
+            <div class="analyticsFormActions mt-4 flex items-center space-x-3">
+              <button type="submit" class="btn btn--inline bg-white border border-stone-300 text-stone-700 hover:border-mars-accent hover:text-mars-accent shadow-sm rounded-md px-4 py-1.5 transition-colors font-medium">Aplicar filtros</button>
+              <a class="link text-stone-500 hover:text-mars-secondary transition-colors underline text-sm" href="{% url 'dashboard' %}?view={{ view_mode }}#dashboard-filters">Quitar filtros</a>
             </div>
           </form>
-          <p class="muted text-stone-500 chipRowCaption">Accesos rápidos:</p>
-          <div class="chipRow">
+          <p class="text-stone-500 font-medium text-xs uppercase tracking-wider mt-4 mb-2">Accesos rápidos:</p>
+          <div class="flex flex-wrap gap-2">
             {% for ql in quick_time_links %}
-              <a class="chipLink" href="{% url 'dashboard' %}{{ ql.href }}">{{ ql.label }}</a>
+              <a class="bg-white border border-stone-300 text-stone-600 text-xs px-3 py-1.5 rounded-full hover:border-mars-accent hover:text-mars-accent transition-colors shadow-sm inline-block" href="{% url 'dashboard' %}{{ ql.href }}">{{ ql.label }}</a>
             {% endfor %}
           </div>
         </section>
 
-        <section class="card bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5 cardStack dashboardToolbar">
-          <span class="muted text-stone-500 dashboardToolbar__label">Visualización:</span>
-          <div class="dashboardViewToggle" role="group" aria-label="Modo de visualización">
+        <section class="card bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5 cardStack dashboardToolbar flex items-center justify-between">
+          <span class="text-stone-500 font-medium text-sm">Visualización:</span>
+          <div class="flex inline-flex p-1 bg-stone-200/50 rounded-lg gap-1" role="group" aria-label="Modo de visualización">
             <a
-              class="dashboardViewToggle__btn {% if view_mode == 'charts' %}is-active{% endif %}"
+              class="px-4 py-1.5 rounded-md text-sm transition-colors {% if view_mode == 'charts' %}bg-white shadow-sm text-mars-secondary font-bold{% else %}text-stone-600 hover:text-stone-900 hover:bg-white/50{% endif %}"
               href="{% url 'dashboard' %}?{{ qs_view_charts }}#dashboard-panels"
               >Gráficos</a>
             <a
-              class="dashboardViewToggle__btn {% if view_mode == 'tables' %}is-active{% endif %}"
+              class="px-4 py-1.5 rounded-md text-sm transition-colors {% if view_mode == 'tables' %}bg-white shadow-sm text-mars-secondary font-bold{% else %}text-stone-600 hover:text-stone-900 hover:bg-white/50{% endif %}"
               href="{% url 'dashboard' %}?{{ qs_view_tables }}#dashboard-panels"
               >Tablas</a>
             <a
-              class="dashboardViewToggle__btn {% if view_mode == 'both' %}is-active{% endif %}"
+              class="px-4 py-1.5 rounded-md text-sm transition-colors {% if view_mode == 'both' %}bg-white shadow-sm text-mars-secondary font-bold{% else %}text-stone-600 hover:text-stone-900 hover:bg-white/50{% endif %}"
               href="{% url 'dashboard' %}?{{ qs_view_both }}#dashboard-panels"
               >Todos</a>
           </div>
         </section>
 
-        <section class="dashboardKpis">
-          <div class="dashboardKpiCard">
-            <div class="dashboardKpiCard__label">Monto total (filtro)</div>
-            <div class="dashboardKpiCard__value" id="dashboard-kpi-monto">—</div>
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6 mb-6">
+          <div class="bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5 flex flex-col justify-center">
+            <div class="text-stone-500 font-medium text-sm mb-1">Monto total (filtro)</div>
+            <div class="text-mars-secondary font-bold text-3xl" id="dashboard-kpi-monto">—</div>
           </div>
-          <div class="dashboardKpiCard">
-            <div class="dashboardKpiCard__label">Transacciones</div>
-            <div class="dashboardKpiCard__value" id="dashboard-kpi-tx">—</div>
+          <div class="bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5 flex flex-col justify-center">
+            <div class="text-stone-500 font-medium text-sm mb-1">Transacciones</div>
+            <div class="text-stone-800 font-bold text-3xl" id="dashboard-kpi-tx">—</div>
           </div>
-          <div class="dashboardKpiCard">
-            <div class="dashboardKpiCard__label">Ticket promedio</div>
-            <div class="dashboardKpiCard__value" id="dashboard-kpi-prom">—</div>
+          <div class="bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5 flex flex-col justify-center">
+            <div class="text-stone-500 font-medium text-sm mb-1">Ticket promedio</div>
+            <div class="text-mars-accent font-bold text-3xl" id="dashboard-kpi-prom">—</div>
           </div>
-          <div class="dashboardKpiCard dashboardKpiCard--dim">
-            <div class="dashboardKpiCard__label">Hechos filtrados / DW</div>
-            <div class="dashboardKpiCard__value">
+          <div class="bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5 flex flex-col justify-center">
+            <div class="text-stone-500 font-medium text-sm mb-1">Hechos filtrados / DW</div>
+            <div class="text-stone-800 font-bold text-2xl mt-1">
               {{ star_model.hechos_filtrados }} / {{ star_model.fact_ventas }}
             </div>
           </div>
@@ -123,10 +123,10 @@
           data-view="{{ view_mode }}"
         >
           <div class="dashboardGrid">
-            <article class="dashboardCard">
-              <div class="dashboardCard__head">
-                <h3 class="dashboardCard__title">Por canal</h3>
-                <div class="dashboardCard__tools">
+            <article class="bg-bone-light border border-stone-300/40 shadow-sm rounded-xl p-5 flex flex-col">
+              <div class="flex items-start justify-between gap-3 mb-4">
+                <h3 class="text-sm font-bold text-mars-secondary uppercase tracking-wider flex-1">Por canal</h3>
+                <div class="flex flex-wrap items-start justify-end gap-2">
                   {% include "core/includes/dashboard_pie_kind_toggle.html" with chart_canvas_id="chart-canal" pie_block_key="by_canal" %}
                   {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-canal" export_panel="canal" export_stem="retailstart_dashboard_canal" chart_export_title="Por canal" table_wrap_id="dashboard-table-canal" %}
                 </div>
@@ -150,10 +150,10 @@
               </div>
             </article>
 
-            <article class="dashboardCard">
-              <div class="dashboardCard__head">
-                <h3 class="dashboardCard__title">Top clientes · barras horizontales</h3>
-                <div class="dashboardCard__tools">
+            <article class="bg-bone-light border border-stone-300/40 shadow-sm rounded-xl p-5 flex flex-col">
+              <div class="flex items-start justify-between gap-3 mb-4">
+                <h3 class="text-sm font-bold text-mars-secondary uppercase tracking-wider flex-1">Top clientes · barras horizontales</h3>
+                <div class="flex flex-wrap items-start justify-end gap-2">
                   {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-clientes" export_panel="clientes" export_stem="retailstart_dashboard_clientes" chart_export_title="Top clientes · barras horizontales" table_wrap_id="dashboard-table-clientes" %}
                 </div>
               </div>
@@ -183,10 +183,10 @@
               </div>
             </article>
 
-            <article class="dashboardCard">
-              <div class="dashboardCard__head">
-                <h3 class="dashboardCard__title">Por día civil · barras</h3>
-                <div class="dashboardCard__tools">
+            <article class="bg-bone-light border border-stone-300/40 shadow-sm rounded-xl p-5 flex flex-col">
+              <div class="flex items-start justify-between gap-3 mb-4">
+                <h3 class="text-sm font-bold text-mars-secondary uppercase tracking-wider flex-1">Por día civil · barras</h3>
+                <div class="flex flex-wrap items-start justify-end gap-2">
                   {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-dia" export_panel="dia" export_stem="retailstart_dashboard_dia" chart_export_title="Por día civil · barras" table_wrap_id="dashboard-table-dia" %}
                 </div>
               </div>
@@ -216,10 +216,10 @@
               </div>
             </article>
 
-            <article class="dashboardCard">
-              <div class="dashboardCard__head">
-                <h3 class="dashboardCard__title">Por día de la semana</h3>
-                <div class="dashboardCard__tools">
+            <article class="bg-bone-light border border-stone-300/40 shadow-sm rounded-xl p-5 flex flex-col">
+              <div class="flex items-start justify-between gap-3 mb-4">
+                <h3 class="text-sm font-bold text-mars-secondary uppercase tracking-wider flex-1">Por día de la semana</h3>
+                <div class="flex flex-wrap items-start justify-end gap-2">
                   {% include "core/includes/dashboard_pie_kind_toggle.html" with chart_canvas_id="chart-dow" pie_block_key="by_dow" %}
                   {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-dow" export_panel="dow" export_stem="retailstart_dashboard_dow" chart_export_title="Por día de la semana" table_wrap_id="dashboard-table-dow" %}
                 </div>
@@ -247,10 +247,10 @@
               </div>
             </article>
 
-            <article class="dashboardCard dashboardCard--wide">
-              <div class="dashboardCard__head">
-                <h3 class="dashboardCard__title">Top productos · barras horizontales</h3>
-                <div class="dashboardCard__tools">
+            <article class="bg-bone-light border border-stone-300/40 shadow-sm rounded-xl p-5 flex flex-col lg:col-span-2">
+              <div class="flex items-start justify-between gap-3 mb-4">
+                <h3 class="text-sm font-bold text-mars-secondary uppercase tracking-wider flex-1">Top productos · barras horizontales</h3>
+                <div class="flex flex-wrap items-start justify-end gap-2">
                   {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-productos" export_panel="productos" export_stem="retailstart_dashboard_productos" chart_export_title="Top productos · barras horizontales" table_wrap_id="dashboard-table-productos" %}
                 </div>
               </div>

@@ -12,17 +12,17 @@
   var STORAGE_PREFIX = "retailstart.dashboard.pieType.";
   var EMPTY = { labels: [], values: [] };
 
-  var fontColor = "#c8dcff";
-  var gridColor = "rgba(105, 210, 255, 0.12)";
+  var fontColor = "#52525b"; // text-stone-600
+  var gridColor = "rgba(214, 211, 209, 0.4)"; // text-stone-300 con opacidad
   var palette = [
-    "#69d2ff",
-    "#a78bfa",
-    "#58f2b3",
-    "#ffd166",
-    "#ff6b9d",
-    "#7fd8be",
+    "#ff5722", // mars-accent
+    "#e91e63", // mars-secondary
     "#f9844a",
-    "#94a3b8",
+    "#f8961e",
+    "#f3722c",
+    "#43aa8b",
+    "#90be6d",
+    "#577590"
   ];
 
   function colors(n) {
@@ -110,8 +110,8 @@
           {
             label: "Total ($)",
             data: block.values,
-            backgroundColor: "rgba(105, 210, 255, 0.55)",
-            borderColor: "rgba(105, 210, 255, 0.9)",
+            backgroundColor: "rgba(255, 87, 34, 0.75)",
+            borderColor: "#ff5722",
             borderWidth: 1,
           },
         ],
@@ -148,8 +148,8 @@
           {
             label: "Total ($)",
             data: block.values,
-            backgroundColor: "rgba(167, 139, 250, 0.55)",
-            borderColor: "rgba(167, 139, 250, 0.95)",
+            backgroundColor: "rgba(233, 30, 99, 0.75)",
+            borderColor: "#e91e63",
             borderWidth: 1,
           },
         ],
