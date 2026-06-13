@@ -11,356 +11,356 @@
   <body class="appShell">
     {% include "core/includes/site_sidebar.html" %}
     <div class="appShell__main bg-bone-darker font-sans text-stone-700 min-h-screen">
-    <main class="container analyticsPage">
-      <header class="header analyticsHeader">
-        <h1 class="title font-bold tracking-tight text-3xl text-stone-900 mb-2 analyticsHeader__title">Analytics (Data Warehouse)</h1>
-        <p class="analyticsHeader__tagline">
+    <main class="container py-8 max-w-6xl mx-auto">
+      <header class="mb-8">
+        <h1 class="font-bold tracking-tight text-3xl text-stone-900 mb-2">Analytics (Data Warehouse)</h1>
+        <p class="text-sm text-stone-500 font-medium mb-6">
           Consumo desde el DW vía Django ORM (modelo en estrella + dimensión tiempo)
         </p>
         {% include "core/includes/site_quick_nav.html" %}
       </header>
 
       <details
-        class="card bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5 analyticsCollapsible"
+        class="bg-bone-light border border-stone-300/40 rounded-2xl shadow-sm p-6 md:p-8 mb-6 analyticsCollapsible"
         id="analytics-collapsible-consultas"
         data-storage-key="consultas"
         data-default-open="true"
         open
       >
-        <summary class="analyticsCollapsible__summary">
-          <span class="analyticsCollapsible__toggle" aria-hidden="true"></span>
-          <h2 class="analyticsCollapsible__heading">Consultas al almacén — RetailStart</h2>
+        <summary class="flex items-center cursor-pointer outline-none list-none [&::-webkit-details-marker]:hidden mb-4 group">
+          <span class="text-mars-accent text-xl mr-3 group-open:rotate-90 transition-transform">&#9654;</span>
+          <h2 class="text-xl font-bold text-stone-900">Consultas al almacén — RetailStart</h2>
         </summary>
-        <div class="analyticsCollapsible__body">
-          <p class="muted text-stone-500">
-            Los datos viven en Postgres (<code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">DimTiempo</code>, hechos, demás dimensiones). Los filtros y orden de columnas se traducen a consultas SQL en el servidor (ORM). Los PNG siguen en <a class="link text-mars-accent hover:text-mars-secondary transition-colors underline" href="/evidence/">/evidence/</a>.
+        <div class="pl-7">
+          <p class="text-stone-700 leading-relaxed">
+            Los datos viven en Postgres (<code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">DimTiempo</code>, hechos, demás dimensiones). Los filtros y orden de columnas se traducen a consultas SQL en el servidor (ORM). Los PNG siguen en <a class="link text-mars-accent hover:text-mars-secondary transition-colors underline font-medium" href="/evidence/">/evidence/</a>.
           </p>
         </div>
       </details>
 
       <details
-        class="card bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5 cardStack analyticsCollapsible"
+        class="bg-bone-light border border-stone-300/40 rounded-2xl shadow-sm p-6 md:p-8 mb-6 analyticsCollapsible"
         id="analytics-collapsible-pipeline"
         data-storage-key="pipeline"
         data-default-open="true"
         open
       >
-        <summary class="analyticsCollapsible__summary">
-          <span class="analyticsCollapsible__toggle" aria-hidden="true"></span>
-          <h2 class="analyticsCollapsible__heading">Pipeline y comandos Docker</h2>
+        <summary class="flex items-center cursor-pointer outline-none list-none [&::-webkit-details-marker]:hidden mb-4 group">
+          <span class="text-mars-accent text-xl mr-3 group-open:rotate-90 transition-transform">&#9654;</span>
+          <h2 class="text-xl font-bold text-stone-900">Pipeline y comandos Docker</h2>
         </summary>
-        <div class="analyticsCollapsible__body">
-          <p class="muted text-stone-500">
-            Las tablas de abajo leen <strong>Postgres</strong> (no el CSV en vivo). Si ves ceros o tablas vacías, ejecutá el pipeline en orden; el código vive en <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">core/management/commands/</code> y <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">core/etl/</code>.
+        <div class="pl-7">
+          <p class="text-stone-700 leading-relaxed mb-6">
+            Las tablas de abajo leen <strong>Postgres</strong> (no el CSV en vivo). Si ves ceros o tablas vacías, ejecutá el pipeline en orden; el código vive en <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">core/management/commands/</code> y <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">core/etl/</code>.
           </p>
           {% include "core/includes/pipeline_docker_commands.html" %}
         </div>
       </details>
 
       <details
-        class="card bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5 analyticsDwCard cardStack analyticsCollapsible"
+        class="bg-bone-light border border-stone-300/40 rounded-2xl shadow-sm p-6 md:p-8 mb-6 analyticsCollapsible"
         id="analytics-collapsible-modelo-estrella"
         data-storage-key="modelo-estrella"
         data-default-open="true"
         open
       >
-        <summary class="analyticsCollapsible__summary">
-          <span class="analyticsCollapsible__toggle" aria-hidden="true"></span>
-          <h2 class="analyticsCollapsible__heading">Modelo en estrella en Postgres</h2>
+        <summary class="flex items-center cursor-pointer outline-none list-none [&::-webkit-details-marker]:hidden mb-6 group">
+          <span class="text-mars-accent text-xl mr-3 group-open:rotate-90 transition-transform">&#9654;</span>
+          <h2 class="text-xl font-bold text-stone-900">Modelo en estrella en Postgres</h2>
         </summary>
-        <div class="analyticsCollapsible__body">
-        <p class="muted text-stone-500">
+        <div class="pl-7">
+        <p class="text-stone-700 leading-relaxed mb-4">
           La página está agrupada: <strong>1)</strong> tabla de hechos y KPIs, <strong>2)</strong> dimensiones (cardinalidad),
           <strong>3)</strong> dimensión tiempo y cruces temporales, <strong>4)</strong> agregados por cliente/canal/producto,
-          <strong>5)</strong> vista fila a fila de <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">FactVentas</code>. Usá las pestañas para ver solo un bloque.
+          <strong>5)</strong> vista fila a fila de <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">FactVentas</code>. Usá las pestañas para ver solo un bloque.
         </p>
-        <p class="muted text-stone-500">
-          Plegar este bloque o los de arriba (icono <strong>+</strong> / <strong>−</strong>;
-          <a class="link text-mars-accent hover:text-mars-secondary transition-colors underline" href="#analytics-collapsible-pipeline">Pipeline y comandos Docker</a>) solo cambia la vista en el navegador;
-          los datos en <strong>Postgres</strong> no se alteran (carga con <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">load_dw</code>).
-          El estado abierto/cerrado se guarda en <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">localStorage</code> (también cuando lo dejás <em>abierto</em>).
-        </p>
+        <div class="bg-orange-50 border border-orange-200/60 rounded-lg p-4 text-sm text-stone-700 mb-8">
+          Plegar este bloque o los de arriba solo cambia la vista en el navegador;
+          los datos en <strong>Postgres</strong> no se alteran (carga con <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">load_dw</code>).
+          El estado abierto/cerrado se guarda en <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">localStorage</code>.
+        </div>
 
-        <div class="analyticsFilterCluster" id="segmentar-ventas" tabindex="-1">
-          <h4 class="analyticsFilterCluster__subtitle">Segmentar hechos (misma lógica para todas las tablas)</h4>
-          <p class="filterActiveLine">
-            <strong>Vista actual:</strong> {{ filter_summary }}
+        <div class="bg-white border border-stone-200 rounded-xl p-6 shadow-sm mb-8" id="segmentar-ventas" tabindex="-1">
+          <h4 class="text-lg font-bold text-stone-800 mb-2">Segmentar hechos (misma lógica para todas las tablas)</h4>
+          <p class="text-mars-secondary font-bold mb-4">
+            Vista actual: <span class="text-stone-800 font-medium">{{ filter_summary }}</span>
           </p>
-          <p class="muted text-stone-500 filterClusterHint">
-            Los atajos aplican los mismos parámetros que el formulario (año / mes / día de la semana, o rango <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">fde</code>–<code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">fha</code> para la semana ISO). Se calculan con la fecha de hoy, acotada al rango de fechas cargado en el DW.
+          <p class="text-stone-500 text-sm mb-6">
+            Los atajos aplican los mismos parámetros que el formulario (año / mes / día de la semana, o rango <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[10px] px-1 py-0.5 rounded">fde</code>–<code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[10px] px-1 py-0.5 rounded">fha</code> para la semana ISO). Se calculan con la fecha de hoy, acotada al rango de fechas cargado en el DW.
           </p>
-          <form method="get" class="analyticsFormRow" action="{% url 'analytics' %}#segmentar-ventas">
+          <form method="get" class="flex flex-wrap items-end gap-4 mb-6" action="{% url 'analytics' %}#segmentar-ventas">
             {% if filter_range_active %}
               <input type="hidden" name="fde" value="{{ filter_fde|date:'Y-m-d' }}" />
               <input type="hidden" name="fha" value="{{ filter_fha|date:'Y-m-d' }}" />
             {% endif %}
-            <div class="analyticsField">
-              <label for="fy">Año</label>
-              <select name="y" id="fy" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
+            <div class="flex flex-col gap-1">
+              <label for="fy" class="text-xs font-bold text-stone-500 uppercase tracking-wider">Año</label>
+              <select name="y" id="fy" class="bg-stone-50 border border-stone-300 text-stone-800 rounded-md px-3 py-2 text-sm focus:border-mars-accent focus:ring-1 focus:ring-mars-accent transition-colors" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
                 <option value="" {% if filter_y == "" %}selected{% endif %}>Todos los años</option>
                 {% for yr in years %}
                   <option value="{{ yr }}" {% if filter_y == yr %}selected{% endif %}>{{ yr }}</option>
                 {% endfor %}
               </select>
             </div>
-            <div class="analyticsField">
-              <label for="fm">Mes</label>
-              <select name="m" id="fm" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
+            <div class="flex flex-col gap-1">
+              <label for="fm" class="text-xs font-bold text-stone-500 uppercase tracking-wider">Mes</label>
+              <select name="m" id="fm" class="bg-stone-50 border border-stone-300 text-stone-800 rounded-md px-3 py-2 text-sm focus:border-mars-accent focus:ring-1 focus:ring-mars-accent transition-colors" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
                 <option value="" {% if filter_m == "" %}selected{% endif %}>Todos los meses</option>
                 {% for mo, mo_label in months %}
                   <option value="{{ mo }}" {% if filter_m == mo %}selected{% endif %}>{{ mo_label }}</option>
                 {% endfor %}
               </select>
             </div>
-            <div class="analyticsField">
-              <label for="fd">Día de la semana</label>
-              <select name="d" id="fd" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
+            <div class="flex flex-col gap-1">
+              <label for="fd" class="text-xs font-bold text-stone-500 uppercase tracking-wider">Día de la semana</label>
+              <select name="d" id="fd" class="bg-stone-50 border border-stone-300 text-stone-800 rounded-md px-3 py-2 text-sm focus:border-mars-accent focus:ring-1 focus:ring-mars-accent transition-colors" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
                 {% for val, label in dias_semana %}
                   <option value="{{ val }}" {% if filter_d == val %}selected{% endif %}>{{ label }}</option>
                 {% endfor %}
               </select>
             </div>
-            <div class="analyticsFormActions">
-              <button type="submit" class="btn btn--inline bg-white border border-stone-300 text-stone-700 hover:border-mars-accent hover:text-mars-accent shadow-sm rounded-md px-3 py-1 transition-colors">Actualizar vista</button>
-              <a class="link text-mars-accent hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}#segmentar-ventas">Quitar filtros</a>
+            <div class="flex items-center gap-3">
+              <button type="submit" class="bg-white border border-stone-300 text-stone-700 hover:border-mars-accent hover:text-mars-accent font-bold shadow-sm rounded-md px-4 py-2 text-sm transition-colors">Actualizar vista</button>
+              <a class="text-mars-accent hover:text-mars-secondary transition-colors underline text-sm font-medium" href="{% url 'analytics' %}#segmentar-ventas">Quitar filtros</a>
             </div>
           </form>
           {% if filter_range_active %}
-            <p class="muted text-stone-500 filterRangeHint">
+            <p class="text-amber-700 bg-amber-50 border border-amber-200 rounded-md p-3 text-sm mb-4">
               Filtro por <strong>rango de fechas</strong> (semana). Los desplegables de año/mes/día están deshabilitados;
-              usá <a class="link text-mars-accent hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}#segmentar-ventas">Quitar filtros</a> para volver al modo año/mes/día.
+              usá <a class="font-bold underline" href="{% url 'analytics' %}#segmentar-ventas">Quitar filtros</a> para volver al modo año/mes/día.
             </p>
           {% endif %}
-          <p class="muted text-stone-500 chipRowCaption">Accesos rápidos (presets dinámicos según hoy y el rango cargado en el DW):</p>
-          <div class="chipRow">
+          <p class="text-stone-500 text-xs font-bold uppercase tracking-wider mb-3">Accesos rápidos (presets dinámicos):</p>
+          <div class="flex flex-wrap gap-2">
             {% for ql in quick_time_links %}
-              <a class="chipLink" href="{% url 'analytics' %}{{ ql.href }}">{{ ql.label }}</a>
+              <a class="bg-mars-surface/10 border border-mars-surface/20 text-mars-secondary hover:bg-mars-accent hover:text-white hover:border-mars-accent transition-colors px-3 py-1 rounded-full text-xs font-bold" href="{% url 'analytics' %}{{ ql.href }}">{{ ql.label }}</a>
             {% endfor %}
           </div>
         </div>
 
-        <div class="analyticsViewTabs" role="tablist" aria-label="Vista del panel del DW">
-          <button type="button" class="analyticsViewTabs__btn is-active" data-analytics-view="todas" aria-pressed="true" role="tab">Todas</button>
-          <button type="button" class="analyticsViewTabs__btn" data-analytics-view="hechos" aria-pressed="false" role="tab">Hechos</button>
-          <button type="button" class="analyticsViewTabs__btn" data-analytics-view="dimensiones" aria-pressed="false" role="tab">Dimensiones</button>
-          <button type="button" class="analyticsViewTabs__btn" data-analytics-view="tiempo" aria-pressed="false" role="tab">Tiempo</button>
+        <div class="flex space-x-1 mb-8 border-b border-stone-200" role="tablist" aria-label="Vista del panel del DW">
+          <button type="button" class="analyticsViewTabs__btn is-active px-4 py-2 font-bold text-sm text-stone-500 border-b-2 border-transparent hover:text-mars-secondary transition-colors [&.is-active]:text-mars-accent [&.is-active]:border-mars-accent" data-analytics-view="todas" aria-pressed="true" role="tab">Todas</button>
+          <button type="button" class="analyticsViewTabs__btn px-4 py-2 font-bold text-sm text-stone-500 border-b-2 border-transparent hover:text-mars-secondary transition-colors [&.is-active]:text-mars-accent [&.is-active]:border-mars-accent" data-analytics-view="hechos" aria-pressed="false" role="tab">Hechos</button>
+          <button type="button" class="analyticsViewTabs__btn px-4 py-2 font-bold text-sm text-stone-500 border-b-2 border-transparent hover:text-mars-secondary transition-colors [&.is-active]:text-mars-accent [&.is-active]:border-mars-accent" data-analytics-view="dimensiones" aria-pressed="false" role="tab">Dimensiones</button>
+          <button type="button" class="analyticsViewTabs__btn px-4 py-2 font-bold text-sm text-stone-500 border-b-2 border-transparent hover:text-mars-secondary transition-colors [&.is-active]:text-mars-accent [&.is-active]:border-mars-accent" data-analytics-view="tiempo" aria-pressed="false" role="tab">Tiempo</button>
         </div>
 
-        {# --- Tabla de hechos: métricas globales del hecho (filtros arriba; recortan el queryset en toda la página) --- #}
-        <div id="dw-hechos" class="analyticsZone analyticsZone--first js-analytics-view" data-analytics-views="todas hechos" tabindex="-1">
-          <h3 class="analyticsZone__title">1 · Tabla de hechos — <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">FactVentas</code></h3>
-          <p class="muted text-stone-500 analyticsZone__lead">
-            Cada fila es una venta: <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">cantidad</code>, <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">precio_unitario</code>, <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">monto</code>, y claves foráneas a
-            <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">DimTiempo</code>, <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">DimCliente</code>, <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">DimProducto</code> (opcional) y <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">DimCanal</code>.
+        {# --- Tabla de hechos: métricas globales del hecho --- #}
+        <div id="dw-hechos" class="js-analytics-view mb-12" data-analytics-views="todas hechos" tabindex="-1">
+          <h3 class="text-2xl font-bold text-stone-900 mb-3">1 · Tabla de hechos — <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[14px] px-2 py-0.5 rounded">FactVentas</code></h3>
+          <p class="text-stone-600 leading-relaxed mb-6">
+            Cada fila es una venta: <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">cantidad</code>, <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">precio_unitario</code>, <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">monto</code>, y claves foráneas a
+            <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">DimTiempo</code>, <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">DimCliente</code>, <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">DimProducto</code> y <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">DimCanal</code>.
             Los filtros de arriba aplican a <strong>todos</strong> los bloques de esta página.
           </p>
-          <div class="analyticsKpiStrip analyticsKpiStrip--narrow">
-            <div class="kpi bg-white border-l-4 border-l-mars-secondary border-y border-r border-stone-300/40 rounded-r-xl shadow-sm p-4 kpi--fact">
-              <div class="kpiLabel">FactVentas (total en DW)</div>
-              <div class="kpiValue">{{ star_model.fact_ventas }}</div>
+          
+          <div class="flex flex-wrap gap-4 mb-6">
+            <div class="bg-white border-l-4 border-l-mars-secondary border-y border-r border-stone-200 rounded-r-xl shadow-sm p-4 w-64">
+              <div class="text-xs font-bold text-stone-400 uppercase tracking-wider mb-1">FactVentas (total en DW)</div>
+              <div class="text-3xl font-bold text-stone-800">{{ star_model.fact_ventas }}</div>
             </div>
-            <div class="kpi bg-white border-l-4 border-l-mars-secondary border-y border-r border-stone-300/40 rounded-r-xl shadow-sm p-4 kpi--fact">
-              <div class="kpiLabel">Hechos con el filtro actual</div>
-              <div class="kpiValue">{{ star_model.hechos_filtrados }}</div>
+            <div class="bg-white border-l-4 border-l-mars-accent border-y border-r border-stone-200 rounded-r-xl shadow-sm p-4 w-64">
+              <div class="text-xs font-bold text-stone-400 uppercase tracking-wider mb-1">Hechos (filtro actual)</div>
+              <div class="text-3xl font-bold text-mars-secondary">{{ star_model.hechos_filtrados }}</div>
             </div>
           </div>
 
           {% if dw_span_min %}
-            <div class="analyticsBanner">
-              <strong>Datos cargados en el DW (sin filtrar):</strong>
-              del <strong>{{ dw_span_min|date:"d/m/Y" }}</strong> al <strong>{{ dw_span_max|date:"d/m/Y" }}</strong>
-              — <strong>{{ dw_total_unfiltered }}</strong> hechos.
-              <span class="bannerMuted">
-                Años que tienen al menos una venta:
-                {% for yy in years_with_sales %}<span class="badge badge--inline">{{ yy }}</span>{% empty %}—{% endfor %}
-              </span>
+            <div class="bg-stone-100/50 border border-stone-200 text-stone-600 rounded-lg p-4 text-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <strong>Datos cargados (sin filtrar):</strong> del <strong>{{ dw_span_min|date:"d/m/Y" }}</strong> al <strong>{{ dw_span_max|date:"d/m/Y" }}</strong> — <strong>{{ dw_total_unfiltered }}</strong> hechos.
+              </div>
+              <div class="text-xs">
+                Años con ventas:
+                {% for yy in years_with_sales %}<span class="bg-white border border-stone-200 px-1.5 py-0.5 rounded font-bold mx-0.5 shadow-sm">{{ yy }}</span>{% empty %}—{% endfor %}
+              </div>
             </div>
           {% else %}
-            <div class="analyticsBanner analyticsBanner--warn">
-              <strong>No hay hechos en FactVentas.</strong> Ejecutá <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">load_dw</code> tras el ETL.
+            <div class="bg-red-50 border border-red-200 text-red-700 rounded-lg p-4 font-medium flex items-center gap-2">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              <span><strong>No hay hechos en FactVentas.</strong> Ejecutá <code class="bg-white border border-red-200 text-red-700 font-mono text-[11px] px-1.5 py-0.5 rounded">load_dw</code> tras el ETL.</span>
             </div>
           {% endif %}
         </div>
 
-        {# --- Dimensiones: cardinalidad (no son la tabla completa; el detalle sale en agregados y vista rápida) --- #}
-        <div id="dw-dimensiones" class="analyticsZone js-analytics-view" data-analytics-views="todas dimensiones" tabindex="-1">
-          <h3 class="analyticsZone__title">2 · Dimensiones del modelo estrella</h3>
-          <p class="muted text-stone-500 analyticsZone__lead">
-            Tablas <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">DimCliente</code>, <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">DimProducto</code>, <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">DimCanal</code> y <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">DimTiempo</code> (calendario pre-cargado).
-            Los recuentos son del DW completo; las tablas más abajo usan el <strong>mismo filtro de hechos</strong> donde aplica.
+        {# --- Dimensiones: cardinalidad --- #}
+        <div id="dw-dimensiones" class="js-analytics-view mb-12" data-analytics-views="todas dimensiones" tabindex="-1">
+          <h3 class="text-2xl font-bold text-stone-900 mb-3">2 · Dimensiones del modelo estrella</h3>
+          <p class="text-stone-600 leading-relaxed mb-6">
+            Tablas <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">DimCliente</code>, <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">DimProducto</code>, <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">DimCanal</code> y <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">DimTiempo</code>.
+            Los recuentos son del DW completo; las tablas más abajo usan el <strong>mismo filtro de hechos</strong>.
           </p>
-          <div class="analyticsKpiStrip">
-            <div class="kpi bg-white border-l-4 border-l-mars-secondary border-y border-r border-stone-300/40 rounded-r-xl shadow-sm p-4 kpi--dim">
-              <div class="kpiLabel">DimCliente</div>
-              <div class="kpiValue">{{ star_model.dim_cliente }}</div>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-white border-t-4 border-t-indigo-400 border-x border-b border-stone-200 rounded-b-xl shadow-sm p-4 text-center">
+              <div class="text-xs font-bold text-stone-400 uppercase tracking-wider mb-1">DimCliente</div>
+              <div class="text-3xl font-bold text-stone-800">{{ star_model.dim_cliente }}</div>
             </div>
-            <div class="kpi bg-white border-l-4 border-l-mars-secondary border-y border-r border-stone-300/40 rounded-r-xl shadow-sm p-4 kpi--dim">
-              <div class="kpiLabel">DimProducto</div>
-              <div class="kpiValue">{{ star_model.dim_producto }}</div>
+            <div class="bg-white border-t-4 border-t-emerald-400 border-x border-b border-stone-200 rounded-b-xl shadow-sm p-4 text-center">
+              <div class="text-xs font-bold text-stone-400 uppercase tracking-wider mb-1">DimProducto</div>
+              <div class="text-3xl font-bold text-stone-800">{{ star_model.dim_producto }}</div>
             </div>
-            <div class="kpi bg-white border-l-4 border-l-mars-secondary border-y border-r border-stone-300/40 rounded-r-xl shadow-sm p-4 kpi--dim">
-              <div class="kpiLabel">DimCanal</div>
-              <div class="kpiValue">{{ star_model.dim_canal }}</div>
+            <div class="bg-white border-t-4 border-t-amber-400 border-x border-b border-stone-200 rounded-b-xl shadow-sm p-4 text-center">
+              <div class="text-xs font-bold text-stone-400 uppercase tracking-wider mb-1">DimCanal</div>
+              <div class="text-3xl font-bold text-stone-800">{{ star_model.dim_canal }}</div>
             </div>
-            <div class="kpi bg-white border-l-4 border-l-mars-secondary border-y border-r border-stone-300/40 rounded-r-xl shadow-sm p-4 kpi--dim">
-              <div class="kpiLabel">DimTiempo (días en calendario)</div>
-              <div class="kpiValue">{{ star_model.dim_tiempo }}</div>
+            <div class="bg-white border-t-4 border-t-sky-400 border-x border-b border-stone-200 rounded-b-xl shadow-sm p-4 text-center">
+              <div class="text-xs font-bold text-stone-400 uppercase tracking-wider mb-1">DimTiempo</div>
+              <div class="text-3xl font-bold text-stone-800">{{ star_model.dim_tiempo }}</div>
             </div>
           </div>
         </div>
 
-        {# --- Dimensión tiempo: solo cruces y atributos de tiempo enlazados a hechos filtrados --- #}
-        <div id="dw-tiempo" class="analyticsZone js-analytics-view" data-analytics-views="todas tiempo" tabindex="-1">
-          <h3 class="analyticsZone__title">3 · Dimensión tiempo — <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">DimTiempo</code></h3>
-          <p class="muted text-stone-500 analyticsZone__lead">
-            El hecho enlaza con <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">fecha_id → DimTiempo.id_tiempo</code> (AAAAMMDD). Las tablas siguientes muestran cortes temporales sobre el conjunto de <strong>hechos ya filtrado</strong>.
+        {# --- Dimensión tiempo --- #}
+        <div id="dw-tiempo" class="js-analytics-view mb-12" data-analytics-views="todas tiempo" tabindex="-1">
+          <h3 class="text-2xl font-bold text-stone-900 mb-3">3 · Dimensión tiempo — <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[14px] px-2 py-0.5 rounded">DimTiempo</code></h3>
+          <p class="text-stone-600 leading-relaxed mb-8">
+            El hecho enlaza con <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">fecha_id &rarr; DimTiempo.id_tiempo</code> (AAAAMMDD). Las tablas muestran cortes temporales sobre el conjunto de <strong>hechos ya filtrado</strong>.
           </p>
 
-          <div class="timeSubBlock timeSubBlock--nested timeSubBlock--nestedFlush">
-            <h4 class="timeSubBlock__h4">3.1 · Filas de <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">DimTiempo</code> presentes en los hechos filtrados</h4>
-            <p class="muted text-stone-500 timeSubLead">
-              Una fila por día de calendario que aparece al menos una vez en <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">FactVentas</code> (con el filtro actual).
-            </p>
-            <div class="tableWrap">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th class="right"><a class="link text-mars-accent hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.dim_id }}">id_tiempo</a></th>
-                    <th><a class="link text-mars-accent hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.dim_fecha }}">Fecha</a></th>
-                    <th><a class="link text-mars-accent hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.dim_dia }}">Día</a></th>
-                    <th class="right"># sem.</th>
-                    <th>Mes</th>
-                    <th class="right">Trim.</th>
-                    <th class="right"><a class="link text-mars-accent hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.dim_anio }}">Año</a></th>
-                    <th>Fin sem.</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for t in dim_tiempo_en_hechos %}
+          <div class="space-y-12">
+            <!-- 3.1 -->
+            <div>
+              <h4 class="text-lg font-bold text-stone-800 mb-2 border-b-2 border-stone-200 pb-2 inline-block">3.1 · Filas de <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-sm px-1.5 py-0.5 rounded">DimTiempo</code> presentes en los hechos</h4>
+              <p class="text-stone-500 text-sm mb-4">Una fila por día de calendario que aparece al menos una vez en <code class="bg-stone-50 border border-stone-200 font-mono text-[10px] px-1 py-0.5 rounded">FactVentas</code>.</p>
+              <div class="border border-stone-200 rounded-xl overflow-x-auto bg-white shadow-sm">
+                <table class="w-full text-left border-collapse text-sm">
+                  <thead class="bg-stone-50/80 border-b border-stone-200">
                     <tr>
-                      <td class="right">{{ t.id_tiempo }}</td>
-                      <td>{{ t.fecha_completa|date:"Y-m-d" }}</td>
-                      <td>{{ t.nombre_dia }}</td>
-                      <td class="right">{{ t.dia_semana }}</td>
-                      <td>{{ t.nombre_mes }}</td>
-                      <td class="right">{{ t.trimestre }}</td>
-                      <td class="right">{{ t.anio }}</td>
-                      <td>{% if t.es_fin_semana %}Sí{% else %}No{% endif %}</td>
+                      <th class="py-3 px-4 font-bold text-stone-500"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.dim_id }}">id_tiempo</a></th>
+                      <th class="py-3 px-4 font-bold text-stone-500"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.dim_fecha }}">Fecha</a></th>
+                      <th class="py-3 px-4 font-bold text-stone-500"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.dim_dia }}">Día</a></th>
+                      <th class="py-3 px-4 font-bold text-stone-500 text-right"># sem.</th>
+                      <th class="py-3 px-4 font-bold text-stone-500">Mes</th>
+                      <th class="py-3 px-4 font-bold text-stone-500 text-right">Trim.</th>
+                      <th class="py-3 px-4 font-bold text-stone-500 text-right"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.dim_anio }}">Año</a></th>
+                      <th class="py-3 px-4 font-bold text-stone-500">Fin sem.</th>
                     </tr>
-                  {% empty %}
-                    <tr class="table-msg">
-                      <td colspan="8" class="muted text-stone-500">Sin hechos con el filtro actual o DW vacío. Ejecutá <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">load_dw</code> o quitá filtros.</td>
-                    </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody class="divide-y divide-stone-100">
+                    {% for t in dim_tiempo_en_hechos %}
+                      <tr class="hover:bg-stone-50 transition-colors">
+                        <td class="py-2 px-4 text-right font-mono text-stone-500">{{ t.id_tiempo }}</td>
+                        <td class="py-2 px-4">{{ t.fecha_completa|date:"Y-m-d" }}</td>
+                        <td class="py-2 px-4">{{ t.nombre_dia }}</td>
+                        <td class="py-2 px-4 text-right">{{ t.dia_semana }}</td>
+                        <td class="py-2 px-4">{{ t.nombre_mes }}</td>
+                        <td class="py-2 px-4 text-right">{{ t.trimestre }}</td>
+                        <td class="py-2 px-4 text-right font-bold">{{ t.anio }}</td>
+                        <td class="py-2 px-4">{% if t.es_fin_semana %}<span class="text-amber-600 font-bold">Sí</span>{% else %}No{% endif %}</td>
+                      </tr>
+                    {% empty %}
+                      <tr><td colspan="8" class="py-4 text-center text-stone-500">Sin datos.</td></tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
 
-          <div class="timeSubBlock timeSubBlock--nested">
-            <h4 class="timeSubBlock__h4">3.2 · Agregado de hechos por día civil</h4>
-            <p class="muted text-stone-500 timeSubLead">Suma de <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">monto</code> y conteo de transacciones por <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">fecha_completa</code>.</p>
-            <div class="tableWrap">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th class="right"><a class="link text-mars-accent hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.dc_id }}">id_tiempo</a></th>
-                    <th><a class="link text-mars-accent hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.dc_fecha }}">Fecha</a></th>
-                    <th>Día</th>
-                    <th class="right"><a class="link text-mars-accent hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.dc_tx }}">Transacciones</a></th>
-                    <th class="right"><a class="link text-mars-accent hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.dc_monto }}">Total ($)</a></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for r in ventas_por_dia_civil %}
+            <!-- 3.2 -->
+            <div>
+              <h4 class="text-lg font-bold text-stone-800 mb-2 border-b-2 border-stone-200 pb-2 inline-block">3.2 · Agregado de hechos por día civil</h4>
+              <p class="text-stone-500 text-sm mb-4">Suma de <code class="bg-stone-50 border border-stone-200 font-mono text-[10px] px-1 py-0.5 rounded">monto</code> y conteo de transacciones por fecha.</p>
+              <div class="border border-stone-200 rounded-xl overflow-x-auto bg-white shadow-sm">
+                <table class="w-full text-left border-collapse text-sm">
+                  <thead class="bg-stone-50/80 border-b border-stone-200">
                     <tr>
-                      <td class="right">{{ r.fecha__id_tiempo }}</td>
-                      <td>{{ r.fecha__fecha_completa|date:"Y-m-d" }}</td>
-                      <td>{{ r.fecha__nombre_dia }}</td>
-                      <td class="right">{{ r.transacciones }}</td>
-                      <td class="right">{{ r.total_monto }}</td>
+                      <th class="py-3 px-4 font-bold text-stone-500 text-right"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.dc_id }}">id_tiempo</a></th>
+                      <th class="py-3 px-4 font-bold text-stone-500"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.dc_fecha }}">Fecha</a></th>
+                      <th class="py-3 px-4 font-bold text-stone-500">Día</th>
+                      <th class="py-3 px-4 font-bold text-stone-500 text-right"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.dc_tx }}">Transacciones</a></th>
+                      <th class="py-3 px-4 font-bold text-stone-500 text-right"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.dc_monto }}">Total ($)</a></th>
                     </tr>
-                  {% empty %}
-                    <tr class="table-msg">
-                      <td colspan="5" class="muted text-stone-500">Sin datos con el filtro actual (revisá año/mes o quitá filtros).</td>
-                    </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody class="divide-y divide-stone-100">
+                    {% for r in ventas_por_dia_civil %}
+                      <tr class="hover:bg-stone-50 transition-colors">
+                        <td class="py-2 px-4 text-right font-mono text-stone-500">{{ r.fecha__id_tiempo }}</td>
+                        <td class="py-2 px-4">{{ r.fecha__fecha_completa|date:"Y-m-d" }}</td>
+                        <td class="py-2 px-4">{{ r.fecha__nombre_dia }}</td>
+                        <td class="py-2 px-4 text-right font-bold text-stone-700">{{ r.transacciones }}</td>
+                        <td class="py-2 px-4 text-right font-bold text-mars-secondary">${{ r.total_monto }}</td>
+                      </tr>
+                    {% empty %}
+                      <tr><td colspan="5" class="py-4 text-center text-stone-500">Sin datos.</td></tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
 
-          <div class="timeSubBlock timeSubBlock--nested">
-            <h4 class="timeSubBlock__h4">3.3 · Agregado por día de la semana</h4>
-            <div class="tableWrap">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th><a class="link text-mars-accent hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.sem_dia }}">Día</a></th>
-                    <th class="right"># ISO</th>
-                    <th class="right"><a class="link text-mars-accent hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.sem_tx }}">Transacciones</a></th>
-                    <th class="right"><a class="link text-mars-accent hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.sem_monto }}">Total ($)</a></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for r in ventas_por_dia_semana %}
-                    <tr>
-                      <td>{{ r.fecha__nombre_dia }}</td>
-                      <td class="right">{{ r.fecha__dia_semana }}</td>
-                      <td class="right">{{ r.transacciones }}</td>
-                      <td class="right">{{ r.total_monto }}</td>
-                    </tr>
-                  {% empty %}
-                    <tr class="table-msg">
-                      <td colspan="4" class="muted text-stone-500">Sin datos con el filtro actual.</td>
-                    </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <!-- 3.3 -->
+              <div>
+                <h4 class="text-lg font-bold text-stone-800 mb-2 border-b-2 border-stone-200 pb-2 inline-block">3.3 · Agregado por día de semana</h4>
+                <div class="border border-stone-200 rounded-xl overflow-x-auto bg-white shadow-sm mt-4">
+                  <table class="w-full text-left border-collapse text-sm">
+                    <thead class="bg-stone-50/80 border-b border-stone-200">
+                      <tr>
+                        <th class="py-3 px-4 font-bold text-stone-500"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.sem_dia }}">Día</a></th>
+                        <th class="py-3 px-4 font-bold text-stone-500 text-right"># ISO</th>
+                        <th class="py-3 px-4 font-bold text-stone-500 text-right"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.sem_tx }}">Tx</a></th>
+                        <th class="py-3 px-4 font-bold text-stone-500 text-right"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.sem_monto }}">Total ($)</a></th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-stone-100">
+                      {% for r in ventas_por_dia_semana %}
+                        <tr class="hover:bg-stone-50 transition-colors">
+                          <td class="py-2 px-4">{{ r.fecha__nombre_dia }}</td>
+                          <td class="py-2 px-4 text-right">{{ r.fecha__dia_semana }}</td>
+                          <td class="py-2 px-4 text-right font-bold text-stone-700">{{ r.transacciones }}</td>
+                          <td class="py-2 px-4 text-right font-bold text-mars-secondary">${{ r.total_monto }}</td>
+                        </tr>
+                      {% empty %}
+                        <tr><td colspan="4" class="py-4 text-center text-stone-500">Sin datos.</td></tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- 3.4 -->
+              <div>
+                <h4 class="text-lg font-bold text-stone-800 mb-2 border-b-2 border-stone-200 pb-2 inline-block">3.4 · Agregado por mes y año</h4>
+                <div class="border border-stone-200 rounded-xl overflow-x-auto bg-white shadow-sm mt-4">
+                  <table class="w-full text-left border-collapse text-sm">
+                    <thead class="bg-stone-50/80 border-b border-stone-200">
+                      <tr>
+                        <th class="py-3 px-4 font-bold text-stone-500"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.mes_per }}">Mes</a></th>
+                        <th class="py-3 px-4 font-bold text-stone-500 text-right">#</th>
+                        <th class="py-3 px-4 font-bold text-stone-500 text-right">Año</th>
+                        <th class="py-3 px-4 font-bold text-stone-500 text-right"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.mes_tx }}">Tx</a></th>
+                        <th class="py-3 px-4 font-bold text-stone-500 text-right"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.mes_monto }}">Total ($)</a></th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-stone-100">
+                      {% for r in ventas_por_mes_anio %}
+                        <tr class="hover:bg-stone-50 transition-colors">
+                          <td class="py-2 px-4">{{ r.fecha__nombre_mes }}</td>
+                          <td class="py-2 px-4 text-right">{{ r.fecha__mes }}</td>
+                          <td class="py-2 px-4 text-right">{{ r.fecha__anio }}</td>
+                          <td class="py-2 px-4 text-right font-bold text-stone-700">{{ r.transacciones }}</td>
+                          <td class="py-2 px-4 text-right font-bold text-mars-secondary">${{ r.total_monto }}</td>
+                        </tr>
+                      {% empty %}
+                        <tr><td colspan="5" class="py-4 text-center text-stone-500">Sin datos.</td></tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
-          </div>
 
-          <div class="timeSubBlock timeSubBlock--nested">
-            <h4 class="timeSubBlock__h4">3.4 · Agregado por mes y año</h4>
-            <div class="tableWrap">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th><a class="link text-mars-accent hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.mes_per }}">Mes</a></th>
-                    <th class="right"># mes</th>
-                    <th class="right">Año</th>
-                    <th class="right"><a class="link text-mars-accent hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.mes_tx }}">Transacciones</a></th>
-                    <th class="right"><a class="link text-mars-accent hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.mes_monto }}">Total ($)</a></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for r in ventas_por_mes_anio %}
-                    <tr>
-                      <td>{{ r.fecha__nombre_mes }}</td>
-                      <td class="right">{{ r.fecha__mes }}</td>
-                      <td class="right">{{ r.fecha__anio }}</td>
-                      <td class="right">{{ r.transacciones }}</td>
-                      <td class="right">{{ r.total_monto }}</td>
-                    </tr>
-                  {% empty %}
-                    <tr class="table-msg">
-                      <td colspan="5" class="muted text-stone-500">Sin datos con el filtro actual.</td>
-                    </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
+            <!-- 3.5 -->
+            <div class="bg-mars-surface/5 border border-mars-secondary/20 rounded-xl p-6">
+              <h4 class="text-lg font-bold text-mars-secondary mb-2">3.5 · Ejemplo fijo (ORM sobre hechos filtrados)</h4>
+              <p class="text-stone-600 text-sm mb-4">
+                Suma de <code class="bg-white border border-stone-200 px-1 py-0.5 rounded font-mono text-[10px]">monto</code> con año + mes + día fijos en código (Lunes + Enero + <strong>{{ ej_ref_year }}</strong>). Si no hay datos el total es <code class="bg-white border border-stone-200 px-1 py-0.5 rounded font-mono text-[10px]">0</code>.
+              </p>
+              <div class="bg-white border border-stone-200 rounded-lg p-4 inline-flex items-center gap-4 shadow-sm">
+                <span class="text-stone-800 font-medium">Suma monto · Lunes + Enero + {{ ej_ref_year }}:</span>
+                <span class="text-xl font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-md border border-emerald-200">${{ ej_orm_lunes_enero_ref }}</span>
+              </div>
             </div>
-          </div>
-
-          <div class="timeSubBlock timeSubBlock--nested timeSubBlock--accent">
-            <h4 class="timeSubBlock__h4">3.5 · Ejemplo fijo (ORM sobre hechos filtrados)</h4>
-            <p class="muted text-stone-500 timeSubLead">
-              Suma de <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">monto</code> con año + mes + día fijos en código (Lunes + Enero + año de referencia <strong>{{ ej_ref_year }}</strong>, anclado al calendario dentro del rango del DW). Si el dataset no tiene ese mes, el total es <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">0</code>.
-            </p>
-            <p class="ormExampleLine">
-              <strong>Suma monto · Lunes + Enero + {{ ej_ref_year }}:</strong>
-              <span class="badge">${{ ej_orm_lunes_enero_ref }}</span>
-            </p>
           </div>
         </div>
         </div>
@@ -368,244 +368,247 @@
 
       <details
         id="dw-agregados"
-        class="card bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5 cardStack analyticsCollapsible js-analytics-view"
+        class="bg-bone-light border border-stone-300/40 rounded-2xl shadow-sm p-6 md:p-8 mb-6 analyticsCollapsible js-analytics-view"
         data-analytics-views="todas dimensiones"
         data-storage-key="agregados-dimensiones"
         data-default-open="true"
         open
         tabindex="-1"
       >
-        <summary class="analyticsCollapsible__summary">
-          <span class="analyticsCollapsible__toggle" aria-hidden="true"></span>
-          <h2 class="analyticsCollapsible__heading">Agregados por otras dimensiones (mismo filtro de hechos)</h2>
+        <summary class="flex items-center cursor-pointer outline-none list-none [&::-webkit-details-marker]:hidden mb-6 group">
+          <span class="text-mars-accent text-xl mr-3 group-open:rotate-90 transition-transform">&#9654;</span>
+          <h2 class="text-xl font-bold text-stone-900">Agregados por otras dimensiones (mismo filtro de hechos)</h2>
         </summary>
-        <div class="analyticsCollapsible__body">
-        <p class="muted text-stone-500">
-          Consultas <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">GROUP BY</code> sobre <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">FactVentas</code> unidas a <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">DimCliente</code>, <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">DimCanal</code> y <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">DimProducto</code>.
-          Responden las preguntas de negocio típicas de la actividad.
+        <div class="pl-7">
+        <p class="text-stone-600 leading-relaxed mb-8">
+          Consultas <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">GROUP BY</code> sobre <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">FactVentas</code> unidas a <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">DimCliente</code>, <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">DimCanal</code> y <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">DimProducto</code>.
         </p>
-        <div class="analyticsDimGrid">
-          <div class="dimAggBlock">
-            <h3 class="dimAggBlock__title">DimCliente — mejores clientes</h3>
-            <div class="tableWrap">
-              <table class="table">
-                <thead>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          
+          <!-- Clientes -->
+          <div>
+            <h3 class="text-lg font-bold text-stone-800 mb-4 border-b-2 border-stone-200 pb-2">DimCliente — mejores clientes</h3>
+            <div class="border border-stone-200 rounded-xl overflow-x-auto bg-white shadow-sm">
+              <table class="w-full text-left border-collapse text-sm">
+                <thead class="bg-stone-50/80 border-b border-stone-200">
                   <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Segmento</th>
-                    <th class="right">Total ($)</th>
+                    <th class="py-3 px-3 font-bold text-stone-500">ID</th>
+                    <th class="py-3 px-3 font-bold text-stone-500">Nombre</th>
+                    <th class="py-3 px-3 font-bold text-stone-500">Seg.</th>
+                    <th class="py-3 px-3 font-bold text-stone-500 text-right">Total ($)</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody class="divide-y divide-stone-100">
                   {% for r in top_clientes %}
-                    <tr>
-                      <td>{{ r.cliente__id_cliente }}</td>
-                      <td>{{ r.cliente__nombre }} {{ r.cliente__apellido }}</td>
-                      <td>{{ r.cliente__segmento }}</td>
-                      <td class="right">{{ r.total }}</td>
+                    <tr class="hover:bg-stone-50 transition-colors">
+                      <td class="py-2 px-3 text-stone-500">{{ r.cliente__id_cliente }}</td>
+                      <td class="py-2 px-3">{{ r.cliente__nombre }} {{ r.cliente__apellido }}</td>
+                      <td class="py-2 px-3">{{ r.cliente__segmento }}</td>
+                      <td class="py-2 px-3 text-right font-bold text-mars-secondary">${{ r.total }}</td>
                     </tr>
                   {% empty %}
-                    <tr class="table-msg">
-                      <td colspan="4" class="muted text-stone-500">Sin datos. Ejecuta <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">load_dw</code> después del ETL.</td>
-                    </tr>
+                    <tr><td colspan="4" class="py-4 text-center text-stone-500">Sin datos.</td></tr>
                   {% endfor %}
                 </tbody>
               </table>
             </div>
           </div>
-          <div class="dimAggBlock">
-            <h3 class="dimAggBlock__title">DimCanal — rendimiento por canal</h3>
-            <div class="tableWrap">
-              <table class="table">
-                <thead>
+
+          <!-- Canales -->
+          <div>
+            <h3 class="text-lg font-bold text-stone-800 mb-4 border-b-2 border-stone-200 pb-2">DimCanal — rendimiento</h3>
+            <div class="border border-stone-200 rounded-xl overflow-x-auto bg-white shadow-sm">
+              <table class="w-full text-left border-collapse text-sm">
+                <thead class="bg-stone-50/80 border-b border-stone-200">
                   <tr>
-                    <th>Canal</th>
-                    <th class="right">Total ($)</th>
+                    <th class="py-3 px-4 font-bold text-stone-500">Canal</th>
+                    <th class="py-3 px-4 font-bold text-stone-500 text-right">Total ($)</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody class="divide-y divide-stone-100">
                   {% for r in top_canales %}
-                    <tr>
-                      <td>{{ r.canal__canal }}</td>
-                      <td class="right">{{ r.total }}</td>
+                    <tr class="hover:bg-stone-50 transition-colors">
+                      <td class="py-2 px-4">{{ r.canal__canal }}</td>
+                      <td class="py-2 px-4 text-right font-bold text-mars-secondary">${{ r.total }}</td>
                     </tr>
                   {% empty %}
-                    <tr class="table-msg">
-                      <td colspan="2" class="muted text-stone-500">Sin datos. Ejecuta <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">load_dw</code> después del ETL.</td>
-                    </tr>
+                    <tr><td colspan="2" class="py-4 text-center text-stone-500">Sin datos.</td></tr>
                   {% endfor %}
                 </tbody>
               </table>
             </div>
           </div>
-          <div class="dimAggBlock">
-            <h3 class="dimAggBlock__title">DimProducto — productos líderes</h3>
-            <p class="muted text-stone-500 dimAggBlock__note">Ventas online sin producto pueden quedar sin dimensión producto (null).</p>
-            <div class="tableWrap">
-              <table class="table">
-                <thead>
+
+          <!-- Productos -->
+          <div>
+            <h3 class="text-lg font-bold text-stone-800 mb-4 border-b-2 border-stone-200 pb-2">DimProducto — líderes</h3>
+            <div class="border border-stone-200 rounded-xl overflow-x-auto bg-white shadow-sm">
+              <table class="w-full text-left border-collapse text-sm">
+                <thead class="bg-stone-50/80 border-b border-stone-200">
                   <tr>
-                    <th>ID</th>
-                    <th>Producto</th>
-                    <th>Categoría</th>
-                    <th class="right">Total ($)</th>
+                    <th class="py-3 px-3 font-bold text-stone-500">ID</th>
+                    <th class="py-3 px-3 font-bold text-stone-500">Producto</th>
+                    <th class="py-3 px-3 font-bold text-stone-500 text-right">Total ($)</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody class="divide-y divide-stone-100">
                   {% for r in top_productos %}
-                    <tr>
-                      <td>{{ r.producto__id_producto }}</td>
-                      <td>{{ r.producto__nombre_producto }}</td>
-                      <td>{{ r.producto__categoria }}</td>
-                      <td class="right">{{ r.total }}</td>
+                    <tr class="hover:bg-stone-50 transition-colors">
+                      <td class="py-2 px-3 text-stone-500">{{ r.producto__id_producto }}</td>
+                      <td class="py-2 px-3">{{ r.producto__nombre_producto|truncatechars:20 }}</td>
+                      <td class="py-2 px-3 text-right font-bold text-mars-secondary">${{ r.total }}</td>
                     </tr>
                   {% empty %}
-                    <tr class="table-msg">
-                      <td colspan="4" class="muted text-stone-500">Sin datos. Ejecuta <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">load_dw</code> después del ETL.</td>
-                    </tr>
+                    <tr><td colspan="3" class="py-4 text-center text-stone-500">Sin datos.</td></tr>
                   {% endfor %}
                 </tbody>
               </table>
             </div>
           </div>
+
         </div>
         </div>
       </details>
 
       <details
         id="dw-vista-hechos"
-        class="card bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5 cardStack analyticsCollapsible js-analytics-view"
+        class="bg-bone-light border border-stone-300/40 rounded-2xl shadow-sm p-6 md:p-8 mb-6 analyticsCollapsible js-analytics-view"
         data-analytics-views="todas hechos"
         data-storage-key="fact-ventas-preview"
         data-default-open="true"
         open
         tabindex="-1"
       >
-        <summary class="analyticsCollapsible__summary">
-          <span class="analyticsCollapsible__toggle" aria-hidden="true"></span>
-          <h2 class="factPreviewTitle analyticsCollapsible__heading">
-            Vista rápida: filas de <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">FactVentas</code>
-            <span class="factPreviewTitle__meta">
+        <summary class="flex items-center cursor-pointer outline-none list-none [&::-webkit-details-marker]:hidden mb-6 group">
+          <span class="text-mars-accent text-xl mr-3 group-open:rotate-90 transition-transform">&#9654;</span>
+          <h2 class="text-xl font-bold text-stone-900">
+            Vista rápida: filas de <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[14px] px-2 py-0.5 rounded">FactVentas</code>
+            <span class="text-sm font-normal text-stone-500 ml-2">
               {% if preview_nav.empty %}
-                (sin hechos con el filtro actual)
+                (sin hechos)
               {% else %}
-                · {{ fact_preview_per_page }} por página · orden: más recientes primero
+                · {{ fact_preview_per_page }} por pág. · ordenadas más recientes primero
               {% endif %}
             </span>
           </h2>
         </summary>
-        <div class="analyticsCollapsible__body">
+        <div class="pl-7">
+        
         {% if not preview_nav.empty %}
-          <p class="muted text-stone-500 factPreviewPagerLine">
-            Hechos que cumplen el filtro: <strong>{{ preview_nav.total }}</strong>
-            {% if preview_nav.num_pages > 1 %}
-              · Página <strong>{{ preview_nav.number }}</strong> de <strong>{{ preview_nav.num_pages }}</strong>
-              · Filas <strong>{{ preview_nav.start_index }}</strong>–<strong>{{ preview_nav.end_index }}</strong>
-            {% endif %}
-          </p>
+          <div class="flex items-center justify-between mb-4">
+            <p class="text-stone-700 font-medium">
+              Hechos que cumplen el filtro: <span class="bg-stone-100 border border-stone-200 px-2 py-1 rounded text-mars-secondary font-bold">{{ preview_nav.total }}</span>
+            </p>
+          </div>
         {% endif %}
-        <p class="muted text-stone-500">
-          Cada fila es un hecho; las columnas de fecha/día/mes/año e <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">id_tiempo</code> vienen de la dimensión enlazada (<code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">fecha_id</code>).
-        </p>
+        
         {% if not preview_nav.empty and preview_nav.num_pages > 1 %}
-          <nav class="factPreviewPager" aria-label="Paginación vista FactVentas">
+          <nav class="flex items-center gap-4 mb-4" aria-label="Paginación vista FactVentas">
             {% if preview_nav.prev_url %}
-              <a class="btn btn--inline bg-white border border-stone-300 text-stone-700 hover:border-mars-accent hover:text-mars-accent shadow-sm rounded-md px-3 py-1 transition-colors factPreviewPager__btn" href="{{ preview_nav.prev_url }}">← Anterior</a>
+              <a class="bg-white border border-stone-300 text-stone-700 hover:border-mars-accent hover:text-mars-accent shadow-sm rounded-md px-3 py-1 text-sm font-medium transition-colors" href="{{ preview_nav.prev_url }}">&larr; Anterior</a>
             {% else %}
-              <span class="factPreviewPager__btn factPreviewPager__btn--disabled" aria-disabled="true">← Anterior</span>
+              <span class="bg-stone-100 border border-stone-200 text-stone-400 rounded-md px-3 py-1 text-sm font-medium cursor-not-allowed">&larr; Anterior</span>
             {% endif %}
-            <span class="factPreviewPager__status">
+            <span class="text-stone-600 font-bold text-sm">
               {{ preview_nav.number }} / {{ preview_nav.num_pages }}
             </span>
             {% if preview_nav.next_url %}
-              <a class="btn btn--inline bg-white border border-stone-300 text-stone-700 hover:border-mars-accent hover:text-mars-accent shadow-sm rounded-md px-3 py-1 transition-colors factPreviewPager__btn" href="{{ preview_nav.next_url }}">Siguiente →</a>
+              <a class="bg-white border border-stone-300 text-stone-700 hover:border-mars-accent hover:text-mars-accent shadow-sm rounded-md px-3 py-1 text-sm font-medium transition-colors" href="{{ preview_nav.next_url }}">Siguiente &rarr;</a>
             {% else %}
-              <span class="factPreviewPager__btn factPreviewPager__btn--disabled" aria-disabled="true">Siguiente →</span>
+              <span class="bg-stone-100 border border-stone-200 text-stone-400 rounded-md px-3 py-1 text-sm font-medium cursor-not-allowed">Siguiente &rarr;</span>
             {% endif %}
           </nav>
         {% endif %}
-        <div class="tableWrap tableWrap--factPreview">
-          <table class="table">
-            <thead>
+
+        <div class="border border-stone-200 rounded-xl overflow-x-auto bg-white shadow-sm mb-6">
+          <table class="w-full text-left border-collapse text-sm whitespace-nowrap">
+            <thead class="bg-stone-50/80 border-b border-stone-200">
               <tr>
-                <th class="right">id_tiempo</th>
-                <th>Fecha</th>
-                <th class="right">Día</th>
-                <th class="right">Mes</th>
-                <th class="right">Año</th>
-                <th>ID cliente</th>
-                <th>Cliente</th>
-                <th>Segmento</th>
-                <th>Canal</th>
-                <th>ID prod</th>
-                <th>Producto</th>
-                <th class="right">Cant</th>
-                <th class="right">Monto ($)</th>
+                <th class="py-3 px-3 font-bold text-stone-500 text-right">id_t</th>
+                <th class="py-3 px-3 font-bold text-stone-500">Fecha</th>
+                <th class="py-3 px-3 font-bold text-stone-500 text-right">Día</th>
+                <th class="py-3 px-3 font-bold text-stone-500 text-right">Mes</th>
+                <th class="py-3 px-3 font-bold text-stone-500 text-right">Año</th>
+                <th class="py-3 px-3 font-bold text-stone-500">ID cli</th>
+                <th class="py-3 px-3 font-bold text-stone-500">Cliente</th>
+                <th class="py-3 px-3 font-bold text-stone-500">Segmento</th>
+                <th class="py-3 px-3 font-bold text-stone-500">Canal</th>
+                <th class="py-3 px-3 font-bold text-stone-500">ID pr</th>
+                <th class="py-3 px-3 font-bold text-stone-500">Producto</th>
+                <th class="py-3 px-3 font-bold text-stone-500 text-right">Cant</th>
+                <th class="py-3 px-3 font-bold text-stone-500 text-right">Monto ($)</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y divide-stone-100">
               {% for r in preview %}
-                <tr>
-                  <td class="right">{{ r.id_tiempo }}</td>
-                  <td>{{ r.fecha }}</td>
-                  <td class="right">{{ r.dia }}</td>
-                  <td class="right">{{ r.mes }}</td>
-                  <td class="right">{{ r.anio }}</td>
-                  <td>{{ r.id_cliente }}</td>
-                  <td>{{ r.cliente }}</td>
-                  <td>{{ r.segmento }}</td>
-                  <td>{{ r.canal }}</td>
-                  <td>{{ r.id_producto }}</td>
-                  <td>{{ r.producto }}</td>
-                  <td class="right">{{ r.cantidad }}</td>
-                  <td class="right">{{ r.monto }}</td>
+                <tr class="hover:bg-stone-50 transition-colors">
+                  <td class="py-2 px-3 text-right font-mono text-stone-500">{{ r.id_tiempo }}</td>
+                  <td class="py-2 px-3">{{ r.fecha }}</td>
+                  <td class="py-2 px-3 text-right">{{ r.dia }}</td>
+                  <td class="py-2 px-3 text-right">{{ r.mes }}</td>
+                  <td class="py-2 px-3 text-right font-bold">{{ r.anio }}</td>
+                  <td class="py-2 px-3 font-mono text-stone-500">{{ r.id_cliente }}</td>
+                  <td class="py-2 px-3">{{ r.cliente|truncatechars:15 }}</td>
+                  <td class="py-2 px-3">{{ r.segmento }}</td>
+                  <td class="py-2 px-3">{{ r.canal }}</td>
+                  <td class="py-2 px-3 font-mono text-stone-500">{{ r.id_producto }}</td>
+                  <td class="py-2 px-3">{{ r.producto|truncatechars:15 }}</td>
+                  <td class="py-2 px-3 text-right font-bold">{{ r.cantidad }}</td>
+                  <td class="py-2 px-3 text-right font-bold text-mars-secondary">${{ r.monto }}</td>
                 </tr>
               {% empty %}
-                <tr class="table-msg">
-                  <td colspan="13" class="muted text-stone-500">Sin datos.</td>
-                </tr>
+                <tr><td colspan="13" class="py-4 text-center text-stone-500">Sin datos.</td></tr>
               {% endfor %}
             </tbody>
           </table>
         </div>
+
         {% if not preview_nav.empty and preview_nav.num_pages > 1 %}
-          <nav class="factPreviewPager factPreviewPager--bottom" aria-label="Paginación vista FactVentas">
+          <nav class="flex items-center gap-4" aria-label="Paginación vista FactVentas">
             {% if preview_nav.prev_url %}
-              <a class="btn btn--inline bg-white border border-stone-300 text-stone-700 hover:border-mars-accent hover:text-mars-accent shadow-sm rounded-md px-3 py-1 transition-colors factPreviewPager__btn" href="{{ preview_nav.prev_url }}">← Anterior</a>
+              <a class="bg-white border border-stone-300 text-stone-700 hover:border-mars-accent hover:text-mars-accent shadow-sm rounded-md px-3 py-1 text-sm font-medium transition-colors" href="{{ preview_nav.prev_url }}">&larr; Anterior</a>
             {% else %}
-              <span class="factPreviewPager__btn factPreviewPager__btn--disabled" aria-disabled="true">← Anterior</span>
+              <span class="bg-stone-100 border border-stone-200 text-stone-400 rounded-md px-3 py-1 text-sm font-medium cursor-not-allowed">&larr; Anterior</span>
             {% endif %}
-            <span class="factPreviewPager__status">
+            <span class="text-stone-600 font-bold text-sm">
               {{ preview_nav.number }} / {{ preview_nav.num_pages }}
             </span>
             {% if preview_nav.next_url %}
-              <a class="btn btn--inline bg-white border border-stone-300 text-stone-700 hover:border-mars-accent hover:text-mars-accent shadow-sm rounded-md px-3 py-1 transition-colors factPreviewPager__btn" href="{{ preview_nav.next_url }}">Siguiente →</a>
+              <a class="bg-white border border-stone-300 text-stone-700 hover:border-mars-accent hover:text-mars-accent shadow-sm rounded-md px-3 py-1 text-sm font-medium transition-colors" href="{{ preview_nav.next_url }}">Siguiente &rarr;</a>
             {% else %}
-              <span class="factPreviewPager__btn factPreviewPager__btn--disabled" aria-disabled="true">Siguiente →</span>
+              <span class="bg-stone-100 border border-stone-200 text-stone-400 rounded-md px-3 py-1 text-sm font-medium cursor-not-allowed">Siguiente &rarr;</span>
             {% endif %}
           </nav>
         {% endif %}
         </div>
       </details>
 
-      <details class="card bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5 cardStack detailsSql js-analytics-view" data-analytics-views="todas tiempo">
-        <summary class="detailsSql__summary">Referencia SQL (DBeaver / psql)</summary>
-        <p class="muted text-stone-500 detailsSql__lead">
-          Equivalente a los joins que el ORM hace entre <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">core_factventas</code> y <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">core_dimtiempo</code>
-          (mismo ejemplo que el bloque <strong>3.5</strong> del panel de tiempo, arriba):
-        </p>
-        <pre class="codeBlock"><code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">SELECT SUM(f.monto) AS total_monto
+      <details class="bg-bone-light border border-stone-300/40 rounded-2xl shadow-sm p-6 md:p-8 mb-6 js-analytics-view group" data-analytics-views="todas tiempo">
+        <summary class="flex items-center cursor-pointer outline-none list-none [&::-webkit-details-marker]:hidden mb-4">
+          <span class="text-stone-400 text-xl mr-3 group-open:rotate-90 transition-transform">&#9654;</span>
+          <h2 class="text-lg font-bold text-stone-600">Referencia SQL (DBeaver / psql)</h2>
+        </summary>
+        <div class="pl-7">
+          <p class="text-stone-500 text-sm mb-4">
+            Equivalente a los joins que el ORM hace entre <code class="bg-stone-100 border border-stone-200 px-1 py-0.5 rounded font-mono text-[10px]">core_factventas</code> y <code class="bg-stone-100 border border-stone-200 px-1 py-0.5 rounded font-mono text-[10px]">core_dimtiempo</code>:
+          </p>
+          <div class="bg-stone-800 text-stone-200 rounded-xl p-4 overflow-x-auto shadow-inner font-mono text-sm leading-relaxed border border-stone-700">
+SELECT SUM(f.monto) AS total_monto
 FROM core_factventas f
 JOIN core_dimtiempo t ON f.fecha_id = t.id_tiempo
 WHERE t.nombre_dia = 'Lunes'
   AND t.nombre_mes = 'Enero'
-  AND t.anio = {{ ej_ref_year }};</code></pre>
+  AND t.anio = {{ ej_ref_year }};</div>
+        </div>
       </details>
     </main>
     {% include "core/includes/site_shell_scripts.html" %}
     <script src="{% static 'js/analytics-collapsibles.js' %}?v=2" defer></script>
     <script src="{% static 'js/analytics-filtros-anchor.js' %}?v=1" defer></script>
+    <script src="{% static 'js/analytics-tabs.js' %}?v=2" defer></script>
+    </div>
+  </body>
+</html>js' %}?v=1" defer></script>
     <script src="{% static 'js/analytics-tabs.js' %}?v=2" defer></script>
     </div>
   </body>
