@@ -14,48 +14,48 @@
     <main class="container">
       <header class="header">
         <h1 class="title font-bold tracking-tight text-3xl text-stone-900 mb-2">Flujo completo</h1>
-        <p class="subtitle text-lg text-stone-900 mb-4">
-          Origen → ELT (a raw) → ETL (a processed) → DW → consumo
+        <p class="text-sm text-stone-500 font-medium mb-6">
+          Origen &rarr; ELT (a raw) &rarr; ETL (a processed) &rarr; DW &rarr; consumo
         </p>
         {% include "core/includes/site_quick_nav.html" %}
       </header>
 
-      <section class="card bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5">
+      <section class="bg-bone-light border border-stone-300/40 rounded-2xl shadow-sm p-8 mb-6">
         <h2 class="text-xl font-bold text-stone-900 mb-4">Checklist (lo que pide la guía)</h2>
-        <p class="muted text-stone-500">
+        <p class="text-stone-700 leading-relaxed">
           Esta pantalla demuestra en la plataforma los 5 bloques solicitados, con estado y tecnologías simuladas.
         </p>
       </section>
 
-      <section class="card bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5 cardStack">
-        <h2 class="text-xl font-bold text-stone-900 mb-4">Tabla: origen disperso → Data Lake (<code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">raw/</code>)</h2>
-        <p class="muted text-stone-500">
-          Mapeo alineado con <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">DEFAULT_SCATTERED_SOURCES</code> en <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">core/etl/elt_ingest.py</code>.
-          <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">run_elt_ingest</code> copia el archivo <em>sin transformar</em>; en <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">raw/</code> el nombre incluye
-          <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">_YYYYMMDD</code> (fecha de ingesta) para auditoría.
+      <section class="bg-bone-light border border-stone-300/40 rounded-2xl shadow-sm p-8 mb-6">
+        <h2 class="text-xl font-bold text-stone-900 mb-4">Tabla: origen disperso &rarr; Data Lake (<code class="bg-mars-sidebar text-mars-accent font-mono text-xs px-2 py-0.5 rounded shadow-sm">raw/</code>)</h2>
+        <p class="text-stone-700 leading-relaxed mb-4">
+          Mapeo alineado con <code class="bg-mars-sidebar text-mars-accent font-mono text-xs px-2 py-0.5 rounded shadow-sm">DEFAULT_SCATTERED_SOURCES</code> en <code class="bg-mars-sidebar text-mars-accent font-mono text-xs px-2 py-0.5 rounded shadow-sm">core/etl/elt_ingest.py</code>.
+          <code class="bg-mars-sidebar text-mars-accent font-mono text-xs px-2 py-0.5 rounded shadow-sm">run_elt_ingest</code> copia el archivo <em>sin transformar</em>; en <code class="bg-mars-sidebar text-mars-accent font-mono text-xs px-2 py-0.5 rounded shadow-sm">raw/</code> el nombre incluye
+          <code class="bg-mars-sidebar text-mars-accent font-mono text-xs px-2 py-0.5 rounded shadow-sm">_YYYYMMDD</code> (fecha de ingesta) para auditoría.
         </p>
-        <p class="muted text-stone-500 flowLakehouseNote">
+        <div class="bg-orange-50 border border-orange-200/60 rounded-lg p-4 text-sm text-stone-700 mb-6">
           Tu diagrama Lakehouse separa <strong>streaming</strong> y <strong>batch</strong>. En este proyecto la ingesta al lake está
           <strong>simulada en batch</strong> (ELT por comando). El streaming lo podés describir en la reflexión de la actividad como evolución
-          (p. ej. Kafka, CDC) sin que falte una tabla en la app: esta grilla cubre el camino <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">data_sources</code> → <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">raw</code>.
-        </p>
-        <div class="tableWrap lakeRouteTableWrap">
-          <table class="table">
+          (p. ej. Kafka, CDC) sin que falte una tabla en la app: esta grilla cubre el camino <code class="bg-mars-sidebar text-mars-accent font-mono text-xs px-2 py-0.5 rounded shadow-sm">data_sources</code> &rarr; <code class="bg-mars-sidebar text-mars-accent font-mono text-xs px-2 py-0.5 rounded shadow-sm">raw</code>.
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
             <thead>
               <tr>
-                <th>Rol (anexo / simulación)</th>
-                <th>Ruta bajo <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">data_sources/</code></th>
-                <th>Nombre en <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">data_lake/raw/</code></th>
-                <th>Formato</th>
+                <th class="text-xs font-bold uppercase tracking-wider text-stone-400 border-b border-stone-200 pb-2 px-2">Rol (anexo / simulación)</th>
+                <th class="text-xs font-bold uppercase tracking-wider text-stone-400 border-b border-stone-200 pb-2 px-2">Ruta bajo <code class="bg-mars-sidebar text-mars-accent font-mono text-xs px-2 py-0.5 rounded shadow-sm">data_sources/</code></th>
+                <th class="text-xs font-bold uppercase tracking-wider text-stone-400 border-b border-stone-200 pb-2 px-2">Nombre en <code class="bg-mars-sidebar text-mars-accent font-mono text-xs px-2 py-0.5 rounded shadow-sm">data_lake/raw/</code></th>
+                <th class="text-xs font-bold uppercase tracking-wider text-stone-400 border-b border-stone-200 pb-2 px-2">Formato</th>
               </tr>
             </thead>
             <tbody>
               {% for row in lake_route_rows %}
-                <tr>
-                  <td>{{ row.rol }}</td>
-                  <td><code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">{{ row.sources_path }}</code></td>
-                  <td><code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">{{ row.raw_landing }}</code></td>
-                  <td>{{ row.formato }}</td>
+                <tr class="border-b border-stone-100 last:border-0 hover:bg-stone-50/50 transition-colors">
+                  <td class="py-3 px-2 text-sm text-stone-600">{{ row.rol }}</td>
+                  <td class="py-3 px-2"><code class="bg-mars-sidebar text-white font-mono text-[11px] px-2.5 py-1 rounded shadow-sm">{{ row.sources_path }}</code></td>
+                  <td class="py-3 px-2"><code class="bg-mars-sidebar text-white font-mono text-[11px] px-2.5 py-1 rounded shadow-sm">{{ row.raw_landing }}</code></td>
+                  <td class="py-3 px-2 text-sm text-stone-600">{{ row.formato }}</td>
                 </tr>
               {% endfor %}
             </tbody>
@@ -63,39 +63,45 @@
         </div>
       </section>
 
-      <section class="card bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5 cardStack">
-        <h2 class="text-xl font-bold text-stone-900 mb-4">Flujo</h2>
-        <div class="flow">
+      <section class="bg-bone-light border border-stone-300/40 rounded-2xl shadow-sm p-8 mb-6">
+        <h2 class="text-xl font-bold text-stone-900 mb-6">Flujo</h2>
+        <div class="flex flex-col space-y-8">
           {% for s in steps %}
-            <div class="flowRow">
-              <div class="flowStep">{{ s.name }}</div>
-              <div>
-                <p class="flowDesc">{{ s.desc }}</p>
-                <div>
+            <div class="flex flex-col md:flex-row gap-6 items-start">
+              <div class="bg-white border-2 border-stone-200 rounded-xl px-4 py-2 text-sm font-bold text-mars-secondary shadow-sm text-center w-32 shrink-0">
+                {{ s.name }}
+              </div>
+              <div class="flex-1 flex flex-col space-y-2">
+                <p class="text-stone-800 font-medium">{{ s.desc }}</p>
+                <div class="flex flex-wrap items-center gap-2">
                   {% if s.status_ok %}
-                    <span class="pill"><span class="okDot"></span>OK</span>
+                    <span class="text-emerald-700 bg-emerald-50 border border-emerald-200 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>OK
+                    </span>
                   {% else %}
-                    <span class="pill"><span class="warnDot"></span>Pendiente</span>
+                    <span class="text-amber-700 bg-amber-50 border border-amber-200 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                      <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>Pendiente
+                    </span>
                   {% endif %}
                   {% for t in s.tech %}
-                    <span class="pill">{{ t }}</span>
+                    <span class="text-stone-500 bg-stone-100 border border-stone-200 text-[10px] font-medium px-2 py-0.5 rounded-md">{{ t }}</span>
                   {% endfor %}
                 </div>
-                <p class="muted text-stone-500 flowDetailsMuted">{{ s.details }}</p>
+                <p class="text-stone-500 text-sm mt-1">{{ s.details }}</p>
               </div>
             </div>
             {% if not forloop.last %}
-              <div class="divider"></div>
+              <div class="border-b border-stone-100 ml-36"></div>
             {% endif %}
           {% endfor %}
         </div>
       </section>
 
-      <section class="card bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5 cardStack">
-        <h2 class="text-xl font-bold text-stone-900 mb-4">Pipeline y cargas incrementales (Día 1 → Día 2)</h2>
-        <p class="muted text-stone-500">
-          Evidencia obligatoria de la rúbrica: cada día agrega archivos en <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">raw/</code>,
-          filas en el maestro <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">processed/</code> y hechos en <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">FactVentas</code> sin borrar el histórico.
+      <section class="bg-bone-light border border-stone-300/40 rounded-2xl shadow-sm p-8 mb-6">
+        <h2 class="text-xl font-bold text-stone-900 mb-4">Pipeline y cargas incrementales (Día 1 &rarr; Día 2)</h2>
+        <p class="text-stone-700 leading-relaxed mb-6">
+          Evidencia obligatoria de la rúbrica: cada día agrega archivos en <code class="bg-mars-sidebar text-mars-accent font-mono text-xs px-2 py-0.5 rounded shadow-sm">raw/</code>,
+          filas en el maestro <code class="bg-mars-sidebar text-mars-accent font-mono text-xs px-2 py-0.5 rounded shadow-sm">processed/</code> y hechos en <code class="bg-mars-sidebar text-mars-accent font-mono text-xs px-2 py-0.5 rounded shadow-sm">FactVentas</code> sin borrar el histórico.
         </p>
         {% include "core/includes/pipeline_docker_commands.html" %}
       </section>
