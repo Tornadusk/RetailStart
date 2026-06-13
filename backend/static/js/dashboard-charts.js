@@ -15,14 +15,16 @@
   var fontColor = "#52525b"; // text-stone-600
   var gridColor = "rgba(214, 211, 209, 0.4)"; // text-stone-300 con opacidad
   var palette = [
-    "#ff5722", // mars-accent
-    "#e91e63", // mars-secondary
-    "#f9844a",
-    "#f8961e",
-    "#f3722c",
-    "#43aa8b",
-    "#90be6d",
-    "#577590"
+    "#3b82f6", // Blue
+    "#ef4444", // Red
+    "#10b981", // Emerald (Green)
+    "#f59e0b", // Amber (Yellow)
+    "#8b5cf6", // Violet
+    "#ec4899", // Pink
+    "#06b6d4", // Cyan
+    "#84cc16", // Lime
+    "#6366f1", // Indigo
+    "#f97316"  // Orange
   ];
 
   function colors(n) {
