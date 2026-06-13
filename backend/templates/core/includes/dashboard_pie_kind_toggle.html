@@ -2,7 +2,7 @@
   Conmutador Torta / Dona por canvas (solo gráficos circulares).
 {% endcomment %}
 <div
-  class="dashboardPieKindToggle flex inline-flex p-0.5 bg-stone-200/50 rounded-lg gap-1 border border-stone-300"
+  class="dashboardPieKindToggle flex inline-flex p-0.5 bg-stone-200/50 dark:bg-black/40 rounded-lg gap-1 border border-stone-300"
   data-chart-target="{{ chart_canvas_id }}"
   data-chart-block="{{ pie_block_key }}"
   role="group"
@@ -10,14 +10,14 @@
 >
   <button
     type="button"
-    class="js-pie-kind px-3 py-1 rounded-md text-xs transition-colors text-stone-600 hover:text-stone-900 hover:bg-white/50 [&.is-active]:bg-white [&.is-active]:shadow-sm [&.is-active]:text-mars-secondary [&.is-active]:font-bold"
+    class="js-pie-kind px-3 py-1 rounded-md text-xs transition-colors text-stone-600 dark:text-slate-300 hover:text-stone-900 dark:text-white hover:bg-white dark:bg-[#2d1a24]/50 [&.is-active]:bg-white dark:bg-[#2d1a24] [&.is-active]:shadow-sm [&.is-active]:text-mars-secondary [&.is-active]:font-bold"
     data-kind="pie"
   >
     Torta
   </button>
   <button
     type="button"
-    class="js-pie-kind px-3 py-1 rounded-md text-xs transition-colors text-stone-600 hover:text-stone-900 hover:bg-white/50 [&.is-active]:bg-white [&.is-active]:shadow-sm [&.is-active]:text-mars-secondary [&.is-active]:font-bold"
+    class="js-pie-kind px-3 py-1 rounded-md text-xs transition-colors text-stone-600 dark:text-slate-300 hover:text-stone-900 dark:text-white hover:bg-white dark:bg-[#2d1a24]/50 [&.is-active]:bg-white dark:bg-[#2d1a24] [&.is-active]:shadow-sm [&.is-active]:text-mars-secondary [&.is-active]:font-bold"
     data-kind="doughnut"
   >
     Dona

@@ -80,15 +80,15 @@
           <span class="text-stone-500 dark:text-slate-400 font-medium text-sm">Visualización:</span>
           <div class="flex inline-flex p-1 bg-stone-200/50 dark:bg-black/40 rounded-lg gap-1" role="group" aria-label="Modo de visualización">
             <a
-              class="px-4 py-1.5 rounded-md text-sm transition-colors {% if view_mode == 'charts' %}bg-white shadow-sm text-mars-secondary font-bold{% else %}text-stone-600 dark:text-slate-300 hover:text-stone-900 dark:text-white hover:bg-white/50{% endif %}"
+              class="px-4 py-1.5 rounded-md text-sm transition-colors {% if view_mode == 'charts' %}bg-white shadow-sm text-mars-secondary font-bold{% else %}text-stone-600 dark:text-slate-300 hover:text-stone-900 dark:text-white hover:bg-white/50 dark:hover:bg-white/10{% endif %}"
               href="{% url 'dashboard' %}?{{ qs_view_charts }}#dashboard-panels"
               >Gráficos</a>
             <a
-              class="px-4 py-1.5 rounded-md text-sm transition-colors {% if view_mode == 'tables' %}bg-white shadow-sm text-mars-secondary font-bold{% else %}text-stone-600 dark:text-slate-300 hover:text-stone-900 dark:text-white hover:bg-white/50{% endif %}"
+              class="px-4 py-1.5 rounded-md text-sm transition-colors {% if view_mode == 'tables' %}bg-white shadow-sm text-mars-secondary font-bold{% else %}text-stone-600 dark:text-slate-300 hover:text-stone-900 dark:text-white hover:bg-white/50 dark:hover:bg-white/10{% endif %}"
               href="{% url 'dashboard' %}?{{ qs_view_tables }}#dashboard-panels"
               >Tablas</a>
             <a
-              class="px-4 py-1.5 rounded-md text-sm transition-colors {% if view_mode == 'both' %}bg-white shadow-sm text-mars-secondary font-bold{% else %}text-stone-600 dark:text-slate-300 hover:text-stone-900 dark:text-white hover:bg-white/50{% endif %}"
+              class="px-4 py-1.5 rounded-md text-sm transition-colors {% if view_mode == 'both' %}bg-white shadow-sm text-mars-secondary font-bold{% else %}text-stone-600 dark:text-slate-300 hover:text-stone-900 dark:text-white hover:bg-white/50 dark:hover:bg-white/10{% endif %}"
               href="{% url 'dashboard' %}?{{ qs_view_both }}#dashboard-panels"
               >Todos</a>
           </div>

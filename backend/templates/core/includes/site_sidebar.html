@@ -13,27 +13,27 @@
 
   <!-- 2. Opciones de Navegación -->
   <nav class="siteSidebar__nav p-4 space-y-1.5">
-    <a href="{% url 'home' %}" class="flex items-center px-3 py-2.5 transition-colors group {% if request.resolver_match.url_name == 'home' %}bg-[#3a1d24] rounded-lg text-mars-accent{% else %}bg-transparent rounded-lg hover:bg-white/5 text-mars-textMuted{% endif %}" {% if request.resolver_match.url_name == 'home' %}aria-current="page"{% endif %}>
+    <a href="{% url 'home' %}" class="flex items-center px-3 py-2.5 transition-colors group {% if request.resolver_match.url_name == 'home' %}bg-[#3a1d24] rounded-lg text-mars-accent{% else %}bg-transparent rounded-lg hover:bg-white dark:bg-[#2d1a24]/5 text-mars-textMuted{% endif %}" {% if request.resolver_match.url_name == 'home' %}aria-current="page"{% endif %}>
       <i class="fa-solid fa-house w-6 text-center mr-2 {% if request.resolver_match.url_name != 'home' %}group-hover:text-mars-secondary{% endif %}"></i>
       <span class="font-medium">Inicio</span>
     </a>
     
-    <a href="{% url 'dashboard' %}" class="flex items-center px-3 py-2.5 transition-colors group {% if request.resolver_match.url_name == 'dashboard' %}bg-[#3a1d24] rounded-lg text-mars-accent{% else %}bg-transparent rounded-lg hover:bg-white/5 text-mars-textMuted{% endif %}" {% if request.resolver_match.url_name == 'dashboard' %}aria-current="page"{% endif %}>
+    <a href="{% url 'dashboard' %}" class="flex items-center px-3 py-2.5 transition-colors group {% if request.resolver_match.url_name == 'dashboard' %}bg-[#3a1d24] rounded-lg text-mars-accent{% else %}bg-transparent rounded-lg hover:bg-white dark:bg-[#2d1a24]/5 text-mars-textMuted{% endif %}" {% if request.resolver_match.url_name == 'dashboard' %}aria-current="page"{% endif %}>
       <i class="fa-solid fa-chart-line w-6 text-center mr-2 {% if request.resolver_match.url_name != 'dashboard' %}group-hover:text-mars-secondary{% endif %}"></i>
       <span class="font-medium">Dashboard</span>
     </a>
     
-    <a href="{% url 'flow' %}" class="flex items-center px-3 py-2.5 transition-colors group {% if request.resolver_match.url_name == 'flow' %}bg-[#3a1d24] rounded-lg text-mars-accent{% else %}bg-transparent rounded-lg hover:bg-white/5 text-mars-textMuted{% endif %}" {% if request.resolver_match.url_name == 'flow' %}aria-current="page"{% endif %}>
+    <a href="{% url 'flow' %}" class="flex items-center px-3 py-2.5 transition-colors group {% if request.resolver_match.url_name == 'flow' %}bg-[#3a1d24] rounded-lg text-mars-accent{% else %}bg-transparent rounded-lg hover:bg-white dark:bg-[#2d1a24]/5 text-mars-textMuted{% endif %}" {% if request.resolver_match.url_name == 'flow' %}aria-current="page"{% endif %}>
       <i class="fa-solid fa-arrows-turn-right w-6 text-center mr-2 {% if request.resolver_match.url_name != 'flow' %}group-hover:text-mars-secondary{% endif %}"></i>
       <span class="font-medium">Flujo</span>
     </a>
     
-    <a href="{% url 'analytics' %}" class="flex items-center px-3 py-2.5 transition-colors group {% if request.resolver_match.url_name == 'analytics' %}bg-[#3a1d24] rounded-lg text-mars-accent{% else %}bg-transparent rounded-lg hover:bg-white/5 text-mars-textMuted{% endif %}" {% if request.resolver_match.url_name == 'analytics' %}aria-current="page"{% endif %}>
+    <a href="{% url 'analytics' %}" class="flex items-center px-3 py-2.5 transition-colors group {% if request.resolver_match.url_name == 'analytics' %}bg-[#3a1d24] rounded-lg text-mars-accent{% else %}bg-transparent rounded-lg hover:bg-white dark:bg-[#2d1a24]/5 text-mars-textMuted{% endif %}" {% if request.resolver_match.url_name == 'analytics' %}aria-current="page"{% endif %}>
       <i class="fa-solid fa-magnifying-glass-chart w-6 text-center mr-2 {% if request.resolver_match.url_name != 'analytics' %}group-hover:text-mars-secondary{% endif %}"></i>
       <span class="font-medium">Analytics</span>
     </a>
     
-    <a href="{% url 'evidence' %}" class="flex items-center px-3 py-2.5 transition-colors group {% if request.resolver_match.url_name == 'evidence' or request.resolver_match.url_name == 'evidence_file' %}bg-[#3a1d24] rounded-lg text-mars-accent{% else %}bg-transparent rounded-lg hover:bg-white/5 text-mars-textMuted{% endif %}" {% if request.resolver_match.url_name == 'evidence' or request.resolver_match.url_name == 'evidence_file' %}aria-current="page"{% endif %}>
+    <a href="{% url 'evidence' %}" class="flex items-center px-3 py-2.5 transition-colors group {% if request.resolver_match.url_name == 'evidence' or request.resolver_match.url_name == 'evidence_file' %}bg-[#3a1d24] rounded-lg text-mars-accent{% else %}bg-transparent rounded-lg hover:bg-white dark:bg-[#2d1a24]/5 text-mars-textMuted{% endif %}" {% if request.resolver_match.url_name == 'evidence' or request.resolver_match.url_name == 'evidence_file' %}aria-current="page"{% endif %}>
       <i class="fa-solid fa-file-contract w-6 text-center mr-2 {% if request.resolver_match.url_name != 'evidence' and request.resolver_match.url_name != 'evidence_file' %}group-hover:text-mars-secondary{% endif %}"></i>
       <span class="font-medium">Evidencia</span>
     </a>
@@ -70,9 +70,9 @@
     <h2 class="uppercase text-xs font-bold text-mars-textMuted mb-3 tracking-wider" id="site-model-view-title">Modelo estrella</h2>
     <div class="siteSidebar__modelTabs flex flex-col space-y-1.5" role="group" aria-label="Vista del modelo en Analytics">
       <button type="button" class="siteSidebar__modelBtn js-site-model-view is-active bg-mars-surface border border-mars-border text-white px-2 py-1.5 text-sm rounded-md hover:border-mars-accent transition-colors text-left" data-analytics-view="todas" aria-pressed="true">Todas</button>
-      <button type="button" class="siteSidebar__modelBtn js-site-model-view bg-transparent border border-transparent text-mars-textMuted px-2 py-1.5 text-sm rounded-md hover:bg-white/5 hover:text-white transition-colors text-left" data-analytics-view="hechos" aria-pressed="false">Hechos</button>
-      <button type="button" class="siteSidebar__modelBtn js-site-model-view bg-transparent border border-transparent text-mars-textMuted px-2 py-1.5 text-sm rounded-md hover:bg-white/5 hover:text-white transition-colors text-left" data-analytics-view="dimensiones" aria-pressed="false">Dimensiones</button>
-      <button type="button" class="siteSidebar__modelBtn js-site-model-view bg-transparent border border-transparent text-mars-textMuted px-2 py-1.5 text-sm rounded-md hover:bg-white/5 hover:text-white transition-colors text-left" data-analytics-view="tiempo" aria-pressed="false">Tiempo</button>
+      <button type="button" class="siteSidebar__modelBtn js-site-model-view bg-transparent border border-transparent text-mars-textMuted px-2 py-1.5 text-sm rounded-md hover:bg-white dark:bg-[#2d1a24]/5 hover:text-white transition-colors text-left" data-analytics-view="hechos" aria-pressed="false">Hechos</button>
+      <button type="button" class="siteSidebar__modelBtn js-site-model-view bg-transparent border border-transparent text-mars-textMuted px-2 py-1.5 text-sm rounded-md hover:bg-white dark:bg-[#2d1a24]/5 hover:text-white transition-colors text-left" data-analytics-view="dimensiones" aria-pressed="false">Dimensiones</button>
+      <button type="button" class="siteSidebar__modelBtn js-site-model-view bg-transparent border border-transparent text-mars-textMuted px-2 py-1.5 text-sm rounded-md hover:bg-white dark:bg-[#2d1a24]/5 hover:text-white transition-colors text-left" data-analytics-view="tiempo" aria-pressed="false">Tiempo</button>
     </div>
   </section>
 </aside>

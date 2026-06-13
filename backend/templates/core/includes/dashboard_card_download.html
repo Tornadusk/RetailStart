@@ -8,7 +8,7 @@
   data-export-stem="{{ export_stem }}"
   {% if table_wrap_id %}data-dashboard-table-id="{{ table_wrap_id }}"{% endif %}
 >
-  <summary class="bg-stone-100 border border-stone-300 text-stone-700 hover:bg-stone-200 hover:text-mars-accent text-xs px-3 py-1.5 rounded-md shadow-sm transition-colors cursor-pointer list-none flex items-center font-medium">Descargar ▾</summary>
+  <summary class="bg-stone-100 dark:bg-[#2d1a24] border border-stone-300 text-stone-700 dark:text-slate-200 hover:bg-stone-200 hover:text-mars-accent text-xs px-3 py-1.5 rounded-md shadow-sm transition-colors cursor-pointer list-none flex items-center font-medium">Descargar ▾</summary>
   <div class="dashboardDownload__menu">
     {% if view_mode == "tables" %}
       <button
