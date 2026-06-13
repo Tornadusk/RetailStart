@@ -11,51 +11,61 @@
   <body class="appShell">
     {% include "core/includes/site_sidebar.html" %}
     <div class="appShell__main bg-bone-darker font-sans text-stone-700 min-h-screen">
-    <main class="container">
-      <header class="header">
-        <h1 class="title font-bold tracking-tight text-3xl text-stone-900 mb-2">Flujo completo</h1>
+    <main class="container py-8 max-w-6xl mx-auto">
+      <header class="mb-8">
+        <h1 class="font-bold tracking-tight text-3xl text-stone-900 mb-2">Flujo completo</h1>
         <p class="text-sm text-stone-500 font-medium mb-6">
           Origen &rarr; ELT (a raw) &rarr; ETL (a processed) &rarr; DW &rarr; consumo
         </p>
         {% include "core/includes/site_quick_nav.html" %}
       </header>
 
-      <section class="bg-bone-light border border-stone-300/40 rounded-2xl shadow-sm p-8 mb-6">
-        <h2 class="text-xl font-bold text-stone-900 mb-4">Checklist (lo que pide la guía)</h2>
-        <p class="text-stone-700 leading-relaxed">
-          Esta pantalla demuestra en la plataforma los 5 bloques solicitados, con estado y tecnologías simuladas.
-        </p>
-      </section>
+      <!-- Banner Informativo -->
+      <div class="bg-orange-50/80 border border-orange-200 rounded-xl p-4 mb-8 flex items-start gap-4 shadow-sm">
+        <i class="fa-solid fa-circle-info text-mars-accent text-xl mt-0.5"></i>
+        <div>
+          <h2 class="text-sm font-bold text-mars-accent mb-1 uppercase tracking-wide">Checklist (lo que pide la guía)</h2>
+          <p class="text-stone-700 text-sm">
+            Esta pantalla demuestra en la plataforma los 5 bloques solicitados, con estado y tecnologías simuladas.
+          </p>
+        </div>
+      </div>
 
-      <section class="bg-bone-light border border-stone-300/40 rounded-2xl shadow-sm p-8 mb-6">
-        <h2 class="text-xl font-bold text-stone-900 mb-4">Tabla: origen disperso &rarr; Data Lake (<code class="bg-mars-sidebar text-mars-accent font-mono text-xs px-2 py-0.5 rounded shadow-sm">raw/</code>)</h2>
-        <p class="text-stone-700 leading-relaxed mb-4">
-          Mapeo alineado con <code class="bg-mars-sidebar text-mars-accent font-mono text-xs px-2 py-0.5 rounded shadow-sm">DEFAULT_SCATTERED_SOURCES</code> en <code class="bg-mars-sidebar text-mars-accent font-mono text-xs px-2 py-0.5 rounded shadow-sm">core/etl/elt_ingest.py</code>.
-          <code class="bg-mars-sidebar text-mars-accent font-mono text-xs px-2 py-0.5 rounded shadow-sm">run_elt_ingest</code> copia el archivo <em>sin transformar</em>; en <code class="bg-mars-sidebar text-mars-accent font-mono text-xs px-2 py-0.5 rounded shadow-sm">raw/</code> el nombre incluye
-          <code class="bg-mars-sidebar text-mars-accent font-mono text-xs px-2 py-0.5 rounded shadow-sm">_YYYYMMDD</code> (fecha de ingesta) para auditoría.
+      <!-- Sección Tabla -->
+      <section class="bg-bone-light border border-stone-300/40 rounded-2xl shadow-sm p-6 md:p-8 mb-8">
+        <h2 class="text-xl font-bold text-stone-900 mb-4">Tabla: origen disperso &rarr; Data Lake (<code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-sm px-1.5 py-0.5 rounded">raw/</code>)</h2>
+        
+        <p class="text-stone-600 leading-relaxed mb-4 text-sm md:text-base">
+          Mapeo alineado con <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">DEFAULT_SCATTERED_SOURCES</code> en <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">core/etl/elt_ingest.py</code>.
+          <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">run_elt_ingest</code> copia el archivo <em>sin transformar</em>; en <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">raw/</code> el nombre incluye
+          <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">_YYYYMMDD</code> (fecha de ingesta) para auditoría.
         </p>
-        <div class="bg-orange-50 border border-orange-200/60 rounded-lg p-4 text-sm text-stone-700 mb-6">
+
+        <div class="bg-white border-l-4 border-mars-accent rounded-r-lg p-4 text-sm text-stone-600 mb-6 shadow-sm">
           Tu diagrama Lakehouse separa <strong>streaming</strong> y <strong>batch</strong>. En este proyecto la ingesta al lake está
           <strong>simulada en batch</strong> (ELT por comando). El streaming lo podés describir en la reflexión de la actividad como evolución
-          (p. ej. Kafka, CDC) sin que falte una tabla en la app: esta grilla cubre el camino <code class="bg-mars-sidebar text-mars-accent font-mono text-xs px-2 py-0.5 rounded shadow-sm">data_sources</code> &rarr; <code class="bg-mars-sidebar text-mars-accent font-mono text-xs px-2 py-0.5 rounded shadow-sm">raw</code>.
+          (p. ej. Kafka, CDC) sin que falte una tabla en la app: esta grilla cubre el camino <code class="bg-stone-100 text-stone-600 border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">data_sources</code> &rarr; <code class="bg-stone-100 text-stone-600 border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">raw</code>.
         </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse">
-            <thead>
+
+        <div class="border border-stone-200 rounded-xl overflow-x-auto bg-white shadow-sm">
+          <table class="w-full text-left border-collapse min-w-[600px]">
+            <thead class="bg-stone-50/80 border-b border-stone-200">
               <tr>
-                <th class="text-xs font-bold uppercase tracking-wider text-stone-400 border-b border-stone-200 pb-2 px-2">Rol (anexo / simulación)</th>
-                <th class="text-xs font-bold uppercase tracking-wider text-stone-400 border-b border-stone-200 pb-2 px-2">Ruta bajo <code class="bg-mars-sidebar text-mars-accent font-mono text-xs px-2 py-0.5 rounded shadow-sm">data_sources/</code></th>
-                <th class="text-xs font-bold uppercase tracking-wider text-stone-400 border-b border-stone-200 pb-2 px-2">Nombre en <code class="bg-mars-sidebar text-mars-accent font-mono text-xs px-2 py-0.5 rounded shadow-sm">data_lake/raw/</code></th>
-                <th class="text-xs font-bold uppercase tracking-wider text-stone-400 border-b border-stone-200 pb-2 px-2">Formato</th>
+                <th class="text-[10px] font-bold uppercase tracking-widest text-stone-500 py-3 px-4">Rol (anexo / simulación)</th>
+                <th class="text-[10px] font-bold uppercase tracking-widest text-stone-500 py-3 px-4">Ruta bajo <code class="bg-stone-200 text-stone-600 font-mono text-[10px] px-1 py-0.5 rounded">data_sources/</code></th>
+                <th class="text-[10px] font-bold uppercase tracking-widest text-stone-500 py-3 px-4">Nombre en <code class="bg-stone-200 text-stone-600 font-mono text-[10px] px-1 py-0.5 rounded">data_lake/raw/</code></th>
+                <th class="text-[10px] font-bold uppercase tracking-widest text-stone-500 py-3 px-4">Formato</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y divide-stone-100">
               {% for row in lake_route_rows %}
-                <tr class="border-b border-stone-100 last:border-0 hover:bg-stone-50/50 transition-colors">
-                  <td class="py-3 px-2 text-sm text-stone-600">{{ row.rol }}</td>
-                  <td class="py-3 px-2"><code class="bg-mars-sidebar text-white font-mono text-[11px] px-2.5 py-1 rounded shadow-sm">{{ row.sources_path }}</code></td>
-                  <td class="py-3 px-2"><code class="bg-mars-sidebar text-white font-mono text-[11px] px-2.5 py-1 rounded shadow-sm">{{ row.raw_landing }}</code></td>
-                  <td class="py-3 px-2 text-sm text-stone-600">{{ row.formato }}</td>
+                <tr class="hover:bg-orange-50/30 transition-colors">
+                  <td class="py-3 px-4 text-sm text-stone-700 font-medium">{{ row.rol }}</td>
+                  <td class="py-3 px-4"><code class="bg-stone-50 text-mars-secondary border border-stone-200 font-mono text-[11px] px-2 py-0.5 rounded">{{ row.sources_path }}</code></td>
+                  <td class="py-3 px-4"><code class="bg-stone-50 text-mars-secondary border border-stone-200 font-mono text-[11px] px-2 py-0.5 rounded">{{ row.raw_landing }}</code></td>
+                  <td class="py-3 px-4 text-sm text-stone-600">
+                    <span class="bg-stone-100 text-stone-500 border border-stone-200 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase">{{ row.formato }}</span>
+                  </td>
                 </tr>
               {% endfor %}
             </tbody>
@@ -63,45 +73,56 @@
         </div>
       </section>
 
-      <section class="bg-bone-light border border-stone-300/40 rounded-2xl shadow-sm p-8 mb-6">
-        <h2 class="text-xl font-bold text-stone-900 mb-6">Flujo</h2>
-        <div class="flex flex-col space-y-8">
+      <!-- Sección Flujo (Línea de tiempo) -->
+      <section class="bg-bone-light border border-stone-300/40 rounded-2xl shadow-sm p-6 md:p-8 mb-8">
+        <h2 class="text-xl font-bold text-stone-900 mb-8">Flujo de Datos</h2>
+        <div class="relative pl-2 md:pl-0">
           {% for s in steps %}
-            <div class="flex flex-col md:flex-row gap-6 items-start">
-              <div class="bg-white border-2 border-stone-200 rounded-xl px-4 py-2 text-sm font-bold text-mars-secondary shadow-sm text-center w-32 shrink-0">
-                {{ s.name }}
+            <div class="relative flex gap-4 md:gap-8 items-start group">
+              <!-- Linea conectora -->
+              {% if not forloop.last %}
+                <div class="absolute left-[5.5rem] md:left-[8.5rem] top-8 bottom-[-1.5rem] w-px bg-stone-300 group-last:hidden"></div>
+              {% endif %}
+
+              <!-- Izquierda: Título -->
+              <div class="w-20 md:w-32 pt-1.5 text-right shrink-0">
+                <span class="text-xs md:text-sm font-bold text-mars-secondary uppercase tracking-wider">{{ s.name }}</span>
               </div>
-              <div class="flex-1 flex flex-col space-y-2">
-                <p class="text-stone-800 font-medium">{{ s.desc }}</p>
-                <div class="flex flex-wrap items-center gap-2">
-                  {% if s.status_ok %}
-                    <span class="text-emerald-700 bg-emerald-50 border border-emerald-200 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
-                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>OK
-                    </span>
-                  {% else %}
-                    <span class="text-amber-700 bg-amber-50 border border-amber-200 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
-                      <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>Pendiente
-                    </span>
-                  {% endif %}
-                  {% for t in s.tech %}
-                    <span class="text-stone-500 bg-stone-100 border border-stone-200 text-[10px] font-medium px-2 py-0.5 rounded-md">{{ t }}</span>
-                  {% endfor %}
+
+              <!-- Centro: Punto -->
+              <div class="relative z-10 w-3 h-3 md:w-4 md:h-4 rounded-full bg-mars-accent shrink-0 mt-2 ring-4 ring-bone-light shadow-sm"></div>
+
+              <!-- Derecha: Tarjeta de Contenido -->
+              <div class="flex-1 pb-10">
+                <div class="bg-white border border-stone-200/60 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                  <p class="text-stone-800 font-medium mb-3 md:text-lg">{{ s.desc }}</p>
+                  <div class="flex flex-wrap items-center gap-2 mb-3">
+                    {% if s.status_ok %}
+                      <span class="text-emerald-700 bg-emerald-50 border border-emerald-200 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>OK
+                      </span>
+                    {% else %}
+                      <span class="text-amber-700 bg-amber-50 border border-amber-200 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
+                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>Pendiente
+                      </span>
+                    {% endif %}
+                    {% for t in s.tech %}
+                      <span class="text-stone-600 bg-stone-100 border border-stone-200 text-[10px] font-medium px-2 py-0.5 rounded-md shadow-sm">{{ t }}</span>
+                    {% endfor %}
+                  </div>
+                  <p class="text-stone-500 text-xs md:text-sm leading-relaxed mt-2">{{ s.details }}</p>
                 </div>
-                <p class="text-stone-500 text-sm mt-1">{{ s.details }}</p>
               </div>
             </div>
-            {% if not forloop.last %}
-              <div class="border-b border-stone-100 ml-36"></div>
-            {% endif %}
           {% endfor %}
         </div>
       </section>
 
-      <section class="bg-bone-light border border-stone-300/40 rounded-2xl shadow-sm p-8 mb-6">
+      <section class="bg-bone-light border border-stone-300/40 rounded-2xl shadow-sm p-6 md:p-8 mb-8">
         <h2 class="text-xl font-bold text-stone-900 mb-4">Pipeline y cargas incrementales (Día 1 &rarr; Día 2)</h2>
         <p class="text-stone-700 leading-relaxed mb-6">
-          Evidencia obligatoria de la rúbrica: cada día agrega archivos en <code class="bg-mars-sidebar text-mars-accent font-mono text-xs px-2 py-0.5 rounded shadow-sm">raw/</code>,
-          filas en el maestro <code class="bg-mars-sidebar text-mars-accent font-mono text-xs px-2 py-0.5 rounded shadow-sm">processed/</code> y hechos en <code class="bg-mars-sidebar text-mars-accent font-mono text-xs px-2 py-0.5 rounded shadow-sm">FactVentas</code> sin borrar el histórico.
+          Evidencia obligatoria de la rúbrica: cada día agrega archivos en <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">raw/</code>,
+          filas en el maestro <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">processed/</code> y hechos en <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">FactVentas</code> sin borrar el histórico.
         </p>
         {% include "core/includes/pipeline_docker_commands.html" %}
       </section>
