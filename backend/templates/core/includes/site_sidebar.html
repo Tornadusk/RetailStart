@@ -1,26 +1,23 @@
 {% load static %}
+<!-- Botón Hamburguesa fijo arriba a la izquierda -->
 <button
   type="button"
-  class="siteSidebar__fab"
   id="site-sidebar-toggle"
+  class="fixed top-4 left-4 z-[70] w-10 h-10 rounded-md border border-mars-border bg-[#2a1720] hover:bg-mars-surface transition-colors flex items-center justify-center text-mars-textMuted hover:text-white shadow-md"
   aria-controls="site-sidebar"
   aria-expanded="true"
   title="Ocultar / mostrar menú"
-  style="display:none;"
 >
-  <span class="siteSidebar__fabIcon" aria-hidden="true"></span>
-  <span class="visuallyHidden">Menú</span>
+  <i class="fa-solid fa-bars text-lg"></i>
 </button>
+
 <div class="siteSidebar__backdrop" id="site-sidebar-backdrop" hidden></div>
 
 <aside class="siteSidebar bg-mars-sidebar border-r border-mars-border text-mars-textMuted flex flex-col h-full overflow-y-auto" id="site-sidebar" aria-label="Menú lateral">
   
   <!-- 1. Cabecera del Menú -->
-  <div class="siteSidebar__head border-b border-mars-border p-4 flex items-center justify-between">
+  <div class="siteSidebar__head border-b border-mars-border p-4 pl-[4.5rem] flex items-center h-[72px]">
     <span class="siteSidebar__brand text-mars-accent font-bold tracking-widest text-lg uppercase">RETAILSTART</span>
-    <button type="button" class="p-2 rounded-md border border-mars-border hover:bg-mars-surface transition-colors flex items-center justify-center text-mars-textMuted hover:text-white" onclick="document.getElementById('site-sidebar').classList.toggle('is-hidden')">
-      <i class="fa-solid fa-bars"></i>
-    </button>
   </div>
 
   <!-- 2. Opciones de Navegación -->
