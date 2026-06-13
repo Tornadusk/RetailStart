@@ -80,69 +80,77 @@
           El estado abierto/cerrado se guarda en <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">localStorage</code>.
         </div>
 
-        <div class="bg-white border border-stone-200 rounded-xl p-6 shadow-sm mb-8" id="segmentar-ventas" tabindex="-1">
+        <div class="card bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5 cardStack mb-8" id="segmentar-ventas" tabindex="-1">
           <h4 class="text-lg font-bold text-stone-800 mb-2">Segmentar hechos (misma lógica para todas las tablas)</h4>
-          <p class="text-mars-secondary font-bold mb-4">
-            Vista actual: <span class="text-stone-800 font-medium">{{ filter_summary }}</span>
-          </p>
-          <p class="text-stone-500 text-sm mb-6">
+          <p class="muted text-stone-500 filterActiveLine"><strong>Vista actual:</strong> <span class="text-stone-800 font-medium">{{ filter_summary }}</span></p>
+          <p class="text-stone-500 text-sm mb-6 mt-1">
             Los atajos aplican los mismos parámetros que el formulario (año / mes / día de la semana, o rango <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[10px] px-1 py-0.5 rounded">fde</code>–<code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[10px] px-1 py-0.5 rounded">fha</code> para la semana ISO). Se calculan con la fecha de hoy, acotada al rango de fechas cargado en el DW.
           </p>
-          <form method="get" class="flex flex-wrap items-end gap-4 mb-6" action="{% url 'analytics' %}#segmentar-ventas">
+
+          <form method="get" class="analyticsFormRow" action="{% url 'analytics' %}#segmentar-ventas">
             {% if filter_range_active %}
               <input type="hidden" name="fde" value="{{ filter_fde|date:'Y-m-d' }}" />
               <input type="hidden" name="fha" value="{{ filter_fha|date:'Y-m-d' }}" />
             {% endif %}
-            <div class="flex flex-col gap-1">
-              <label for="fy" class="text-xs font-bold text-stone-500 uppercase tracking-wider">Año</label>
-              <select name="y" id="fy" class="bg-stone-50 border border-stone-300 text-stone-800 rounded-md px-3 py-2 text-sm focus:border-mars-accent focus:ring-1 focus:ring-mars-accent transition-colors" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
+            
+            <div class="analyticsField">
+              <label for="fy" class="text-xs text-stone-500 font-medium uppercase tracking-wider mb-1 block">Año</label>
+              <select name="y" id="fy" class="bg-white text-stone-700 border border-stone-300 rounded-md px-3 py-1.5 text-sm focus:border-mars-accent focus:outline-none focus:ring-1 focus:ring-mars-accent w-full" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
                 <option value="" {% if filter_y == "" %}selected{% endif %}>Todos los años</option>
                 {% for yr in years %}
                   <option value="{{ yr }}" {% if filter_y == yr %}selected{% endif %}>{{ yr }}</option>
                 {% endfor %}
               </select>
             </div>
-            <div class="flex flex-col gap-1">
-              <label for="fm" class="text-xs font-bold text-stone-500 uppercase tracking-wider">Mes</label>
-              <select name="m" id="fm" class="bg-stone-50 border border-stone-300 text-stone-800 rounded-md px-3 py-2 text-sm focus:border-mars-accent focus:ring-1 focus:ring-mars-accent transition-colors" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
+            
+            <div class="analyticsField">
+              <label for="fm" class="text-xs text-stone-500 font-medium uppercase tracking-wider mb-1 block">Mes</label>
+              <select name="m" id="fm" class="bg-white text-stone-700 border border-stone-300 rounded-md px-3 py-1.5 text-sm focus:border-mars-accent focus:outline-none focus:ring-1 focus:ring-mars-accent w-full" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
                 <option value="" {% if filter_m == "" %}selected{% endif %}>Todos los meses</option>
                 {% for mo, mo_label in months %}
                   <option value="{{ mo }}" {% if filter_m == mo %}selected{% endif %}>{{ mo_label }}</option>
                 {% endfor %}
               </select>
             </div>
-            <div class="flex flex-col gap-1">
-              <label for="fd" class="text-xs font-bold text-stone-500 uppercase tracking-wider">Día de la semana</label>
-              <select name="d" id="fd" class="bg-stone-50 border border-stone-300 text-stone-800 rounded-md px-3 py-2 text-sm focus:border-mars-accent focus:ring-1 focus:ring-mars-accent transition-colors" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
+            
+            <div class="analyticsField">
+              <label for="fd" class="text-xs text-stone-500 font-medium uppercase tracking-wider mb-1 block">Día de la semana</label>
+              <select name="d" id="fd" class="bg-white text-stone-700 border border-stone-300 rounded-md px-3 py-1.5 text-sm focus:border-mars-accent focus:outline-none focus:ring-1 focus:ring-mars-accent w-full" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
                 {% for val, label in dias_semana %}
                   <option value="{{ val }}" {% if filter_d == val %}selected{% endif %}>{{ label }}</option>
                 {% endfor %}
               </select>
             </div>
-            <div class="flex items-center gap-3">
-              <button type="submit" class="bg-white border border-stone-300 text-stone-700 hover:border-mars-accent hover:text-mars-accent font-bold shadow-sm rounded-md px-4 py-2 text-sm transition-colors">Actualizar vista</button>
-              <a class="text-mars-accent hover:text-mars-secondary transition-colors underline text-sm font-medium" href="{% url 'analytics' %}#segmentar-ventas">Quitar filtros</a>
+            
+            <div class="analyticsFormActions mt-4 flex items-center space-x-3">
+              <button type="submit" class="btn btn--inline bg-white border border-stone-300 text-stone-700 hover:border-mars-accent hover:text-mars-accent shadow-sm rounded-md px-4 py-1.5 transition-colors font-medium">Aplicar filtros</button>
+              <a class="link text-stone-500 hover:text-mars-secondary transition-colors underline text-sm" href="{% url 'analytics' %}#segmentar-ventas">Quitar filtros</a>
             </div>
           </form>
+
           {% if filter_range_active %}
-            <p class="text-amber-700 bg-amber-50 border border-amber-200 rounded-md p-3 text-sm mb-4">
+            <p class="text-amber-700 bg-amber-50 border border-amber-200 rounded-md p-3 text-sm mt-4 mb-2">
               Filtro por <strong>rango de fechas</strong> (semana). Los desplegables de año/mes/día están deshabilitados;
               usá <a class="font-bold underline" href="{% url 'analytics' %}#segmentar-ventas">Quitar filtros</a> para volver al modo año/mes/día.
             </p>
           {% endif %}
-          <p class="text-stone-500 text-xs font-bold uppercase tracking-wider mb-3">Accesos rápidos (presets dinámicos):</p>
+
+          <p class="text-stone-500 font-medium text-xs uppercase tracking-wider mt-6 mb-2">Accesos rápidos:</p>
           <div class="flex flex-wrap gap-2">
             {% for ql in quick_time_links %}
-              <a class="bg-mars-surface/10 border border-mars-surface/20 text-mars-secondary hover:bg-mars-accent hover:text-white hover:border-mars-accent transition-colors px-3 py-1 rounded-full text-xs font-bold" href="{% url 'analytics' %}{{ ql.href }}">{{ ql.label }}</a>
+              <a class="bg-white border border-stone-300 text-stone-600 text-xs px-3 py-1.5 rounded-full hover:border-mars-accent hover:text-mars-accent transition-colors shadow-sm inline-block" href="{% url 'analytics' %}{{ ql.href }}">{{ ql.label }}</a>
             {% endfor %}
           </div>
         </div>
 
-        <div class="flex space-x-1 mb-8 border-b border-stone-200" role="tablist" aria-label="Vista del panel del DW">
-          <button type="button" class="analyticsViewTabs__btn is-active px-4 py-2 font-bold text-sm text-stone-500 border-b-2 border-transparent hover:text-mars-secondary transition-colors [&.is-active]:text-mars-accent [&.is-active]:border-mars-accent" data-analytics-view="todas" aria-pressed="true" role="tab">Todas</button>
-          <button type="button" class="analyticsViewTabs__btn px-4 py-2 font-bold text-sm text-stone-500 border-b-2 border-transparent hover:text-mars-secondary transition-colors [&.is-active]:text-mars-accent [&.is-active]:border-mars-accent" data-analytics-view="hechos" aria-pressed="false" role="tab">Hechos</button>
-          <button type="button" class="analyticsViewTabs__btn px-4 py-2 font-bold text-sm text-stone-500 border-b-2 border-transparent hover:text-mars-secondary transition-colors [&.is-active]:text-mars-accent [&.is-active]:border-mars-accent" data-analytics-view="dimensiones" aria-pressed="false" role="tab">Dimensiones</button>
-          <button type="button" class="analyticsViewTabs__btn px-4 py-2 font-bold text-sm text-stone-500 border-b-2 border-transparent hover:text-mars-secondary transition-colors [&.is-active]:text-mars-accent [&.is-active]:border-mars-accent" data-analytics-view="tiempo" aria-pressed="false" role="tab">Tiempo</button>
+        <div class="card bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5 cardStack dashboardToolbar flex items-center justify-start gap-4 mb-8" role="tablist" aria-label="Vista del panel del DW">
+          <span class="text-stone-500 font-medium text-sm">Navegación DW:</span>
+          <div class="flex inline-flex p-1 bg-stone-200/50 rounded-lg gap-1" role="group" aria-label="Modo de visualización">
+            <button type="button" class="analyticsViewTabs__btn is-active px-4 py-1.5 rounded-md text-sm transition-colors text-stone-600 hover:text-stone-900 hover:bg-white/50 [&.is-active]:bg-white [&.is-active]:shadow-sm [&.is-active]:text-mars-secondary [&.is-active]:font-bold !border-0" data-analytics-view="todas" aria-pressed="true" role="tab">Todas</button>
+            <button type="button" class="analyticsViewTabs__btn px-4 py-1.5 rounded-md text-sm transition-colors text-stone-600 hover:text-stone-900 hover:bg-white/50 [&.is-active]:bg-white [&.is-active]:shadow-sm [&.is-active]:text-mars-secondary [&.is-active]:font-bold !border-0" data-analytics-view="hechos" aria-pressed="false" role="tab">Hechos</button>
+            <button type="button" class="analyticsViewTabs__btn px-4 py-1.5 rounded-md text-sm transition-colors text-stone-600 hover:text-stone-900 hover:bg-white/50 [&.is-active]:bg-white [&.is-active]:shadow-sm [&.is-active]:text-mars-secondary [&.is-active]:font-bold !border-0" data-analytics-view="dimensiones" aria-pressed="false" role="tab">Dimensiones</button>
+            <button type="button" class="analyticsViewTabs__btn px-4 py-1.5 rounded-md text-sm transition-colors text-stone-600 hover:text-stone-900 hover:bg-white/50 [&.is-active]:bg-white [&.is-active]:shadow-sm [&.is-active]:text-mars-secondary [&.is-active]:font-bold !border-0" data-analytics-view="tiempo" aria-pressed="false" role="tab">Tiempo</button>
+          </div>
         </div>
 
         {# --- Tabla de hechos: métricas globales del hecho --- #}
