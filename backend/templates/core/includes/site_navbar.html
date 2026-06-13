@@ -1,6 +1,7 @@
 {% load static %}
 <script>
   (function() {
+    // Navegación
     try {
       var m = localStorage.getItem("retailstart.ui.nav_mode");
       var mode = m === 'sidebar' ? 'sidebar' : 'navbar';
@@ -8,32 +9,73 @@
     } catch (e) {
       document.body.classList.add('nav-mode-navbar');
     }
+    // Modo Oscuro
+    try {
+      var t = localStorage.getItem("retailstart.ui.theme");
+      if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    } catch(e) {}
   })();
 </script>
-<nav class="siteNavbar fixed top-0 left-0 w-full z-[60] bg-[#1a122e] border-b border-[rgba(192,132,252,0.22)] flex items-center px-4 h-[64px]" aria-label="Navegación principal">
-  <div class="flex items-center gap-5">
-    <span class="text-mars-accent font-bold tracking-wide text-[13px] uppercase">RETAILSTART</span>
-    
+<nav class="siteNavbar fixed top-0 left-0 w-full z-[60] bg-[#1a122e] border-b border-[rgba(192,132,252,0.22)] flex items-center justify-between px-4 h-[64px]" aria-label="Navegación principal">
+  
+  <!-- Izquierda: Toggle + Logo -->
+  <div class="flex items-center gap-4 min-w-[200px]">
     <button type="button" id="site-nav-switch-to-sidebar" class="flex items-center justify-center w-8 h-8 rounded-md border border-[rgba(192,132,252,0.45)] bg-[#121b2f] hover:border-[rgba(192,132,252,0.75)] transition-colors text-[#94a3b8] hover:text-white shadow-sm" aria-label="Abrir Menú Lateral y Filtros" title="Abrir Menú Lateral y Filtros">
       <i class="fa-solid fa-bars text-sm"></i>
     </button>
+    <span class="text-mars-accent font-bold tracking-wide text-[13px] uppercase">RETAILSTART</span>
+  </div>
 
-    <div class="hidden lg:flex space-x-1 ml-2">
-      <a href="{% url 'home' %}" class="flex items-center px-3 py-2 text-sm font-semibold transition-colors rounded-lg {% if request.resolver_match.url_name == 'home' %}bg-[rgba(192,132,252,0.14)] border border-[rgba(192,132,252,0.45)] text-white shadow-[inset_0_0_0_1px_rgba(192,132,252,0.12)]{% else %}text-slate-400 hover:text-white hover:bg-[rgba(192,132,252,0.08)] border border-transparent hover:border-[rgba(192,132,252,0.18)]{% endif %}">
-        <i class="fa-solid fa-house w-5 text-center mr-1"></i> Inicio
-      </a>
-      <a href="{% url 'dashboard' %}" class="flex items-center px-3 py-2 text-sm font-semibold transition-colors rounded-lg {% if request.resolver_match.url_name == 'dashboard' %}bg-[rgba(192,132,252,0.14)] border border-[rgba(192,132,252,0.45)] text-white shadow-[inset_0_0_0_1px_rgba(192,132,252,0.12)]{% else %}text-slate-400 hover:text-white hover:bg-[rgba(192,132,252,0.08)] border border-transparent hover:border-[rgba(192,132,252,0.18)]{% endif %}">
-        <i class="fa-solid fa-chart-line w-5 text-center mr-1"></i> Dashboard
-      </a>
-      <a href="{% url 'flow' %}" class="flex items-center px-3 py-2 text-sm font-semibold transition-colors rounded-lg {% if request.resolver_match.url_name == 'flow' %}bg-[rgba(192,132,252,0.14)] border border-[rgba(192,132,252,0.45)] text-white shadow-[inset_0_0_0_1px_rgba(192,132,252,0.12)]{% else %}text-slate-400 hover:text-white hover:bg-[rgba(192,132,252,0.08)] border border-transparent hover:border-[rgba(192,132,252,0.18)]{% endif %}">
-        <i class="fa-solid fa-arrows-turn-right w-5 text-center mr-1"></i> Flujo
-      </a>
-      <a href="{% url 'analytics' %}" class="flex items-center px-3 py-2 text-sm font-semibold transition-colors rounded-lg {% if request.resolver_match.url_name == 'analytics' %}bg-[rgba(192,132,252,0.14)] border border-[rgba(192,132,252,0.45)] text-white shadow-[inset_0_0_0_1px_rgba(192,132,252,0.12)]{% else %}text-slate-400 hover:text-white hover:bg-[rgba(192,132,252,0.08)] border border-transparent hover:border-[rgba(192,132,252,0.18)]{% endif %}">
-        <i class="fa-solid fa-magnifying-glass-chart w-5 text-center mr-1"></i> Analytics
-      </a>
-      <a href="{% url 'evidence' %}" class="flex items-center px-3 py-2 text-sm font-semibold transition-colors rounded-lg {% if request.resolver_match.url_name == 'evidence' or request.resolver_match.url_name == 'evidence_file' %}bg-[rgba(192,132,252,0.14)] border border-[rgba(192,132,252,0.45)] text-white shadow-[inset_0_0_0_1px_rgba(192,132,252,0.12)]{% else %}text-slate-400 hover:text-white hover:bg-[rgba(192,132,252,0.08)] border border-transparent hover:border-[rgba(192,132,252,0.18)]{% endif %}">
-        <i class="fa-solid fa-file-contract w-5 text-center mr-1"></i> Evidencia
-      </a>
+  <!-- Centro: Enlaces -->
+  <div class="hidden lg:flex items-center space-x-1">
+    <a href="{% url 'home' %}" class="flex items-center px-3 py-2 text-sm font-semibold transition-colors rounded-lg {% if request.resolver_match.url_name == 'home' %}bg-[rgba(192,132,252,0.14)] border border-[rgba(192,132,252,0.45)] text-white shadow-[inset_0_0_0_1px_rgba(192,132,252,0.12)]{% else %}text-slate-400 hover:text-white hover:bg-[rgba(192,132,252,0.08)] border border-transparent hover:border-[rgba(192,132,252,0.18)]{% endif %}">
+      <i class="fa-solid fa-house w-5 text-center mr-1"></i> Inicio
+    </a>
+    <a href="{% url 'dashboard' %}" class="flex items-center px-3 py-2 text-sm font-semibold transition-colors rounded-lg {% if request.resolver_match.url_name == 'dashboard' %}bg-[rgba(192,132,252,0.14)] border border-[rgba(192,132,252,0.45)] text-white shadow-[inset_0_0_0_1px_rgba(192,132,252,0.12)]{% else %}text-slate-400 hover:text-white hover:bg-[rgba(192,132,252,0.08)] border border-transparent hover:border-[rgba(192,132,252,0.18)]{% endif %}">
+      <i class="fa-solid fa-chart-line w-5 text-center mr-1"></i> Dashboard
+    </a>
+    <a href="{% url 'flow' %}" class="flex items-center px-3 py-2 text-sm font-semibold transition-colors rounded-lg {% if request.resolver_match.url_name == 'flow' %}bg-[rgba(192,132,252,0.14)] border border-[rgba(192,132,252,0.45)] text-white shadow-[inset_0_0_0_1px_rgba(192,132,252,0.12)]{% else %}text-slate-400 hover:text-white hover:bg-[rgba(192,132,252,0.08)] border border-transparent hover:border-[rgba(192,132,252,0.18)]{% endif %}">
+      <i class="fa-solid fa-arrows-turn-right w-5 text-center mr-1"></i> Flujo
+    </a>
+    <a href="{% url 'analytics' %}" class="flex items-center px-3 py-2 text-sm font-semibold transition-colors rounded-lg {% if request.resolver_match.url_name == 'analytics' %}bg-[rgba(192,132,252,0.14)] border border-[rgba(192,132,252,0.45)] text-white shadow-[inset_0_0_0_1px_rgba(192,132,252,0.12)]{% else %}text-slate-400 hover:text-white hover:bg-[rgba(192,132,252,0.08)] border border-transparent hover:border-[rgba(192,132,252,0.18)]{% endif %}">
+      <i class="fa-solid fa-magnifying-glass-chart w-5 text-center mr-1"></i> Analytics
+    </a>
+    <a href="{% url 'evidence' %}" class="flex items-center px-3 py-2 text-sm font-semibold transition-colors rounded-lg {% if request.resolver_match.url_name == 'evidence' or request.resolver_match.url_name == 'evidence_file' %}bg-[rgba(192,132,252,0.14)] border border-[rgba(192,132,252,0.45)] text-white shadow-[inset_0_0_0_1px_rgba(192,132,252,0.12)]{% else %}text-slate-400 hover:text-white hover:bg-[rgba(192,132,252,0.08)] border border-transparent hover:border-[rgba(192,132,252,0.18)]{% endif %}">
+      <i class="fa-solid fa-file-contract w-5 text-center mr-1"></i> Evidencia
+    </a>
+  </div>
+
+  <!-- Derecha: Utilidades -->
+  <div class="flex items-center gap-3 min-w-[200px] justify-end">
+    <button type="button" id="theme-toggle" class="flex items-center justify-center w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors border border-[rgba(192,132,252,0.2)]" title="Alternar modo oscuro">
+      <i class="fa-solid fa-moon text-sm dark:hidden"></i>
+      <i class="fa-solid fa-sun text-sm hidden dark:block text-yellow-300"></i>
+    </button>
+    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-mars-secondary to-mars-accent flex items-center justify-center text-white text-xs font-bold shadow-sm" title="Usuario">
+      A
     </div>
   </div>
+
 </nav>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var themeToggleBtn = document.getElementById('theme-toggle');
+    if (themeToggleBtn) {
+      themeToggleBtn.addEventListener('click', function() {
+        var isDark = document.documentElement.classList.contains('dark');
+        if (isDark) {
+          document.documentElement.classList.remove('dark');
+          localStorage.setItem('retailstart.ui.theme', 'light');
+        } else {
+          document.documentElement.classList.add('dark');
+          localStorage.setItem('retailstart.ui.theme', 'dark');
+        }
+      });
+    }
+  });
+</script>

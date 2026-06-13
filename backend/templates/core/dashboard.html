@@ -12,25 +12,25 @@
   <body class="appShell">
     {% include "core/includes/site_navbar.html" %}
     {% include "core/includes/site_sidebar.html" %}
-    <div class="appShell__main bg-bone-darker font-sans text-stone-700 min-h-screen">
+    <div class="appShell__main bg-bone-darker dark:bg-[#120A0E] font-sans text-stone-700 dark:text-slate-200 dark:text-slate-300 min-h-screen">
       <main class="container dashboardPage">
         <header class="header dashboardHeader">
           <div class="dashboardHeader__top">
             <div>
-              <h1 class="title font-bold tracking-tight text-3xl text-stone-900 mb-2">Dashboard</h1>
+              <h1 class="title font-bold tracking-tight text-3xl text-stone-900 dark:text-white mb-2">Dashboard</h1>
             </div>
             <div class="dashboardHeader__actions">
               <details class="dashboardDownload dashboardDownload--mega">
-                <summary class="btn btn--inline bg-white border border-stone-300 text-stone-700 hover:border-mars-accent hover:text-mars-accent shadow-sm rounded-md px-3 py-1 transition-colors dashboardDownload__summary">Descargar ▾</summary>
+                <summary class="btn btn--inline bg-white dark:bg-[#2d1a24] border border-stone-300 dark:border-[rgba(192,132,252,0.45)] text-stone-700 dark:text-white dark:text-slate-200 hover:border-mars-accent hover:text-mars-accent shadow-sm rounded-md px-3 py-1 transition-colors dashboardDownload__summary">Descargar ▾</summary>
                 {% include "core/includes/dashboard_global_download.html" %}
               </details>
             </div>
           </div>
         </header>
 
-        <section class="card bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5 cardStack" id="dashboard-filters">
+        <section class="card bg-bone-light dark:bg-[#20131A] border border-stone-300/40 dark:border-white/10 rounded-xl shadow-sm p-5 cardStack" id="dashboard-filters">
           <h2 class="dashboardH2">Filtros (misma lógica que Analytics)</h2>
-          <p class="muted text-stone-500 filterActiveLine"><strong>Vista actual:</strong> {{ filter_summary }}</p>
+          <p class="muted text-stone-500 dark:text-slate-400 filterActiveLine"><strong>Vista actual:</strong> {{ filter_summary }}</p>
           <form method="get" class="analyticsFormRow" action="{% url 'dashboard' %}#dashboard-filters">
             <input type="hidden" name="view" value="{{ view_mode }}" />
             {% if filter_range_active %}
@@ -38,8 +38,8 @@
               <input type="hidden" name="fha" value="{{ filter_fha|date:'Y-m-d' }}" />
             {% endif %}
             <div class="analyticsField">
-              <label for="db_y" class="text-xs text-stone-500 font-medium uppercase tracking-wider mb-1 block">Año</label>
-              <select name="y" id="db_y" class="bg-white text-stone-700 border border-stone-300 rounded-md px-3 py-1.5 text-sm focus:border-mars-accent focus:outline-none focus:ring-1 focus:ring-mars-accent w-full" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
+              <label for="db_y" class="text-xs text-stone-500 dark:text-slate-400 font-medium uppercase tracking-wider mb-1 block">Año</label>
+              <select name="y" id="db_y" class="bg-white text-stone-700 dark:text-slate-200 border border-stone-300 rounded-md px-3 py-1.5 text-sm focus:border-mars-accent focus:outline-none focus:ring-1 focus:ring-mars-accent w-full" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
                 <option value="" {% if filter_y == "" %}selected{% endif %}>Todos los años</option>
                 {% for yr in years %}
                   <option value="{{ yr }}" {% if filter_y == yr %}selected{% endif %}>{{ yr }}</option>
@@ -47,8 +47,8 @@
               </select>
             </div>
             <div class="analyticsField">
-              <label for="db_m" class="text-xs text-stone-500 font-medium uppercase tracking-wider mb-1 block">Mes</label>
-              <select name="m" id="db_m" class="bg-white text-stone-700 border border-stone-300 rounded-md px-3 py-1.5 text-sm focus:border-mars-accent focus:outline-none focus:ring-1 focus:ring-mars-accent w-full" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
+              <label for="db_m" class="text-xs text-stone-500 dark:text-slate-400 font-medium uppercase tracking-wider mb-1 block">Mes</label>
+              <select name="m" id="db_m" class="bg-white text-stone-700 dark:text-slate-200 border border-stone-300 rounded-md px-3 py-1.5 text-sm focus:border-mars-accent focus:outline-none focus:ring-1 focus:ring-mars-accent w-full" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
                 <option value="" {% if filter_m == "" %}selected{% endif %}>Todos los meses</option>
                 {% for mo, mo_label in months %}
                   <option value="{{ mo }}" {% if filter_m == mo %}selected{% endif %}>{{ mo_label }}</option>
@@ -56,60 +56,60 @@
               </select>
             </div>
             <div class="analyticsField">
-              <label for="db_d" class="text-xs text-stone-500 font-medium uppercase tracking-wider mb-1 block">Día de la semana</label>
-              <select name="d" id="db_d" class="bg-white text-stone-700 border border-stone-300 rounded-md px-3 py-1.5 text-sm focus:border-mars-accent focus:outline-none focus:ring-1 focus:ring-mars-accent w-full" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
+              <label for="db_d" class="text-xs text-stone-500 dark:text-slate-400 font-medium uppercase tracking-wider mb-1 block">Día de la semana</label>
+              <select name="d" id="db_d" class="bg-white text-stone-700 dark:text-slate-200 border border-stone-300 rounded-md px-3 py-1.5 text-sm focus:border-mars-accent focus:outline-none focus:ring-1 focus:ring-mars-accent w-full" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
                 {% for val, label in dias_semana %}
                   <option value="{{ val }}" {% if filter_d == val %}selected{% endif %}>{{ label }}</option>
                 {% endfor %}
               </select>
             </div>
             <div class="analyticsFormActions mt-4 flex items-center space-x-3">
-              <button type="submit" class="btn btn--inline bg-white border border-stone-300 text-stone-700 hover:border-mars-accent hover:text-mars-accent shadow-sm rounded-md px-4 py-1.5 transition-colors font-medium">Aplicar filtros</button>
-              <a class="link text-stone-500 hover:text-mars-secondary transition-colors underline text-sm" href="{% url 'dashboard' %}?view={{ view_mode }}#dashboard-filters">Quitar filtros</a>
+              <button type="submit" class="btn btn--inline bg-white dark:bg-[#2d1a24] border border-stone-300 dark:border-[rgba(192,132,252,0.45)] text-stone-700 dark:text-white dark:text-slate-200 hover:border-mars-accent hover:text-mars-accent shadow-sm rounded-md px-4 py-1.5 transition-colors font-medium">Aplicar filtros</button>
+              <a class="link text-stone-500 dark:text-slate-400 hover:text-mars-secondary transition-colors underline text-sm" href="{% url 'dashboard' %}?view={{ view_mode }}#dashboard-filters">Quitar filtros</a>
             </div>
           </form>
-          <p class="text-stone-500 font-medium text-xs uppercase tracking-wider mt-4 mb-2">Accesos rápidos:</p>
+          <p class="text-stone-500 dark:text-slate-400 font-medium text-xs uppercase tracking-wider mt-4 mb-2">Accesos rápidos:</p>
           <div class="flex flex-wrap gap-2">
             {% for ql in quick_time_links %}
-              <a class="bg-white border border-stone-300 text-stone-600 text-xs px-3 py-1.5 rounded-full hover:border-mars-accent hover:text-mars-accent transition-colors shadow-sm inline-block" href="{% url 'dashboard' %}{{ ql.href }}">{{ ql.label }}</a>
+              <a class="bg-white dark:bg-[#2d1a24] border border-stone-300 dark:border-[rgba(192,132,252,0.45)] text-stone-600 dark:text-slate-200 dark:text-slate-300 text-xs px-3 py-1.5 rounded-full hover:border-mars-accent hover:text-mars-accent transition-colors shadow-sm inline-block" href="{% url 'dashboard' %}{{ ql.href }}">{{ ql.label }}</a>
             {% endfor %}
           </div>
         </section>
 
-        <section class="card bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5 cardStack dashboardToolbar flex items-center justify-start gap-4">
-          <span class="text-stone-500 font-medium text-sm">Visualización:</span>
-          <div class="flex inline-flex p-1 bg-stone-200/50 rounded-lg gap-1" role="group" aria-label="Modo de visualización">
+        <section class="card bg-bone-light dark:bg-[#20131A] border border-stone-300/40 dark:border-white/10 rounded-xl shadow-sm p-5 cardStack dashboardToolbar flex items-center justify-start gap-4">
+          <span class="text-stone-500 dark:text-slate-400 font-medium text-sm">Visualización:</span>
+          <div class="flex inline-flex p-1 bg-stone-200/50 dark:bg-black/40 rounded-lg gap-1" role="group" aria-label="Modo de visualización">
             <a
-              class="px-4 py-1.5 rounded-md text-sm transition-colors {% if view_mode == 'charts' %}bg-white shadow-sm text-mars-secondary font-bold{% else %}text-stone-600 hover:text-stone-900 hover:bg-white/50{% endif %}"
+              class="px-4 py-1.5 rounded-md text-sm transition-colors {% if view_mode == 'charts' %}bg-white shadow-sm text-mars-secondary font-bold{% else %}text-stone-600 dark:text-slate-300 hover:text-stone-900 dark:text-white hover:bg-white/50{% endif %}"
               href="{% url 'dashboard' %}?{{ qs_view_charts }}#dashboard-panels"
               >Gráficos</a>
             <a
-              class="px-4 py-1.5 rounded-md text-sm transition-colors {% if view_mode == 'tables' %}bg-white shadow-sm text-mars-secondary font-bold{% else %}text-stone-600 hover:text-stone-900 hover:bg-white/50{% endif %}"
+              class="px-4 py-1.5 rounded-md text-sm transition-colors {% if view_mode == 'tables' %}bg-white shadow-sm text-mars-secondary font-bold{% else %}text-stone-600 dark:text-slate-300 hover:text-stone-900 dark:text-white hover:bg-white/50{% endif %}"
               href="{% url 'dashboard' %}?{{ qs_view_tables }}#dashboard-panels"
               >Tablas</a>
             <a
-              class="px-4 py-1.5 rounded-md text-sm transition-colors {% if view_mode == 'both' %}bg-white shadow-sm text-mars-secondary font-bold{% else %}text-stone-600 hover:text-stone-900 hover:bg-white/50{% endif %}"
+              class="px-4 py-1.5 rounded-md text-sm transition-colors {% if view_mode == 'both' %}bg-white shadow-sm text-mars-secondary font-bold{% else %}text-stone-600 dark:text-slate-300 hover:text-stone-900 dark:text-white hover:bg-white/50{% endif %}"
               href="{% url 'dashboard' %}?{{ qs_view_both }}#dashboard-panels"
               >Todos</a>
           </div>
         </section>
 
         <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6 mb-6">
-          <div class="bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5 flex flex-col justify-center">
-            <div class="text-stone-500 font-medium text-sm mb-1">Monto total (filtro)</div>
+          <div class="bg-bone-light dark:bg-[#20131A] border border-stone-300/40 dark:border-white/10 rounded-xl shadow-sm p-5 flex flex-col justify-center">
+            <div class="text-stone-500 dark:text-slate-400 font-medium text-sm mb-1">Monto total (filtro)</div>
             <div class="text-mars-secondary font-bold text-3xl" id="dashboard-kpi-monto">—</div>
           </div>
-          <div class="bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5 flex flex-col justify-center">
-            <div class="text-stone-500 font-medium text-sm mb-1">Transacciones</div>
-            <div class="text-stone-800 font-bold text-3xl" id="dashboard-kpi-tx">—</div>
+          <div class="bg-bone-light dark:bg-[#20131A] border border-stone-300/40 dark:border-white/10 rounded-xl shadow-sm p-5 flex flex-col justify-center">
+            <div class="text-stone-500 dark:text-slate-400 font-medium text-sm mb-1">Transacciones</div>
+            <div class="text-stone-800 dark:text-slate-100 font-bold text-3xl" id="dashboard-kpi-tx">—</div>
           </div>
-          <div class="bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5 flex flex-col justify-center">
-            <div class="text-stone-500 font-medium text-sm mb-1">Ticket promedio</div>
+          <div class="bg-bone-light dark:bg-[#20131A] border border-stone-300/40 dark:border-white/10 rounded-xl shadow-sm p-5 flex flex-col justify-center">
+            <div class="text-stone-500 dark:text-slate-400 font-medium text-sm mb-1">Ticket promedio</div>
             <div class="text-mars-accent font-bold text-3xl" id="dashboard-kpi-prom">—</div>
           </div>
-          <div class="bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5 flex flex-col justify-center">
-            <div class="text-stone-500 font-medium text-sm mb-1">Hechos filtrados / DW</div>
-            <div class="text-stone-800 font-bold text-2xl mt-1">
+          <div class="bg-bone-light dark:bg-[#20131A] border border-stone-300/40 dark:border-white/10 rounded-xl shadow-sm p-5 flex flex-col justify-center">
+            <div class="text-stone-500 dark:text-slate-400 font-medium text-sm mb-1">Hechos filtrados / DW</div>
+            <div class="text-stone-800 dark:text-slate-100 font-bold text-2xl mt-1">
               {{ star_model.hechos_filtrados }} / {{ star_model.fact_ventas }}
             </div>
           </div>
@@ -124,7 +124,7 @@
           data-view="{{ view_mode }}"
         >
           <div class="dashboardGrid">
-            <article class="bg-bone-light border border-stone-300/40 shadow-sm rounded-xl p-5 flex flex-col">
+            <article class="bg-bone-light dark:bg-[#20131A] border border-stone-300/40 dark:border-white/10 shadow-sm rounded-xl p-5 flex flex-col">
               <div class="flex items-start justify-between gap-3 mb-4">
                 <h3 class="text-sm font-bold text-mars-secondary uppercase tracking-wider flex-1">Por canal</h3>
                 <div class="flex flex-wrap items-start justify-end gap-2">
@@ -144,14 +144,14 @@
                     {% for r in by_canal_rows %}
                       <tr><td>{{ r.canal__canal }}</td><td class="right">{{ r.total }}</td></tr>
                     {% empty %}
-                      <tr><td colspan="2" class="muted text-stone-500">Sin datos</td></tr>
+                      <tr><td colspan="2" class="muted text-stone-500 dark:text-slate-400">Sin datos</td></tr>
                     {% endfor %}
                   </tbody>
                 </table>
               </div>
             </article>
 
-            <article class="bg-bone-light border border-stone-300/40 shadow-sm rounded-xl p-5 flex flex-col">
+            <article class="bg-bone-light dark:bg-[#20131A] border border-stone-300/40 dark:border-white/10 shadow-sm rounded-xl p-5 flex flex-col">
               <div class="flex items-start justify-between gap-3 mb-4">
                 <h3 class="text-sm font-bold text-mars-secondary uppercase tracking-wider flex-1">Top clientes · barras horizontales</h3>
                 <div class="flex flex-wrap items-start justify-end gap-2">
@@ -177,14 +177,14 @@
                         <td class="right">{{ r.total }}</td>
                       </tr>
                     {% empty %}
-                      <tr><td colspan="4" class="muted text-stone-500">Sin datos</td></tr>
+                      <tr><td colspan="4" class="muted text-stone-500 dark:text-slate-400">Sin datos</td></tr>
                     {% endfor %}
                   </tbody>
                 </table>
               </div>
             </article>
 
-            <article class="bg-bone-light border border-stone-300/40 shadow-sm rounded-xl p-5 flex flex-col">
+            <article class="bg-bone-light dark:bg-[#20131A] border border-stone-300/40 dark:border-white/10 shadow-sm rounded-xl p-5 flex flex-col">
               <div class="flex items-start justify-between gap-3 mb-4">
                 <h3 class="text-sm font-bold text-mars-secondary uppercase tracking-wider flex-1">Por día civil · barras</h3>
                 <div class="flex flex-wrap items-start justify-end gap-2">
@@ -210,14 +210,14 @@
                         <td class="right">{{ r.total }}</td>
                       </tr>
                     {% empty %}
-                      <tr><td colspan="4" class="muted text-stone-500">Sin datos</td></tr>
+                      <tr><td colspan="4" class="muted text-stone-500 dark:text-slate-400">Sin datos</td></tr>
                     {% endfor %}
                   </tbody>
                 </table>
               </div>
             </article>
 
-            <article class="bg-bone-light border border-stone-300/40 shadow-sm rounded-xl p-5 flex flex-col">
+            <article class="bg-bone-light dark:bg-[#20131A] border border-stone-300/40 dark:border-white/10 shadow-sm rounded-xl p-5 flex flex-col">
               <div class="flex items-start justify-between gap-3 mb-4">
                 <h3 class="text-sm font-bold text-mars-secondary uppercase tracking-wider flex-1">Por día de la semana</h3>
                 <div class="flex flex-wrap items-start justify-end gap-2">
@@ -241,14 +241,14 @@
                         <td class="right">{{ r.total }}</td>
                       </tr>
                     {% empty %}
-                      <tr><td colspan="3" class="muted text-stone-500">Sin datos</td></tr>
+                      <tr><td colspan="3" class="muted text-stone-500 dark:text-slate-400">Sin datos</td></tr>
                     {% endfor %}
                   </tbody>
                 </table>
               </div>
             </article>
 
-            <article class="bg-bone-light border border-stone-300/40 shadow-sm rounded-xl p-5 flex flex-col lg:col-span-2">
+            <article class="bg-bone-light dark:bg-[#20131A] border border-stone-300/40 dark:border-white/10 shadow-sm rounded-xl p-5 flex flex-col lg:col-span-2">
               <div class="flex items-start justify-between gap-3 mb-4">
                 <h3 class="text-sm font-bold text-mars-secondary uppercase tracking-wider flex-1">Top productos · barras horizontales</h3>
                 <div class="flex flex-wrap items-start justify-end gap-2">
@@ -271,7 +271,7 @@
                         <td class="right">{{ r.total }}</td>
                       </tr>
                     {% empty %}
-                      <tr><td colspan="3" class="muted text-stone-500">Sin datos</td></tr>
+                      <tr><td colspan="3" class="muted text-stone-500 dark:text-slate-400">Sin datos</td></tr>
                     {% endfor %}
                   </tbody>
                 </table>
@@ -280,7 +280,7 @@
           </div>
         </div>
 
-        <p class="muted text-stone-500 dashboardFoot">
+        <p class="muted text-stone-500 dark:text-slate-400 dashboardFoot">
           Tablas detalladas y mismos filtros en
           <a class="link text-mars-accent hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}">/analytics/</a>.
         </p>

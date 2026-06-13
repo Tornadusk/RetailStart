@@ -11,43 +11,43 @@
   <body class="appShell">
     {% include "core/includes/site_navbar.html" %}
     {% include "core/includes/site_sidebar.html" %}
-    <div class="appShell__main bg-bone-darker font-sans text-stone-700 min-h-screen">
+    <div class="appShell__main bg-bone-darker dark:bg-[#120A0E] font-sans text-stone-700 dark:text-slate-200 dark:text-slate-300 min-h-screen">
     <main class="container">
       <header class="header">
-        <h1 class="title font-bold tracking-tight text-3xl text-stone-900 mb-2">RetailStart</h1>
-        <p class="subtitle text-lg text-stone-900 mb-4">Django + Postgres + Nginx (Docker)</p>
+        <h1 class="title font-bold tracking-tight text-3xl text-stone-900 dark:text-white mb-2">RetailStart</h1>
+        <p class="subtitle text-lg text-stone-900 dark:text-white mb-4">Django + Postgres + Nginx (Docker)</p>
         {% include "core/includes/site_quick_nav.html" %}
       </header>
 
-      <section class="card bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5">
-        <h2 class="text-xl font-bold text-stone-900 mb-4">Data Lake (carpetas)</h2>
+      <section class="card bg-bone-light dark:bg-[#20131A] border border-stone-300/40 dark:border-white/10 rounded-xl shadow-sm p-5">
+        <h2 class="text-xl font-bold text-stone-900 dark:text-white mb-4">Data Lake (carpetas)</h2>
         <ul>
           <li><code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">/data_sources/</code>: orígenes dispersos (aquí pones los CSV/JSON/XML/TXT para probar)</li>
           <li><code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">/data_lake/raw/</code>: landing tras <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">run_elt_ingest</code> (archivos con sufijo de fecha)</li>
           <li><code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">/data_lake/processed/</code>: salida de <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">run_etl</code> (CSVs con timestamp)</li>
           <li><code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">/data_lake/processed/evidence/</code>: PNG de <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">analyze_dw</code></li>
         </ul>
-        <p class="muted text-stone-500">
+        <p class="muted text-stone-500 dark:text-slate-400">
           Ver evidencia (CSVs + gráficos): <a class="link text-mars-accent hover:text-mars-secondary transition-colors underline" href="/evidence/">/evidence/</a>
         </p>
-        <p class="muted text-stone-500">
+        <p class="muted text-stone-500 dark:text-slate-400">
           Ver analytics (consultas/tablas desde el DW): <a class="link text-mars-accent hover:text-mars-secondary transition-colors underline" href="/analytics/">/analytics/</a>
         </p>
-        <p class="muted text-stone-500">
+        <p class="muted text-stone-500 dark:text-slate-400">
           Ver flujo completo (Origen → Consumo): <a class="link text-mars-accent hover:text-mars-secondary transition-colors underline" href="/flow/">/flow/</a>
         </p>
 
         <div class="flex flex-wrap gap-3 mt-6">
-          <a class="bg-white text-stone-700 border border-stone-200 shadow hover:border-[#ff5722]/40 hover:text-[#ff5722] hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all rounded-xl px-5 py-2.5 font-medium flex items-center justify-center" href="/dashboard/">
+          <a class="bg-white text-stone-700 dark:text-slate-200 border border-stone-200 shadow hover:border-[#ff5722]/40 hover:text-[#ff5722] hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all rounded-xl px-5 py-2.5 font-medium flex items-center justify-center" href="/dashboard/">
             Dashboard (gráficos)
           </a>
-          <a class="bg-white text-stone-700 border border-stone-200 shadow hover:border-[#ff5722]/40 hover:text-[#ff5722] hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all rounded-xl px-5 py-2.5 font-medium flex items-center justify-center" href="/flow/">
+          <a class="bg-white text-stone-700 dark:text-slate-200 border border-stone-200 shadow hover:border-[#ff5722]/40 hover:text-[#ff5722] hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all rounded-xl px-5 py-2.5 font-medium flex items-center justify-center" href="/flow/">
             Abrir Flujo (origen → consumo)
           </a>
-          <a class="bg-white text-stone-700 border border-stone-200 shadow hover:border-[#ff5722]/40 hover:text-[#ff5722] hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all rounded-xl px-5 py-2.5 font-medium flex items-center justify-center" href="/analytics/">
+          <a class="bg-white text-stone-700 dark:text-slate-200 border border-stone-200 shadow hover:border-[#ff5722]/40 hover:text-[#ff5722] hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all rounded-xl px-5 py-2.5 font-medium flex items-center justify-center" href="/analytics/">
             Abrir Analytics (consultas DW)
           </a>
-          <a class="bg-white text-stone-700 border border-stone-200 shadow hover:border-[#ff5722]/40 hover:text-[#ff5722] hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all rounded-xl px-5 py-2.5 font-medium flex items-center justify-center" href="/evidence/">
+          <a class="bg-white text-stone-700 dark:text-slate-200 border border-stone-200 shadow hover:border-[#ff5722]/40 hover:text-[#ff5722] hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all rounded-xl px-5 py-2.5 font-medium flex items-center justify-center" href="/evidence/">
             Abrir Evidencia (PNGs + CSV)
           </a>
         </div>

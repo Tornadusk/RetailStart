@@ -11,18 +11,18 @@
   <body class="appShell">
     {% include "core/includes/site_navbar.html" %}
     {% include "core/includes/site_sidebar.html" %}
-    <div class="appShell__main bg-bone-darker font-sans text-stone-700 min-h-screen">
+    <div class="appShell__main bg-bone-darker dark:bg-[#120A0E] font-sans text-stone-700 dark:text-slate-200 dark:text-slate-300 min-h-screen">
     <main class="container py-8 max-w-6xl mx-auto">
       <header class="mb-8">
-        <h1 class="font-bold tracking-tight text-3xl text-stone-900 mb-2">Analytics (Data Warehouse)</h1>
-        <p class="text-sm text-stone-500 font-medium mb-6">
+        <h1 class="font-bold tracking-tight text-3xl text-stone-900 dark:text-white mb-2">Analytics (Data Warehouse)</h1>
+        <p class="text-sm text-stone-500 dark:text-slate-400 font-medium mb-6">
           Consumo desde el DW vía Django ORM (modelo en estrella + dimensión tiempo)
         </p>
         {% include "core/includes/site_quick_nav.html" %}
       </header>
 
       <details
-        class="bg-bone-light border border-stone-300/40 rounded-2xl shadow-sm p-6 md:p-8 mb-6 analyticsCollapsible"
+        class="bg-bone-light dark:bg-[#20131A] border border-stone-300/40 dark:border-white/10 rounded-2xl shadow-sm p-6 md:p-8 mb-6 analyticsCollapsible"
         id="analytics-collapsible-consultas"
         data-storage-key="consultas"
         data-default-open="true"
@@ -30,17 +30,17 @@
       >
         <summary class="flex items-center cursor-pointer outline-none list-none [&::-webkit-details-marker]:hidden mb-4 group">
           <span class="analyticsCollapsible__toggle bg-[#20131a] text-white w-10 h-10 flex items-center justify-center rounded-lg mr-4 shadow-sm group-hover:bg-mars-surface transition-colors" aria-hidden="true"></span>
-          <h2 class="text-xl font-bold text-stone-900 m-0">Consultas al almacén — RetailStart</h2>
+          <h2 class="text-xl font-bold text-stone-900 dark:text-white m-0">Consultas al almacén — RetailStart</h2>
         </summary>
         <div class="pl-7">
-          <p class="text-stone-700 leading-relaxed">
+          <p class="text-stone-700 dark:text-slate-200 leading-relaxed">
             Los datos viven en Postgres (<code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">DimTiempo</code>, hechos, demás dimensiones). Los filtros y orden de columnas se traducen a consultas SQL en el servidor (ORM). Los PNG siguen en <a class="link text-mars-accent hover:text-mars-secondary transition-colors underline font-medium" href="/evidence/">/evidence/</a>.
           </p>
         </div>
       </details>
 
       <details
-        class="bg-bone-light border border-stone-300/40 rounded-2xl shadow-sm p-6 md:p-8 mb-6 analyticsCollapsible"
+        class="bg-bone-light dark:bg-[#20131A] border border-stone-300/40 dark:border-white/10 rounded-2xl shadow-sm p-6 md:p-8 mb-6 analyticsCollapsible"
         id="analytics-collapsible-pipeline"
         data-storage-key="pipeline"
         data-default-open="true"
@@ -48,10 +48,10 @@
       >
         <summary class="flex items-center cursor-pointer outline-none list-none [&::-webkit-details-marker]:hidden mb-4 group">
           <span class="analyticsCollapsible__toggle bg-[#20131a] text-white w-10 h-10 flex items-center justify-center rounded-lg mr-4 shadow-sm group-hover:bg-mars-surface transition-colors" aria-hidden="true"></span>
-          <h2 class="text-xl font-bold text-stone-900 m-0">Pipeline y comandos Docker</h2>
+          <h2 class="text-xl font-bold text-stone-900 dark:text-white m-0">Pipeline y comandos Docker</h2>
         </summary>
         <div class="pl-7">
-          <p class="text-stone-700 leading-relaxed mb-6">
+          <p class="text-stone-700 dark:text-slate-200 leading-relaxed mb-6">
             Las tablas de abajo leen <strong>Postgres</strong> (no el CSV en vivo). Si ves ceros o tablas vacías, ejecutá el pipeline en orden; el código vive en <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">core/management/commands/</code> y <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">core/etl/</code>.
           </p>
           {% include "core/includes/pipeline_docker_commands.html" %}
@@ -59,7 +59,7 @@
       </details>
 
       <details
-        class="bg-bone-light border border-stone-300/40 rounded-2xl shadow-sm p-6 md:p-8 mb-6 analyticsCollapsible"
+        class="bg-bone-light dark:bg-[#20131A] border border-stone-300/40 dark:border-white/10 rounded-2xl shadow-sm p-6 md:p-8 mb-6 analyticsCollapsible"
         id="analytics-collapsible-modelo-estrella"
         data-storage-key="modelo-estrella"
         data-default-open="true"
@@ -67,24 +67,24 @@
       >
         <summary class="flex items-center cursor-pointer outline-none list-none [&::-webkit-details-marker]:hidden mb-6 group">
           <span class="analyticsCollapsible__toggle bg-[#20131a] text-white w-10 h-10 flex items-center justify-center rounded-lg mr-4 shadow-sm group-hover:bg-mars-surface transition-colors" aria-hidden="true"></span>
-          <h2 class="text-xl font-bold text-stone-900 m-0">Modelo en estrella en Postgres</h2>
+          <h2 class="text-xl font-bold text-stone-900 dark:text-white m-0">Modelo en estrella en Postgres</h2>
         </summary>
         <div class="pl-7">
-        <p class="text-stone-700 leading-relaxed mb-4">
+        <p class="text-stone-700 dark:text-slate-200 leading-relaxed mb-4">
           La página está agrupada: <strong>1)</strong> tabla de hechos y KPIs, <strong>2)</strong> dimensiones (cardinalidad),
           <strong>3)</strong> dimensión tiempo y cruces temporales, <strong>4)</strong> agregados por cliente/canal/producto,
           <strong>5)</strong> vista fila a fila de <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">FactVentas</code>. Usá las pestañas para ver solo un bloque.
         </p>
-        <div class="bg-orange-50 border border-orange-200/60 rounded-lg p-4 text-sm text-stone-700 mb-8">
+        <div class="bg-orange-50 border border-orange-200/60 rounded-lg p-4 text-sm text-stone-700 dark:text-slate-200 mb-8">
           Plegar este bloque o los de arriba solo cambia la vista en el navegador;
           los datos en <strong>Postgres</strong> no se alteran (carga con <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">load_dw</code>).
           El estado abierto/cerrado se guarda en <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">localStorage</code>.
         </div>
 
-        <div class="card bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5 cardStack mb-8" id="segmentar-ventas" tabindex="-1">
-          <h4 class="text-lg font-bold text-stone-800 mb-2">Segmentar hechos (misma lógica para todas las tablas)</h4>
-          <p class="muted text-stone-500 filterActiveLine"><strong>Vista actual:</strong> <span class="text-stone-800 font-medium">{{ filter_summary }}</span></p>
-          <p class="text-stone-500 text-sm mb-6 mt-1">
+        <div class="card bg-bone-light dark:bg-[#20131A] border border-stone-300/40 dark:border-white/10 rounded-xl shadow-sm p-5 cardStack mb-8" id="segmentar-ventas" tabindex="-1">
+          <h4 class="text-lg font-bold text-stone-800 dark:text-slate-100 mb-2">Segmentar hechos (misma lógica para todas las tablas)</h4>
+          <p class="muted text-stone-500 dark:text-slate-400 filterActiveLine"><strong>Vista actual:</strong> <span class="text-stone-800 dark:text-slate-100 font-medium">{{ filter_summary }}</span></p>
+          <p class="text-stone-500 dark:text-slate-400 text-sm mb-6 mt-1">
             Los atajos aplican los mismos parámetros que el formulario (año / mes / día de la semana, o rango <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[10px] px-1 py-0.5 rounded">fde</code>–<code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[10px] px-1 py-0.5 rounded">fha</code> para la semana ISO). Se calculan con la fecha de hoy, acotada al rango de fechas cargado en el DW.
           </p>
 
@@ -95,8 +95,8 @@
             {% endif %}
             
             <div class="analyticsField">
-              <label for="fy" class="text-xs text-stone-500 font-medium uppercase tracking-wider mb-1 block">Año</label>
-              <select name="y" id="fy" class="bg-white text-stone-700 border border-stone-300 rounded-md px-3 py-1.5 text-sm focus:border-mars-accent focus:outline-none focus:ring-1 focus:ring-mars-accent w-full" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
+              <label for="fy" class="text-xs text-stone-500 dark:text-slate-400 font-medium uppercase tracking-wider mb-1 block">Año</label>
+              <select name="y" id="fy" class="bg-white text-stone-700 dark:text-slate-200 border border-stone-300 rounded-md px-3 py-1.5 text-sm focus:border-mars-accent focus:outline-none focus:ring-1 focus:ring-mars-accent w-full" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
                 <option value="" {% if filter_y == "" %}selected{% endif %}>Todos los años</option>
                 {% for yr in years %}
                   <option value="{{ yr }}" {% if filter_y == yr %}selected{% endif %}>{{ yr }}</option>
@@ -105,8 +105,8 @@
             </div>
             
             <div class="analyticsField">
-              <label for="fm" class="text-xs text-stone-500 font-medium uppercase tracking-wider mb-1 block">Mes</label>
-              <select name="m" id="fm" class="bg-white text-stone-700 border border-stone-300 rounded-md px-3 py-1.5 text-sm focus:border-mars-accent focus:outline-none focus:ring-1 focus:ring-mars-accent w-full" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
+              <label for="fm" class="text-xs text-stone-500 dark:text-slate-400 font-medium uppercase tracking-wider mb-1 block">Mes</label>
+              <select name="m" id="fm" class="bg-white text-stone-700 dark:text-slate-200 border border-stone-300 rounded-md px-3 py-1.5 text-sm focus:border-mars-accent focus:outline-none focus:ring-1 focus:ring-mars-accent w-full" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
                 <option value="" {% if filter_m == "" %}selected{% endif %}>Todos los meses</option>
                 {% for mo, mo_label in months %}
                   <option value="{{ mo }}" {% if filter_m == mo %}selected{% endif %}>{{ mo_label }}</option>
@@ -115,8 +115,8 @@
             </div>
             
             <div class="analyticsField">
-              <label for="fd" class="text-xs text-stone-500 font-medium uppercase tracking-wider mb-1 block">Día de la semana</label>
-              <select name="d" id="fd" class="bg-white text-stone-700 border border-stone-300 rounded-md px-3 py-1.5 text-sm focus:border-mars-accent focus:outline-none focus:ring-1 focus:ring-mars-accent w-full" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
+              <label for="fd" class="text-xs text-stone-500 dark:text-slate-400 font-medium uppercase tracking-wider mb-1 block">Día de la semana</label>
+              <select name="d" id="fd" class="bg-white text-stone-700 dark:text-slate-200 border border-stone-300 rounded-md px-3 py-1.5 text-sm focus:border-mars-accent focus:outline-none focus:ring-1 focus:ring-mars-accent w-full" {% if filter_range_active %}disabled aria-disabled="true"{% endif %}>
                 {% for val, label in dias_semana %}
                   <option value="{{ val }}" {% if filter_d == val %}selected{% endif %}>{{ label }}</option>
                 {% endfor %}
@@ -124,8 +124,8 @@
             </div>
             
             <div class="analyticsFormActions mt-4 flex items-center space-x-3">
-              <button type="submit" class="btn btn--inline bg-white border border-stone-300 text-stone-700 hover:border-mars-accent hover:text-mars-accent shadow-sm rounded-md px-4 py-1.5 transition-colors font-medium">Aplicar filtros</button>
-              <a class="link text-stone-500 hover:text-mars-secondary transition-colors underline text-sm" href="{% url 'analytics' %}#segmentar-ventas">Quitar filtros</a>
+              <button type="submit" class="btn btn--inline bg-white dark:bg-[#2d1a24] border border-stone-300 dark:border-[rgba(192,132,252,0.45)] text-stone-700 dark:text-white dark:text-slate-200 hover:border-mars-accent hover:text-mars-accent shadow-sm rounded-md px-4 py-1.5 transition-colors font-medium">Aplicar filtros</button>
+              <a class="link text-stone-500 dark:text-slate-400 hover:text-mars-secondary transition-colors underline text-sm" href="{% url 'analytics' %}#segmentar-ventas">Quitar filtros</a>
             </div>
           </form>
 
@@ -136,28 +136,28 @@
             </p>
           {% endif %}
 
-          <p class="text-stone-500 font-medium text-xs uppercase tracking-wider mt-6 mb-2">Accesos rápidos:</p>
+          <p class="text-stone-500 dark:text-slate-400 font-medium text-xs uppercase tracking-wider mt-6 mb-2">Accesos rápidos:</p>
           <div class="flex flex-wrap gap-2">
             {% for ql in quick_time_links %}
-              <a class="bg-white border border-stone-300 text-stone-600 text-xs px-3 py-1.5 rounded-full hover:border-mars-accent hover:text-mars-accent transition-colors shadow-sm inline-block" href="{% url 'analytics' %}{{ ql.href }}">{{ ql.label }}</a>
+              <a class="bg-white dark:bg-[#2d1a24] border border-stone-300 dark:border-[rgba(192,132,252,0.45)] text-stone-600 dark:text-slate-200 dark:text-slate-300 text-xs px-3 py-1.5 rounded-full hover:border-mars-accent hover:text-mars-accent transition-colors shadow-sm inline-block" href="{% url 'analytics' %}{{ ql.href }}">{{ ql.label }}</a>
             {% endfor %}
           </div>
         </div>
 
-        <div class="card bg-bone-light border border-stone-300/40 rounded-xl shadow-sm p-5 cardStack dashboardToolbar flex items-center justify-start gap-4 mb-8" role="tablist" aria-label="Vista del panel del DW">
-          <span class="text-stone-500 font-medium text-sm">Navegación DW:</span>
-          <div class="flex inline-flex p-1 bg-stone-200/50 rounded-lg gap-1" role="group" aria-label="Modo de visualización">
-            <button type="button" class="analyticsViewTabs__btn is-active px-4 py-1.5 rounded-md text-sm transition-colors text-stone-600 hover:text-stone-900 hover:bg-white/50 [&.is-active]:bg-white [&.is-active]:shadow-sm [&.is-active]:text-mars-secondary [&.is-active]:font-bold !border-0" data-analytics-view="todas" aria-pressed="true" role="tab">Todas</button>
-            <button type="button" class="analyticsViewTabs__btn px-4 py-1.5 rounded-md text-sm transition-colors text-stone-600 hover:text-stone-900 hover:bg-white/50 [&.is-active]:bg-white [&.is-active]:shadow-sm [&.is-active]:text-mars-secondary [&.is-active]:font-bold !border-0" data-analytics-view="hechos" aria-pressed="false" role="tab">Hechos</button>
-            <button type="button" class="analyticsViewTabs__btn px-4 py-1.5 rounded-md text-sm transition-colors text-stone-600 hover:text-stone-900 hover:bg-white/50 [&.is-active]:bg-white [&.is-active]:shadow-sm [&.is-active]:text-mars-secondary [&.is-active]:font-bold !border-0" data-analytics-view="dimensiones" aria-pressed="false" role="tab">Dimensiones</button>
-            <button type="button" class="analyticsViewTabs__btn px-4 py-1.5 rounded-md text-sm transition-colors text-stone-600 hover:text-stone-900 hover:bg-white/50 [&.is-active]:bg-white [&.is-active]:shadow-sm [&.is-active]:text-mars-secondary [&.is-active]:font-bold !border-0" data-analytics-view="tiempo" aria-pressed="false" role="tab">Tiempo</button>
+        <div class="card bg-bone-light dark:bg-[#20131A] border border-stone-300/40 dark:border-white/10 rounded-xl shadow-sm p-5 cardStack dashboardToolbar flex items-center justify-start gap-4 mb-8" role="tablist" aria-label="Vista del panel del DW">
+          <span class="text-stone-500 dark:text-slate-400 font-medium text-sm">Navegación DW:</span>
+          <div class="flex inline-flex p-1 bg-stone-200/50 dark:bg-black/40 rounded-lg gap-1" role="group" aria-label="Modo de visualización">
+            <button type="button" class="analyticsViewTabs__btn is-active px-4 py-1.5 rounded-md text-sm transition-colors text-stone-600 dark:text-slate-300 hover:text-stone-900 dark:text-white hover:bg-white/50 [&.is-active]:bg-white [&.is-active]:shadow-sm [&.is-active]:text-mars-secondary [&.is-active]:font-bold !border-0" data-analytics-view="todas" aria-pressed="true" role="tab">Todas</button>
+            <button type="button" class="analyticsViewTabs__btn px-4 py-1.5 rounded-md text-sm transition-colors text-stone-600 dark:text-slate-300 hover:text-stone-900 dark:text-white hover:bg-white/50 [&.is-active]:bg-white [&.is-active]:shadow-sm [&.is-active]:text-mars-secondary [&.is-active]:font-bold !border-0" data-analytics-view="hechos" aria-pressed="false" role="tab">Hechos</button>
+            <button type="button" class="analyticsViewTabs__btn px-4 py-1.5 rounded-md text-sm transition-colors text-stone-600 dark:text-slate-300 hover:text-stone-900 dark:text-white hover:bg-white/50 [&.is-active]:bg-white [&.is-active]:shadow-sm [&.is-active]:text-mars-secondary [&.is-active]:font-bold !border-0" data-analytics-view="dimensiones" aria-pressed="false" role="tab">Dimensiones</button>
+            <button type="button" class="analyticsViewTabs__btn px-4 py-1.5 rounded-md text-sm transition-colors text-stone-600 dark:text-slate-300 hover:text-stone-900 dark:text-white hover:bg-white/50 [&.is-active]:bg-white [&.is-active]:shadow-sm [&.is-active]:text-mars-secondary [&.is-active]:font-bold !border-0" data-analytics-view="tiempo" aria-pressed="false" role="tab">Tiempo</button>
           </div>
         </div>
 
         {# --- Tabla de hechos: métricas globales del hecho --- #}
         <div id="dw-hechos" class="js-analytics-view mb-12" data-analytics-views="todas hechos" tabindex="-1">
-          <h3 class="text-2xl font-bold text-stone-900 mb-3">1 · Tabla de hechos — <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[14px] px-2 py-0.5 rounded">FactVentas</code></h3>
-          <p class="text-stone-600 leading-relaxed mb-6">
+          <h3 class="text-2xl font-bold text-stone-900 dark:text-white mb-3">1 · Tabla de hechos — <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[14px] px-2 py-0.5 rounded">FactVentas</code></h3>
+          <p class="text-stone-600 dark:text-slate-300 leading-relaxed mb-6">
             Cada fila es una venta: <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">cantidad</code>, <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">precio_unitario</code>, <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">monto</code>, y claves foráneas a
             <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">DimTiempo</code>, <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">DimCliente</code>, <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">DimProducto</code> y <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">DimCanal</code>.
             Los filtros de arriba aplican a <strong>todos</strong> los bloques de esta página.
@@ -166,7 +166,7 @@
           <div class="flex flex-wrap gap-4 mb-6">
             <div class="bg-white border-l-4 border-l-mars-secondary border-y border-r border-stone-200 rounded-r-xl shadow-sm p-4 w-64">
               <div class="text-xs font-bold text-stone-400 uppercase tracking-wider mb-1">FactVentas (total en DW)</div>
-              <div class="text-3xl font-bold text-stone-800">{{ star_model.fact_ventas }}</div>
+              <div class="text-3xl font-bold text-stone-800 dark:text-slate-100">{{ star_model.fact_ventas }}</div>
             </div>
             <div class="bg-white border-l-4 border-l-mars-accent border-y border-r border-stone-200 rounded-r-xl shadow-sm p-4 w-64">
               <div class="text-xs font-bold text-stone-400 uppercase tracking-wider mb-1">Hechos (filtro actual)</div>
@@ -175,7 +175,7 @@
           </div>
 
           {% if dw_span_min %}
-            <div class="bg-stone-100/50 border border-stone-200 text-stone-600 rounded-lg p-4 text-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="bg-stone-100/50 border border-stone-200 text-stone-600 dark:text-slate-300 rounded-lg p-4 text-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
                 <strong>Datos cargados (sin filtrar):</strong> del <strong>{{ dw_span_min|date:"d/m/Y" }}</strong> al <strong>{{ dw_span_max|date:"d/m/Y" }}</strong> — <strong>{{ dw_total_unfiltered }}</strong> hechos.
               </div>
@@ -194,61 +194,61 @@
 
         {# --- Dimensiones: cardinalidad --- #}
         <div id="dw-dimensiones" class="js-analytics-view mb-12" data-analytics-views="todas dimensiones" tabindex="-1">
-          <h3 class="text-2xl font-bold text-stone-900 mb-3">2 · Dimensiones del modelo estrella</h3>
-          <p class="text-stone-600 leading-relaxed mb-6">
+          <h3 class="text-2xl font-bold text-stone-900 dark:text-white mb-3">2 · Dimensiones del modelo estrella</h3>
+          <p class="text-stone-600 dark:text-slate-300 leading-relaxed mb-6">
             Tablas <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">DimCliente</code>, <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">DimProducto</code>, <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">DimCanal</code> y <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">DimTiempo</code>.
             Los recuentos son del DW completo; las tablas más abajo usan el <strong>mismo filtro de hechos</strong>.
           </p>
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div class="bg-white border-t-4 border-t-indigo-400 border-x border-b border-stone-200 rounded-b-xl shadow-sm p-4 text-center">
               <div class="text-xs font-bold text-stone-400 uppercase tracking-wider mb-1">DimCliente</div>
-              <div class="text-3xl font-bold text-stone-800">{{ star_model.dim_cliente }}</div>
+              <div class="text-3xl font-bold text-stone-800 dark:text-slate-100">{{ star_model.dim_cliente }}</div>
             </div>
             <div class="bg-white border-t-4 border-t-emerald-400 border-x border-b border-stone-200 rounded-b-xl shadow-sm p-4 text-center">
               <div class="text-xs font-bold text-stone-400 uppercase tracking-wider mb-1">DimProducto</div>
-              <div class="text-3xl font-bold text-stone-800">{{ star_model.dim_producto }}</div>
+              <div class="text-3xl font-bold text-stone-800 dark:text-slate-100">{{ star_model.dim_producto }}</div>
             </div>
             <div class="bg-white border-t-4 border-t-amber-400 border-x border-b border-stone-200 rounded-b-xl shadow-sm p-4 text-center">
               <div class="text-xs font-bold text-stone-400 uppercase tracking-wider mb-1">DimCanal</div>
-              <div class="text-3xl font-bold text-stone-800">{{ star_model.dim_canal }}</div>
+              <div class="text-3xl font-bold text-stone-800 dark:text-slate-100">{{ star_model.dim_canal }}</div>
             </div>
             <div class="bg-white border-t-4 border-t-sky-400 border-x border-b border-stone-200 rounded-b-xl shadow-sm p-4 text-center">
               <div class="text-xs font-bold text-stone-400 uppercase tracking-wider mb-1">DimTiempo</div>
-              <div class="text-3xl font-bold text-stone-800">{{ star_model.dim_tiempo }}</div>
+              <div class="text-3xl font-bold text-stone-800 dark:text-slate-100">{{ star_model.dim_tiempo }}</div>
             </div>
           </div>
         </div>
 
         {# --- Dimensión tiempo --- #}
         <div id="dw-tiempo" class="js-analytics-view mb-12" data-analytics-views="todas tiempo" tabindex="-1">
-          <h3 class="text-2xl font-bold text-stone-900 mb-3">3 · Dimensión tiempo — <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[14px] px-2 py-0.5 rounded">DimTiempo</code></h3>
-          <p class="text-stone-600 leading-relaxed mb-8">
+          <h3 class="text-2xl font-bold text-stone-900 dark:text-white mb-3">3 · Dimensión tiempo — <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[14px] px-2 py-0.5 rounded">DimTiempo</code></h3>
+          <p class="text-stone-600 dark:text-slate-300 leading-relaxed mb-8">
             El hecho enlaza con <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">fecha_id &rarr; DimTiempo.id_tiempo</code> (AAAAMMDD). Las tablas muestran cortes temporales sobre el conjunto de <strong>hechos ya filtrado</strong>.
           </p>
 
           <div class="space-y-12">
             <!-- 3.1 -->
             <div>
-              <h4 class="text-lg font-bold text-stone-800 mb-2 border-b-2 border-stone-200 pb-2 inline-block">3.1 · Filas de <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-sm px-1.5 py-0.5 rounded">DimTiempo</code> presentes en los hechos</h4>
-              <p class="text-stone-500 text-sm mb-4">Una fila por día de calendario que aparece al menos una vez en <code class="bg-stone-50 border border-stone-200 font-mono text-[10px] px-1 py-0.5 rounded">FactVentas</code>.</p>
+              <h4 class="text-lg font-bold text-stone-800 dark:text-slate-100 mb-2 border-b-2 border-stone-200 pb-2 inline-block">3.1 · Filas de <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-sm px-1.5 py-0.5 rounded">DimTiempo</code> presentes en los hechos</h4>
+              <p class="text-stone-500 dark:text-slate-400 text-sm mb-4">Una fila por día de calendario que aparece al menos una vez en <code class="bg-stone-50 border border-stone-200 font-mono text-[10px] px-1 py-0.5 rounded">FactVentas</code>.</p>
               <div class="border border-stone-200 rounded-xl overflow-x-auto bg-white shadow-sm">
                 <table class="w-full text-left border-collapse text-sm">
                   <thead class="bg-stone-50/80 border-b border-stone-200">
                     <tr>
-                      <th class="py-3 px-4 font-bold text-stone-500"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.dim_id }}">id_tiempo</a></th>
-                      <th class="py-3 px-4 font-bold text-stone-500"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.dim_fecha }}">Fecha</a></th>
-                      <th class="py-3 px-4 font-bold text-stone-500"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.dim_dia }}">Día</a></th>
-                      <th class="py-3 px-4 font-bold text-stone-500 text-right"># sem.</th>
-                      <th class="py-3 px-4 font-bold text-stone-500">Mes</th>
-                      <th class="py-3 px-4 font-bold text-stone-500 text-right">Trim.</th>
-                      <th class="py-3 px-4 font-bold text-stone-500 text-right"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.dim_anio }}">Año</a></th>
-                      <th class="py-3 px-4 font-bold text-stone-500">Fin sem.</th>
+                      <th class="py-3 px-4 font-bold text-stone-500 dark:text-slate-400"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.dim_id }}">id_tiempo</a></th>
+                      <th class="py-3 px-4 font-bold text-stone-500 dark:text-slate-400"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.dim_fecha }}">Fecha</a></th>
+                      <th class="py-3 px-4 font-bold text-stone-500 dark:text-slate-400"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.dim_dia }}">Día</a></th>
+                      <th class="py-3 px-4 font-bold text-stone-500 dark:text-slate-400 text-right"># sem.</th>
+                      <th class="py-3 px-4 font-bold text-stone-500 dark:text-slate-400">Mes</th>
+                      <th class="py-3 px-4 font-bold text-stone-500 dark:text-slate-400 text-right">Trim.</th>
+                      <th class="py-3 px-4 font-bold text-stone-500 dark:text-slate-400 text-right"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.dim_anio }}">Año</a></th>
+                      <th class="py-3 px-4 font-bold text-stone-500 dark:text-slate-400">Fin sem.</th>
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-stone-100">
                     {% for t in dim_tiempo_en_hechos %}
                       <tr class="hover:bg-stone-50 transition-colors">
-                        <td class="py-2 px-4 text-right font-mono text-stone-500">{{ t.id_tiempo }}</td>
+                        <td class="py-2 px-4 text-right font-mono text-stone-500 dark:text-slate-400">{{ t.id_tiempo }}</td>
                         <td class="py-2 px-4">{{ t.fecha_completa|date:"Y-m-d" }}</td>
                         <td class="py-2 px-4">{{ t.nombre_dia }}</td>
                         <td class="py-2 px-4 text-right">{{ t.dia_semana }}</td>
@@ -258,7 +258,7 @@
                         <td class="py-2 px-4">{% if t.es_fin_semana %}<span class="text-amber-600 font-bold">Sí</span>{% else %}No{% endif %}</td>
                       </tr>
                     {% empty %}
-                      <tr><td colspan="8" class="py-4 text-center text-stone-500">Sin datos.</td></tr>
+                      <tr><td colspan="8" class="py-4 text-center text-stone-500 dark:text-slate-400">Sin datos.</td></tr>
                     {% endfor %}
                   </tbody>
                 </table>
@@ -267,30 +267,30 @@
 
             <!-- 3.2 -->
             <div>
-              <h4 class="text-lg font-bold text-stone-800 mb-2 border-b-2 border-stone-200 pb-2 inline-block">3.2 · Agregado de hechos por día civil</h4>
-              <p class="text-stone-500 text-sm mb-4">Suma de <code class="bg-stone-50 border border-stone-200 font-mono text-[10px] px-1 py-0.5 rounded">monto</code> y conteo de transacciones por fecha.</p>
+              <h4 class="text-lg font-bold text-stone-800 dark:text-slate-100 mb-2 border-b-2 border-stone-200 pb-2 inline-block">3.2 · Agregado de hechos por día civil</h4>
+              <p class="text-stone-500 dark:text-slate-400 text-sm mb-4">Suma de <code class="bg-stone-50 border border-stone-200 font-mono text-[10px] px-1 py-0.5 rounded">monto</code> y conteo de transacciones por fecha.</p>
               <div class="border border-stone-200 rounded-xl overflow-x-auto bg-white shadow-sm">
                 <table class="w-full text-left border-collapse text-sm">
                   <thead class="bg-stone-50/80 border-b border-stone-200">
                     <tr>
-                      <th class="py-3 px-4 font-bold text-stone-500 text-right"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.dc_id }}">id_tiempo</a></th>
-                      <th class="py-3 px-4 font-bold text-stone-500"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.dc_fecha }}">Fecha</a></th>
-                      <th class="py-3 px-4 font-bold text-stone-500">Día</th>
-                      <th class="py-3 px-4 font-bold text-stone-500 text-right"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.dc_tx }}">Transacciones</a></th>
-                      <th class="py-3 px-4 font-bold text-stone-500 text-right"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.dc_monto }}">Total ($)</a></th>
+                      <th class="py-3 px-4 font-bold text-stone-500 dark:text-slate-400 text-right"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.dc_id }}">id_tiempo</a></th>
+                      <th class="py-3 px-4 font-bold text-stone-500 dark:text-slate-400"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.dc_fecha }}">Fecha</a></th>
+                      <th class="py-3 px-4 font-bold text-stone-500 dark:text-slate-400">Día</th>
+                      <th class="py-3 px-4 font-bold text-stone-500 dark:text-slate-400 text-right"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.dc_tx }}">Transacciones</a></th>
+                      <th class="py-3 px-4 font-bold text-stone-500 dark:text-slate-400 text-right"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.dc_monto }}">Total ($)</a></th>
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-stone-100">
                     {% for r in ventas_por_dia_civil %}
                       <tr class="hover:bg-stone-50 transition-colors">
-                        <td class="py-2 px-4 text-right font-mono text-stone-500">{{ r.fecha__id_tiempo }}</td>
+                        <td class="py-2 px-4 text-right font-mono text-stone-500 dark:text-slate-400">{{ r.fecha__id_tiempo }}</td>
                         <td class="py-2 px-4">{{ r.fecha__fecha_completa|date:"Y-m-d" }}</td>
                         <td class="py-2 px-4">{{ r.fecha__nombre_dia }}</td>
-                        <td class="py-2 px-4 text-right font-bold text-stone-700">{{ r.transacciones }}</td>
+                        <td class="py-2 px-4 text-right font-bold text-stone-700 dark:text-slate-200">{{ r.transacciones }}</td>
                         <td class="py-2 px-4 text-right font-bold text-mars-secondary">${{ r.total_monto }}</td>
                       </tr>
                     {% empty %}
-                      <tr><td colspan="5" class="py-4 text-center text-stone-500">Sin datos.</td></tr>
+                      <tr><td colspan="5" class="py-4 text-center text-stone-500 dark:text-slate-400">Sin datos.</td></tr>
                     {% endfor %}
                   </tbody>
                 </table>
@@ -300,15 +300,15 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
               <!-- 3.3 -->
               <div>
-                <h4 class="text-lg font-bold text-stone-800 mb-2 border-b-2 border-stone-200 pb-2 inline-block">3.3 · Agregado por día de semana</h4>
+                <h4 class="text-lg font-bold text-stone-800 dark:text-slate-100 mb-2 border-b-2 border-stone-200 pb-2 inline-block">3.3 · Agregado por día de semana</h4>
                 <div class="border border-stone-200 rounded-xl overflow-x-auto bg-white shadow-sm mt-4">
                   <table class="w-full text-left border-collapse text-sm">
                     <thead class="bg-stone-50/80 border-b border-stone-200">
                       <tr>
-                        <th class="py-3 px-4 font-bold text-stone-500"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.sem_dia }}">Día</a></th>
-                        <th class="py-3 px-4 font-bold text-stone-500 text-right"># ISO</th>
-                        <th class="py-3 px-4 font-bold text-stone-500 text-right"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.sem_tx }}">Tx</a></th>
-                        <th class="py-3 px-4 font-bold text-stone-500 text-right"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.sem_monto }}">Total ($)</a></th>
+                        <th class="py-3 px-4 font-bold text-stone-500 dark:text-slate-400"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.sem_dia }}">Día</a></th>
+                        <th class="py-3 px-4 font-bold text-stone-500 dark:text-slate-400 text-right"># ISO</th>
+                        <th class="py-3 px-4 font-bold text-stone-500 dark:text-slate-400 text-right"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.sem_tx }}">Tx</a></th>
+                        <th class="py-3 px-4 font-bold text-stone-500 dark:text-slate-400 text-right"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.sem_monto }}">Total ($)</a></th>
                       </tr>
                     </thead>
                     <tbody class="divide-y divide-stone-100">
@@ -316,11 +316,11 @@
                         <tr class="hover:bg-stone-50 transition-colors">
                           <td class="py-2 px-4">{{ r.fecha__nombre_dia }}</td>
                           <td class="py-2 px-4 text-right">{{ r.fecha__dia_semana }}</td>
-                          <td class="py-2 px-4 text-right font-bold text-stone-700">{{ r.transacciones }}</td>
+                          <td class="py-2 px-4 text-right font-bold text-stone-700 dark:text-slate-200">{{ r.transacciones }}</td>
                           <td class="py-2 px-4 text-right font-bold text-mars-secondary">${{ r.total_monto }}</td>
                         </tr>
                       {% empty %}
-                        <tr><td colspan="4" class="py-4 text-center text-stone-500">Sin datos.</td></tr>
+                        <tr><td colspan="4" class="py-4 text-center text-stone-500 dark:text-slate-400">Sin datos.</td></tr>
                       {% endfor %}
                     </tbody>
                   </table>
@@ -329,16 +329,16 @@
 
               <!-- 3.4 -->
               <div>
-                <h4 class="text-lg font-bold text-stone-800 mb-2 border-b-2 border-stone-200 pb-2 inline-block">3.4 · Agregado por mes y año</h4>
+                <h4 class="text-lg font-bold text-stone-800 dark:text-slate-100 mb-2 border-b-2 border-stone-200 pb-2 inline-block">3.4 · Agregado por mes y año</h4>
                 <div class="border border-stone-200 rounded-xl overflow-x-auto bg-white shadow-sm mt-4">
                   <table class="w-full text-left border-collapse text-sm">
                     <thead class="bg-stone-50/80 border-b border-stone-200">
                       <tr>
-                        <th class="py-3 px-4 font-bold text-stone-500"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.mes_per }}">Mes</a></th>
-                        <th class="py-3 px-4 font-bold text-stone-500 text-right">#</th>
-                        <th class="py-3 px-4 font-bold text-stone-500 text-right">Año</th>
-                        <th class="py-3 px-4 font-bold text-stone-500 text-right"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.mes_tx }}">Tx</a></th>
-                        <th class="py-3 px-4 font-bold text-stone-500 text-right"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.mes_monto }}">Total ($)</a></th>
+                        <th class="py-3 px-4 font-bold text-stone-500 dark:text-slate-400"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.mes_per }}">Mes</a></th>
+                        <th class="py-3 px-4 font-bold text-stone-500 dark:text-slate-400 text-right">#</th>
+                        <th class="py-3 px-4 font-bold text-stone-500 dark:text-slate-400 text-right">Año</th>
+                        <th class="py-3 px-4 font-bold text-stone-500 dark:text-slate-400 text-right"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.mes_tx }}">Tx</a></th>
+                        <th class="py-3 px-4 font-bold text-stone-500 dark:text-slate-400 text-right"><a class="hover:text-mars-secondary transition-colors underline" href="{% url 'analytics' %}{{ sort_href.mes_monto }}">Total ($)</a></th>
                       </tr>
                     </thead>
                     <tbody class="divide-y divide-stone-100">
@@ -347,11 +347,11 @@
                           <td class="py-2 px-4">{{ r.fecha__nombre_mes }}</td>
                           <td class="py-2 px-4 text-right">{{ r.fecha__mes }}</td>
                           <td class="py-2 px-4 text-right">{{ r.fecha__anio }}</td>
-                          <td class="py-2 px-4 text-right font-bold text-stone-700">{{ r.transacciones }}</td>
+                          <td class="py-2 px-4 text-right font-bold text-stone-700 dark:text-slate-200">{{ r.transacciones }}</td>
                           <td class="py-2 px-4 text-right font-bold text-mars-secondary">${{ r.total_monto }}</td>
                         </tr>
                       {% empty %}
-                        <tr><td colspan="5" class="py-4 text-center text-stone-500">Sin datos.</td></tr>
+                        <tr><td colspan="5" class="py-4 text-center text-stone-500 dark:text-slate-400">Sin datos.</td></tr>
                       {% endfor %}
                     </tbody>
                   </table>
@@ -362,11 +362,11 @@
             <!-- 3.5 -->
             <div class="bg-mars-surface/5 border border-mars-secondary/20 rounded-xl p-6">
               <h4 class="text-lg font-bold text-mars-secondary mb-2">3.5 · Ejemplo fijo (ORM sobre hechos filtrados)</h4>
-              <p class="text-stone-600 text-sm mb-4">
+              <p class="text-stone-600 dark:text-slate-300 text-sm mb-4">
                 Suma de <code class="bg-white border border-stone-200 px-1 py-0.5 rounded font-mono text-[10px]">monto</code> con año + mes + día fijos en código (Lunes + Enero + <strong>{{ ej_ref_year }}</strong>). Si no hay datos el total es <code class="bg-white border border-stone-200 px-1 py-0.5 rounded font-mono text-[10px]">0</code>.
               </p>
               <div class="bg-white border border-stone-200 rounded-lg p-4 inline-flex items-center gap-4 shadow-sm">
-                <span class="text-stone-800 font-medium">Suma monto · Lunes + Enero + {{ ej_ref_year }}:</span>
+                <span class="text-stone-800 dark:text-slate-100 font-medium">Suma monto · Lunes + Enero + {{ ej_ref_year }}:</span>
                 <span class="text-xl font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-md border border-emerald-200">${{ ej_orm_lunes_enero_ref }}</span>
               </div>
             </div>
@@ -377,7 +377,7 @@
 
       <details
         id="dw-agregados"
-        class="bg-bone-light border border-stone-300/40 rounded-2xl shadow-sm p-6 md:p-8 mb-6 analyticsCollapsible js-analytics-view"
+        class="bg-bone-light dark:bg-[#20131A] border border-stone-300/40 dark:border-white/10 rounded-2xl shadow-sm p-6 md:p-8 mb-6 analyticsCollapsible js-analytics-view"
         data-analytics-views="todas dimensiones"
         data-storage-key="agregados-dimensiones"
         data-default-open="true"
@@ -386,37 +386,37 @@
       >
         <summary class="flex items-center cursor-pointer outline-none list-none [&::-webkit-details-marker]:hidden mb-6 group">
           <span class="analyticsCollapsible__toggle bg-[#20131a] text-white w-10 h-10 flex items-center justify-center rounded-lg mr-4 shadow-sm group-hover:bg-mars-surface transition-colors" aria-hidden="true"></span>
-          <h2 class="text-xl font-bold text-stone-900 m-0">Agregados por otras dimensiones (mismo filtro de hechos)</h2>
+          <h2 class="text-xl font-bold text-stone-900 dark:text-white m-0">Agregados por otras dimensiones (mismo filtro de hechos)</h2>
         </summary>
         <div class="pl-7">
-        <p class="text-stone-600 leading-relaxed mb-8">
+        <p class="text-stone-600 dark:text-slate-300 leading-relaxed mb-8">
           Consultas <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">GROUP BY</code> sobre <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">FactVentas</code> unidas a <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">DimCliente</code>, <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">DimCanal</code> y <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">DimProducto</code>.
         </p>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
           <!-- Clientes -->
           <div>
-            <h3 class="text-lg font-bold text-stone-800 mb-4 border-b-2 border-stone-200 pb-2">DimCliente — mejores clientes</h3>
+            <h3 class="text-lg font-bold text-stone-800 dark:text-slate-100 mb-4 border-b-2 border-stone-200 pb-2">DimCliente — mejores clientes</h3>
             <div class="border border-stone-200 rounded-xl overflow-x-auto bg-white shadow-sm">
               <table class="w-full text-left border-collapse text-sm">
                 <thead class="bg-stone-50/80 border-b border-stone-200">
                   <tr>
-                    <th class="py-3 px-3 font-bold text-stone-500">ID</th>
-                    <th class="py-3 px-3 font-bold text-stone-500">Nombre</th>
-                    <th class="py-3 px-3 font-bold text-stone-500">Seg.</th>
-                    <th class="py-3 px-3 font-bold text-stone-500 text-right">Total ($)</th>
+                    <th class="py-3 px-3 font-bold text-stone-500 dark:text-slate-400">ID</th>
+                    <th class="py-3 px-3 font-bold text-stone-500 dark:text-slate-400">Nombre</th>
+                    <th class="py-3 px-3 font-bold text-stone-500 dark:text-slate-400">Seg.</th>
+                    <th class="py-3 px-3 font-bold text-stone-500 dark:text-slate-400 text-right">Total ($)</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-stone-100">
                   {% for r in top_clientes %}
                     <tr class="hover:bg-stone-50 transition-colors">
-                      <td class="py-2 px-3 text-stone-500">{{ r.cliente__id_cliente }}</td>
+                      <td class="py-2 px-3 text-stone-500 dark:text-slate-400">{{ r.cliente__id_cliente }}</td>
                       <td class="py-2 px-3">{{ r.cliente__nombre }} {{ r.cliente__apellido }}</td>
                       <td class="py-2 px-3">{{ r.cliente__segmento }}</td>
                       <td class="py-2 px-3 text-right font-bold text-mars-secondary">${{ r.total }}</td>
                     </tr>
                   {% empty %}
-                    <tr><td colspan="4" class="py-4 text-center text-stone-500">Sin datos.</td></tr>
+                    <tr><td colspan="4" class="py-4 text-center text-stone-500 dark:text-slate-400">Sin datos.</td></tr>
                   {% endfor %}
                 </tbody>
               </table>
@@ -425,13 +425,13 @@
 
           <!-- Canales -->
           <div>
-            <h3 class="text-lg font-bold text-stone-800 mb-4 border-b-2 border-stone-200 pb-2">DimCanal — rendimiento</h3>
+            <h3 class="text-lg font-bold text-stone-800 dark:text-slate-100 mb-4 border-b-2 border-stone-200 pb-2">DimCanal — rendimiento</h3>
             <div class="border border-stone-200 rounded-xl overflow-x-auto bg-white shadow-sm">
               <table class="w-full text-left border-collapse text-sm">
                 <thead class="bg-stone-50/80 border-b border-stone-200">
                   <tr>
-                    <th class="py-3 px-4 font-bold text-stone-500">Canal</th>
-                    <th class="py-3 px-4 font-bold text-stone-500 text-right">Total ($)</th>
+                    <th class="py-3 px-4 font-bold text-stone-500 dark:text-slate-400">Canal</th>
+                    <th class="py-3 px-4 font-bold text-stone-500 dark:text-slate-400 text-right">Total ($)</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-stone-100">
@@ -441,7 +441,7 @@
                       <td class="py-2 px-4 text-right font-bold text-mars-secondary">${{ r.total }}</td>
                     </tr>
                   {% empty %}
-                    <tr><td colspan="2" class="py-4 text-center text-stone-500">Sin datos.</td></tr>
+                    <tr><td colspan="2" class="py-4 text-center text-stone-500 dark:text-slate-400">Sin datos.</td></tr>
                   {% endfor %}
                 </tbody>
               </table>
@@ -450,25 +450,25 @@
 
           <!-- Productos -->
           <div>
-            <h3 class="text-lg font-bold text-stone-800 mb-4 border-b-2 border-stone-200 pb-2">DimProducto — líderes</h3>
+            <h3 class="text-lg font-bold text-stone-800 dark:text-slate-100 mb-4 border-b-2 border-stone-200 pb-2">DimProducto — líderes</h3>
             <div class="border border-stone-200 rounded-xl overflow-x-auto bg-white shadow-sm">
               <table class="w-full text-left border-collapse text-sm">
                 <thead class="bg-stone-50/80 border-b border-stone-200">
                   <tr>
-                    <th class="py-3 px-3 font-bold text-stone-500">ID</th>
-                    <th class="py-3 px-3 font-bold text-stone-500">Producto</th>
-                    <th class="py-3 px-3 font-bold text-stone-500 text-right">Total ($)</th>
+                    <th class="py-3 px-3 font-bold text-stone-500 dark:text-slate-400">ID</th>
+                    <th class="py-3 px-3 font-bold text-stone-500 dark:text-slate-400">Producto</th>
+                    <th class="py-3 px-3 font-bold text-stone-500 dark:text-slate-400 text-right">Total ($)</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-stone-100">
                   {% for r in top_productos %}
                     <tr class="hover:bg-stone-50 transition-colors">
-                      <td class="py-2 px-3 text-stone-500">{{ r.producto__id_producto }}</td>
+                      <td class="py-2 px-3 text-stone-500 dark:text-slate-400">{{ r.producto__id_producto }}</td>
                       <td class="py-2 px-3">{{ r.producto__nombre_producto|truncatechars:20 }}</td>
                       <td class="py-2 px-3 text-right font-bold text-mars-secondary">${{ r.total }}</td>
                     </tr>
                   {% empty %}
-                    <tr><td colspan="3" class="py-4 text-center text-stone-500">Sin datos.</td></tr>
+                    <tr><td colspan="3" class="py-4 text-center text-stone-500 dark:text-slate-400">Sin datos.</td></tr>
                   {% endfor %}
                 </tbody>
               </table>
@@ -481,7 +481,7 @@
 
       <details
         id="dw-vista-hechos"
-        class="bg-bone-light border border-stone-300/40 rounded-2xl shadow-sm p-6 md:p-8 mb-6 analyticsCollapsible js-analytics-view"
+        class="bg-bone-light dark:bg-[#20131A] border border-stone-300/40 dark:border-white/10 rounded-2xl shadow-sm p-6 md:p-8 mb-6 analyticsCollapsible js-analytics-view"
         data-analytics-views="todas hechos"
         data-storage-key="fact-ventas-preview"
         data-default-open="true"
@@ -490,9 +490,9 @@
       >
         <summary class="flex items-center cursor-pointer outline-none list-none [&::-webkit-details-marker]:hidden mb-6 group">
           <span class="analyticsCollapsible__toggle bg-[#20131a] text-white w-10 h-10 flex items-center justify-center rounded-lg mr-4 shadow-sm group-hover:bg-mars-surface transition-colors" aria-hidden="true"></span>
-          <h2 class="text-xl font-bold text-stone-900 m-0">
+          <h2 class="text-xl font-bold text-stone-900 dark:text-white m-0">
             Vista rápida: filas de <code class="bg-stone-100 text-mars-secondary border border-stone-200 font-mono text-[14px] px-2 py-0.5 rounded">FactVentas</code>
-            <span class="text-sm font-normal text-stone-500 ml-2">
+            <span class="text-sm font-normal text-stone-500 dark:text-slate-400 ml-2">
               {% if preview_nav.empty %}
                 (sin hechos)
               {% else %}
@@ -505,7 +505,7 @@
         
         {% if not preview_nav.empty %}
           <div class="flex items-center justify-between mb-4">
-            <p class="text-stone-700 font-medium">
+            <p class="text-stone-700 dark:text-slate-200 font-medium">
               Hechos que cumplen el filtro: <span class="bg-stone-100 border border-stone-200 px-2 py-1 rounded text-mars-secondary font-bold">{{ preview_nav.total }}</span>
             </p>
           </div>
@@ -514,15 +514,15 @@
         {% if not preview_nav.empty and preview_nav.num_pages > 1 %}
           <nav class="flex items-center gap-4 mb-4" aria-label="Paginación vista FactVentas">
             {% if preview_nav.prev_url %}
-              <a class="bg-white border border-stone-300 text-stone-700 hover:border-mars-accent hover:text-mars-accent shadow-sm rounded-md px-3 py-1 text-sm font-medium transition-colors" href="{{ preview_nav.prev_url }}">&larr; Anterior</a>
+              <a class="bg-white dark:bg-[#2d1a24] border border-stone-300 dark:border-[rgba(192,132,252,0.45)] text-stone-700 dark:text-white dark:text-slate-200 hover:border-mars-accent hover:text-mars-accent shadow-sm rounded-md px-3 py-1 text-sm font-medium transition-colors" href="{{ preview_nav.prev_url }}">&larr; Anterior</a>
             {% else %}
               <span class="bg-stone-100 border border-stone-200 text-stone-400 rounded-md px-3 py-1 text-sm font-medium cursor-not-allowed">&larr; Anterior</span>
             {% endif %}
-            <span class="text-stone-600 font-bold text-sm">
+            <span class="text-stone-600 dark:text-slate-300 font-bold text-sm">
               {{ preview_nav.number }} / {{ preview_nav.num_pages }}
             </span>
             {% if preview_nav.next_url %}
-              <a class="bg-white border border-stone-300 text-stone-700 hover:border-mars-accent hover:text-mars-accent shadow-sm rounded-md px-3 py-1 text-sm font-medium transition-colors" href="{{ preview_nav.next_url }}">Siguiente &rarr;</a>
+              <a class="bg-white dark:bg-[#2d1a24] border border-stone-300 dark:border-[rgba(192,132,252,0.45)] text-stone-700 dark:text-white dark:text-slate-200 hover:border-mars-accent hover:text-mars-accent shadow-sm rounded-md px-3 py-1 text-sm font-medium transition-colors" href="{{ preview_nav.next_url }}">Siguiente &rarr;</a>
             {% else %}
               <span class="bg-stone-100 border border-stone-200 text-stone-400 rounded-md px-3 py-1 text-sm font-medium cursor-not-allowed">Siguiente &rarr;</span>
             {% endif %}
@@ -533,40 +533,40 @@
           <table class="w-full text-left border-collapse text-sm whitespace-nowrap">
             <thead class="bg-stone-50/80 border-b border-stone-200">
               <tr>
-                <th class="py-3 px-3 font-bold text-stone-500 text-right">id_t</th>
-                <th class="py-3 px-3 font-bold text-stone-500">Fecha</th>
-                <th class="py-3 px-3 font-bold text-stone-500 text-right">Día</th>
-                <th class="py-3 px-3 font-bold text-stone-500 text-right">Mes</th>
-                <th class="py-3 px-3 font-bold text-stone-500 text-right">Año</th>
-                <th class="py-3 px-3 font-bold text-stone-500">ID cli</th>
-                <th class="py-3 px-3 font-bold text-stone-500">Cliente</th>
-                <th class="py-3 px-3 font-bold text-stone-500">Segmento</th>
-                <th class="py-3 px-3 font-bold text-stone-500">Canal</th>
-                <th class="py-3 px-3 font-bold text-stone-500">ID pr</th>
-                <th class="py-3 px-3 font-bold text-stone-500">Producto</th>
-                <th class="py-3 px-3 font-bold text-stone-500 text-right">Cant</th>
-                <th class="py-3 px-3 font-bold text-stone-500 text-right">Monto ($)</th>
+                <th class="py-3 px-3 font-bold text-stone-500 dark:text-slate-400 text-right">id_t</th>
+                <th class="py-3 px-3 font-bold text-stone-500 dark:text-slate-400">Fecha</th>
+                <th class="py-3 px-3 font-bold text-stone-500 dark:text-slate-400 text-right">Día</th>
+                <th class="py-3 px-3 font-bold text-stone-500 dark:text-slate-400 text-right">Mes</th>
+                <th class="py-3 px-3 font-bold text-stone-500 dark:text-slate-400 text-right">Año</th>
+                <th class="py-3 px-3 font-bold text-stone-500 dark:text-slate-400">ID cli</th>
+                <th class="py-3 px-3 font-bold text-stone-500 dark:text-slate-400">Cliente</th>
+                <th class="py-3 px-3 font-bold text-stone-500 dark:text-slate-400">Segmento</th>
+                <th class="py-3 px-3 font-bold text-stone-500 dark:text-slate-400">Canal</th>
+                <th class="py-3 px-3 font-bold text-stone-500 dark:text-slate-400">ID pr</th>
+                <th class="py-3 px-3 font-bold text-stone-500 dark:text-slate-400">Producto</th>
+                <th class="py-3 px-3 font-bold text-stone-500 dark:text-slate-400 text-right">Cant</th>
+                <th class="py-3 px-3 font-bold text-stone-500 dark:text-slate-400 text-right">Monto ($)</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-stone-100">
               {% for r in preview %}
                 <tr class="hover:bg-stone-50 transition-colors">
-                  <td class="py-2 px-3 text-right font-mono text-stone-500">{{ r.id_tiempo }}</td>
+                  <td class="py-2 px-3 text-right font-mono text-stone-500 dark:text-slate-400">{{ r.id_tiempo }}</td>
                   <td class="py-2 px-3">{{ r.fecha }}</td>
                   <td class="py-2 px-3 text-right">{{ r.dia }}</td>
                   <td class="py-2 px-3 text-right">{{ r.mes }}</td>
                   <td class="py-2 px-3 text-right font-bold">{{ r.anio }}</td>
-                  <td class="py-2 px-3 font-mono text-stone-500">{{ r.id_cliente }}</td>
+                  <td class="py-2 px-3 font-mono text-stone-500 dark:text-slate-400">{{ r.id_cliente }}</td>
                   <td class="py-2 px-3">{{ r.cliente|truncatechars:15 }}</td>
                   <td class="py-2 px-3">{{ r.segmento }}</td>
                   <td class="py-2 px-3">{{ r.canal }}</td>
-                  <td class="py-2 px-3 font-mono text-stone-500">{{ r.id_producto }}</td>
+                  <td class="py-2 px-3 font-mono text-stone-500 dark:text-slate-400">{{ r.id_producto }}</td>
                   <td class="py-2 px-3">{{ r.producto|truncatechars:15 }}</td>
                   <td class="py-2 px-3 text-right font-bold">{{ r.cantidad }}</td>
                   <td class="py-2 px-3 text-right font-bold text-mars-secondary">${{ r.monto }}</td>
                 </tr>
               {% empty %}
-                <tr><td colspan="13" class="py-4 text-center text-stone-500">Sin datos.</td></tr>
+                <tr><td colspan="13" class="py-4 text-center text-stone-500 dark:text-slate-400">Sin datos.</td></tr>
               {% endfor %}
             </tbody>
           </table>
@@ -575,15 +575,15 @@
         {% if not preview_nav.empty and preview_nav.num_pages > 1 %}
           <nav class="flex items-center gap-4" aria-label="Paginación vista FactVentas">
             {% if preview_nav.prev_url %}
-              <a class="bg-white border border-stone-300 text-stone-700 hover:border-mars-accent hover:text-mars-accent shadow-sm rounded-md px-3 py-1 text-sm font-medium transition-colors" href="{{ preview_nav.prev_url }}">&larr; Anterior</a>
+              <a class="bg-white dark:bg-[#2d1a24] border border-stone-300 dark:border-[rgba(192,132,252,0.45)] text-stone-700 dark:text-white dark:text-slate-200 hover:border-mars-accent hover:text-mars-accent shadow-sm rounded-md px-3 py-1 text-sm font-medium transition-colors" href="{{ preview_nav.prev_url }}">&larr; Anterior</a>
             {% else %}
               <span class="bg-stone-100 border border-stone-200 text-stone-400 rounded-md px-3 py-1 text-sm font-medium cursor-not-allowed">&larr; Anterior</span>
             {% endif %}
-            <span class="text-stone-600 font-bold text-sm">
+            <span class="text-stone-600 dark:text-slate-300 font-bold text-sm">
               {{ preview_nav.number }} / {{ preview_nav.num_pages }}
             </span>
             {% if preview_nav.next_url %}
-              <a class="bg-white border border-stone-300 text-stone-700 hover:border-mars-accent hover:text-mars-accent shadow-sm rounded-md px-3 py-1 text-sm font-medium transition-colors" href="{{ preview_nav.next_url }}">Siguiente &rarr;</a>
+              <a class="bg-white dark:bg-[#2d1a24] border border-stone-300 dark:border-[rgba(192,132,252,0.45)] text-stone-700 dark:text-white dark:text-slate-200 hover:border-mars-accent hover:text-mars-accent shadow-sm rounded-md px-3 py-1 text-sm font-medium transition-colors" href="{{ preview_nav.next_url }}">Siguiente &rarr;</a>
             {% else %}
               <span class="bg-stone-100 border border-stone-200 text-stone-400 rounded-md px-3 py-1 text-sm font-medium cursor-not-allowed">Siguiente &rarr;</span>
             {% endif %}
@@ -592,13 +592,13 @@
         </div>
       </details>
 
-      <details class="bg-bone-light border border-stone-300/40 rounded-2xl shadow-sm p-6 md:p-8 mb-6 js-analytics-view group" data-analytics-views="todas tiempo">
+      <details class="bg-bone-light dark:bg-[#20131A] border border-stone-300/40 dark:border-white/10 rounded-2xl shadow-sm p-6 md:p-8 mb-6 js-analytics-view group" data-analytics-views="todas tiempo">
         <summary class="flex items-center cursor-pointer outline-none list-none [&::-webkit-details-marker]:hidden mb-4">
           <span class="analyticsCollapsible__toggle bg-[#20131a] text-white w-10 h-10 flex items-center justify-center rounded-lg mr-4 shadow-sm group-hover:bg-mars-surface transition-colors" aria-hidden="true"></span>
-          <h2 class="text-lg font-bold text-stone-600 m-0">Referencia SQL (DBeaver / psql)</h2>
+          <h2 class="text-lg font-bold text-stone-600 dark:text-slate-300 m-0">Referencia SQL (DBeaver / psql)</h2>
         </summary>
         <div class="pl-7">
-          <p class="text-stone-500 text-sm mb-4">
+          <p class="text-stone-500 dark:text-slate-400 text-sm mb-4">
             Equivalente a los joins que el ORM hace entre <code class="bg-stone-100 border border-stone-200 px-1 py-0.5 rounded font-mono text-[10px]">core_factventas</code> y <code class="bg-stone-100 border border-stone-200 px-1 py-0.5 rounded font-mono text-[10px]">core_dimtiempo</code>:
           </p>
           <div class="bg-stone-800 text-stone-200 rounded-xl p-4 overflow-x-auto shadow-inner font-mono text-sm leading-relaxed border border-stone-700">
