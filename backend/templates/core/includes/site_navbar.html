@@ -1,4 +1,15 @@
 {% load static %}
+<script>
+  (function() {
+    try {
+      var m = localStorage.getItem("retailstart.ui.nav_mode");
+      var mode = m === 'sidebar' ? 'sidebar' : 'navbar';
+      document.body.classList.add('nav-mode-' + mode);
+    } catch (e) {
+      document.body.classList.add('nav-mode-navbar');
+    }
+  })();
+</script>
 <nav class="siteNavbar fixed top-0 left-0 w-full z-[60] bg-[#1a122e] border-b border-[rgba(192,132,252,0.22)] flex items-center px-4 h-[64px]" aria-label="Navegación principal">
   <div class="flex items-center gap-5">
     <span class="text-mars-accent font-bold tracking-wide text-[13px] uppercase">RETAILSTART</span>

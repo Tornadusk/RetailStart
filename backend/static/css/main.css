@@ -1365,12 +1365,16 @@ body.appShell {
   transition: margin-left 0.22s ease, padding-top 0.22s ease;
 }
 
+/* Defaults para evitar FOUC */
+.siteNavbar { display: none !important; }
+.siteSidebar { transform: translateX(-100%) !important; }
+
 /* Modo Nav-Bar (Franja Superior) */
 body.nav-mode-navbar .siteNavbar {
-  display: flex;
+  display: flex !important;
 }
 body.nav-mode-navbar .siteSidebar {
-  transform: translateX(-100%);
+  transform: translateX(-100%) !important;
 }
 body.nav-mode-navbar .appShell__main {
   margin-left: 0;
@@ -1379,10 +1383,10 @@ body.nav-mode-navbar .appShell__main {
 
 /* Modo Nav-Sidebar (Menú Lateral Clásico) */
 body.nav-mode-sidebar .siteNavbar {
-  display: none;
+  display: none !important;
 }
 body.nav-mode-sidebar .siteSidebar {
-  transform: translateX(0);
+  transform: translateX(0) !important;
 }
 @media (min-width: 901px) {
   body.nav-mode-sidebar .appShell__main {
