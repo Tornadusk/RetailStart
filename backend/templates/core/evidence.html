@@ -21,50 +21,7 @@
         {% include "core/includes/site_quick_nav.html" %}
       </header>
 
-      <section class="layout">
-        <aside class="card bg-bone-light dark:bg-[#20131A] border border-stone-300/40 dark:border-white/10 rounded-xl shadow-sm p-5">
-          <h2 class="text-xl font-bold text-stone-900 dark:text-white mb-4">Estado del flujo</h2>
-
-          <div class="kpiGrid">
-            <div class="kpi bg-white dark:bg-[#2d1a24] border-l-4 border-l-mars-secondary border-y border-r border-stone-300/40 rounded-r-xl shadow-sm p-4">
-              <div class="kpiLabel">DW FactVentas</div>
-              <div class="kpiValue">{{ dw_counts.fact_ventas }}</div>
-            </div>
-            <div class="kpi bg-white dark:bg-[#2d1a24] border-l-4 border-l-mars-secondary border-y border-r border-stone-300/40 rounded-r-xl shadow-sm p-4">
-              <div class="kpiLabel">DimCliente</div>
-              <div class="kpiValue">{{ dw_counts.dim_cliente }}</div>
-            </div>
-            <div class="kpi bg-white dark:bg-[#2d1a24] border-l-4 border-l-mars-secondary border-y border-r border-stone-300/40 rounded-r-xl shadow-sm p-4">
-              <div class="kpiLabel">DimProducto</div>
-              <div class="kpiValue">{{ dw_counts.dim_producto }}</div>
-            </div>
-            <div class="kpi bg-white dark:bg-[#2d1a24] border-l-4 border-l-mars-secondary border-y border-r border-stone-300/40 rounded-r-xl shadow-sm p-4">
-              <div class="kpiLabel">DimTiempo</div>
-              <div class="kpiValue">{{ dw_counts.dim_tiempo }}</div>
-            </div>
-            <div class="kpi bg-white dark:bg-[#2d1a24] border-l-4 border-l-mars-secondary border-y border-r border-stone-300/40 rounded-r-xl shadow-sm p-4">
-              <div class="kpiLabel">DimCanal</div>
-              <div class="kpiValue">{{ dw_counts.dim_canal }}</div>
-            </div>
-          </div>
-
-          <div class="divider"></div>
-
-          {% include "core/includes/pipeline_docker_commands_collapsible.html" with storage_key="evidence-pipeline" pipeline_aside=True default_open='true' %}
-
-          <div class="evidenceFileMeta">
-            <p class="muted text-stone-500 dark:text-slate-400">
-              Último CSV:
-              <span class="badge evidenceBadge text-stone-900 dark:text-slate-100 bg-sky-200/90 dark:bg-sky-900/45 border-sky-400/70 dark:border-sky-500/40">{% if latest_processed %}{{ latest_processed }}{% else %}—{% endif %}</span>
-            </p>
-            <p class="muted text-stone-500 dark:text-slate-400">
-              Último gráfico:
-              <span class="badge evidenceBadge text-stone-900 dark:text-slate-100 bg-sky-200/90 dark:bg-sky-900/45 border-sky-400/70 dark:border-sky-500/40">{% if latest_chart %}{{ latest_chart }}{% else %}—{% endif %}</span>
-            </p>
-          </div>
-        </aside>
-
-        <div class="stack">
+      <div class="stack">
           <section class="card bg-bone-light dark:bg-[#20131A] border border-stone-300/40 dark:border-white/10 rounded-xl shadow-sm p-5">
             <h2 class="text-xl font-bold text-stone-900 dark:text-white mb-4">Gráficos (PNG)</h2>
             {% if images %}
@@ -110,8 +67,49 @@
               <p class="muted text-stone-500 dark:text-slate-400">No hay CSV procesados aún. Ejecutá <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">run_elt_ingest</code> si usás <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">data_sources/</code>, luego <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">run_etl</code>.</p>
             {% endif %}
           </section>
-        </div>
-      </section>
+
+          <section class="card bg-bone-light dark:bg-[#20131A] border border-stone-300/40 dark:border-white/10 rounded-xl shadow-sm p-5">
+            <h2 class="text-xl font-bold text-stone-900 dark:text-white mb-4">Estado del flujo</h2>
+
+            <div class="kpiGrid">
+              <div class="kpi bg-white dark:bg-[#2d1a24] border-l-4 border-l-mars-secondary border-y border-r border-stone-300/40 rounded-r-xl shadow-sm p-4">
+                <div class="kpiLabel">DW FactVentas</div>
+                <div class="kpiValue">{{ dw_counts.fact_ventas }}</div>
+              </div>
+              <div class="kpi bg-white dark:bg-[#2d1a24] border-l-4 border-l-mars-secondary border-y border-r border-stone-300/40 rounded-r-xl shadow-sm p-4">
+                <div class="kpiLabel">DimCliente</div>
+                <div class="kpiValue">{{ dw_counts.dim_cliente }}</div>
+              </div>
+              <div class="kpi bg-white dark:bg-[#2d1a24] border-l-4 border-l-mars-secondary border-y border-r border-stone-300/40 rounded-r-xl shadow-sm p-4">
+                <div class="kpiLabel">DimProducto</div>
+                <div class="kpiValue">{{ dw_counts.dim_producto }}</div>
+              </div>
+              <div class="kpi bg-white dark:bg-[#2d1a24] border-l-4 border-l-mars-secondary border-y border-r border-stone-300/40 rounded-r-xl shadow-sm p-4">
+                <div class="kpiLabel">DimTiempo</div>
+                <div class="kpiValue">{{ dw_counts.dim_tiempo }}</div>
+              </div>
+              <div class="kpi bg-white dark:bg-[#2d1a24] border-l-4 border-l-mars-secondary border-y border-r border-stone-300/40 rounded-r-xl shadow-sm p-4">
+                <div class="kpiLabel">DimCanal</div>
+                <div class="kpiValue">{{ dw_counts.dim_canal }}</div>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            {% include "core/includes/pipeline_docker_commands_collapsible.html" with storage_key="evidence-pipeline" pipeline_aside=True default_open='true' %}
+
+            <div class="evidenceFileMeta">
+              <p class="muted text-stone-500 dark:text-slate-400">
+                Último CSV:
+                <span class="badge evidenceBadge text-stone-900 dark:text-slate-100 bg-sky-200/90 dark:bg-sky-900/45 border-sky-400/70 dark:border-sky-500/40">{% if latest_processed %}{{ latest_processed }}{% else %}—{% endif %}</span>
+              </p>
+              <p class="muted text-stone-500 dark:text-slate-400">
+                Último gráfico:
+                <span class="badge evidenceBadge text-stone-900 dark:text-slate-100 bg-sky-200/90 dark:bg-sky-900/45 border-sky-400/70 dark:border-sky-500/40">{% if latest_chart %}{{ latest_chart }}{% else %}—{% endif %}</span>
+              </p>
+            </div>
+          </section>
+      </div>
     </main>
     {% include "core/includes/site_shell_scripts.html" %}
     <script src="{% static 'js/analytics-collapsibles.js' %}?v=2" defer></script>
