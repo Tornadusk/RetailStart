@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>RetailStart</title>
-    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=18" />
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=24" />
       {% include "core/includes/tailwind_head.html" %}
   </head>
   <body class="appShell">
@@ -21,7 +21,7 @@
 
       <section class="card bg-bone-light dark:bg-[#20131A] border border-stone-300/40 dark:border-white/10 rounded-xl shadow-sm p-5">
         <h2 class="text-xl font-bold text-stone-900 dark:text-white mb-4">Data Lake (carpetas)</h2>
-        <ul>
+        <ul class="homeLakeList space-y-2 mb-4">
           <li><code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">/data_sources/</code>: orígenes dispersos (aquí pones los CSV/JSON/XML/TXT para probar)</li>
           <li><code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">/data_lake/raw/</code>: landing tras <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">run_elt_ingest</code> (archivos con sufijo de fecha)</li>
           <li><code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">/data_lake/processed/</code>: salida de <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">run_etl</code> (CSVs con timestamp)</li>

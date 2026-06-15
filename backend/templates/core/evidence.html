@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Evidencia - RetailStart</title>
-    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=17" />
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=24" />
       {% include "core/includes/tailwind_head.html" %}
   </head>
   <body class="appShell">
@@ -54,10 +54,12 @@
 
           <div class="evidenceFileMeta">
             <p class="muted text-stone-500 dark:text-slate-400">
-              Último CSV: <span class="badge">{% if latest_processed %}{{ latest_processed }}{% else %}—{% endif %}</span>
+              Último CSV:
+              <span class="badge evidenceBadge text-stone-900 dark:text-slate-100 bg-sky-200/90 dark:bg-sky-900/45 border-sky-400/70 dark:border-sky-500/40">{% if latest_processed %}{{ latest_processed }}{% else %}—{% endif %}</span>
             </p>
             <p class="muted text-stone-500 dark:text-slate-400">
-              Último gráfico: <span class="badge">{% if latest_chart %}{{ latest_chart }}{% else %}—{% endif %}</span>
+              Último gráfico:
+              <span class="badge evidenceBadge text-stone-900 dark:text-slate-100 bg-sky-200/90 dark:bg-sky-900/45 border-sky-400/70 dark:border-sky-500/40">{% if latest_chart %}{{ latest_chart }}{% else %}—{% endif %}</span>
             </p>
           </div>
         </aside>

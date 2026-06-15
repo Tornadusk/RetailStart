@@ -71,8 +71,15 @@ def evidence(request: HttpRequest) -> HttpResponse:
                 }
             )
 
-    latest_processed = file_rows[0]["name"] if file_rows else None
-    latest_chart = images[-1]["name"] if images else None
+    latest_processed = None
+    if file_rows:
+        maestro = next((r["name"] for r in file_rows if r["name"] == "ventas_unificadas_maestro.csv"), None)
+        latest_processed = maestro or file_rows[0]["name"]
+
+    latest_chart = None
+    if images:
+        latest_img = max(images, key=lambda img: int(img["url"].split("v=")[-1]))
+        latest_chart = Path(latest_img["name"]).stem
 
     dw_counts = {
         "dim_cliente": DimCliente.objects.count(),

@@ -45,18 +45,29 @@
     <form class="siteSidebar__filterForm" id="site-filter-form" action="#" method="get">
       <div class="mb-3 flex flex-col">
         <label for="site-filter-y" class="text-xs text-mars-textMuted mb-1">Año</label>
-        <input type="text" id="site-filter-y" name="y" class="bg-mars-surface border border-mars-border text-white rounded-md px-2 py-1.5 text-sm focus:border-mars-accent focus:outline-none transition-colors" value="todos" placeholder="todos o 2026" list="site-filter-years" autocomplete="off" />
-        <datalist id="site-filter-years"><option value="todos"></option>{% for yr in sidebar_years %}<option value="{{ yr }}"></option>{% endfor %}</datalist>
+        <select id="site-filter-y" name="y" class="siteSidebar__input bg-mars-surface border border-mars-border text-white rounded-md px-2 py-1.5 text-sm focus:border-mars-accent focus:outline-none transition-colors w-full">
+          <option value="">Todos</option>
+          {% for yr in sidebar_years %}
+            <option value="{{ yr }}">{{ yr }}</option>
+          {% endfor %}
+        </select>
       </div>
       <div class="mb-3 flex flex-col">
         <label for="site-filter-m" class="text-xs text-mars-textMuted mb-1">Mes</label>
-        <input type="text" id="site-filter-m" name="m" class="bg-mars-surface border border-mars-border text-white rounded-md px-2 py-1.5 text-sm focus:border-mars-accent focus:outline-none transition-colors" value="todos" placeholder="todos o 04" list="site-filter-months" autocomplete="off" />
-        <datalist id="site-filter-months"><option value="todos"></option><option value="01"></option><option value="02"></option><option value="03"></option><option value="04"></option><option value="05"></option><option value="06"></option><option value="07"></option><option value="08"></option><option value="09"></option><option value="10"></option><option value="11"></option><option value="12"></option></datalist>
+        <select id="site-filter-m" name="m" class="siteSidebar__input bg-mars-surface border border-mars-border text-white rounded-md px-2 py-1.5 text-sm focus:border-mars-accent focus:outline-none transition-colors w-full">
+          <option value="">Todos</option>
+          {% for mo, mo_label in sidebar_months %}
+            <option value="{{ mo }}">{{ mo_label }}</option>
+          {% endfor %}
+        </select>
       </div>
       <div class="mb-5 flex flex-col">
         <label for="site-filter-d" class="text-xs text-mars-textMuted mb-1">Día</label>
-        <input type="text" id="site-filter-d" name="d" class="bg-mars-surface border border-mars-border text-white rounded-md px-2 py-1.5 text-sm focus:border-mars-accent focus:outline-none transition-colors" value="todos" placeholder="todos o Lunes" list="site-filter-dias" autocomplete="off" />
-        <datalist id="site-filter-dias"><option value="todos"></option>{% for dia in sidebar_dias %}<option value="{{ dia }}"></option>{% endfor %}</datalist>
+        <select id="site-filter-d" name="d" class="siteSidebar__input bg-mars-surface border border-mars-border text-white rounded-md px-2 py-1.5 text-sm focus:border-mars-accent focus:outline-none transition-colors w-full">
+          {% for val, label in sidebar_dias %}
+            <option value="{{ val }}">{{ label }}</option>
+          {% endfor %}
+        </select>
       </div>
       <div class="flex space-x-2">
         <button type="submit" class="bg-mars-surface border border-mars-border text-white rounded-md px-3 py-1.5 text-sm hover:border-mars-accent transition-colors flex-1">Aplicar</button>

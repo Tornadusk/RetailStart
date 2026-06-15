@@ -169,9 +169,9 @@
   }
 
   function fillInputs(display) {
-    inputY.value = display.y;
-    inputM.value = display.m;
-    inputD.value = display.d;
+    inputY.value = display.y === "todos" ? "" : display.y;
+    inputM.value = display.m === "todos" ? "" : display.m;
+    inputD.value = display.d === "todos" ? "" : display.d;
     var disabled = !!display.range;
     inputY.disabled = disabled;
     inputM.disabled = disabled;
@@ -261,9 +261,9 @@
   }
 
   function clearFilters() {
-    inputY.value = "todos";
-    inputM.value = "todos";
-    inputD.value = "todos";
+    inputY.value = "";
+    inputM.value = "";
+    inputD.value = "";
     writeStorageTime({ y: "todos", m: "todos", d: "todos" });
     var target = resolveTarget();
     var q = new URLSearchParams();
@@ -280,20 +280,37 @@
     clearBtn.addEventListener("click", clearFilters);
   }
 
+  function onTimeFilterChange() {
+    var built = inputsToQuery();
+    if (!built) return;
+    var display = urlToDisplay({ y: built.y, m: built.m, d: built.d, range: false });
+    syncPageSelects(display);
+    writeStorageTime({
+      y: display.y,
+      m: display.m,
+      d: display.d,
+    });
+    updateStatus(display);
+  }
+
   document.addEventListener("change", function (ev) {
     var t = ev.target;
     if (!t || t.tagName !== "SELECT") return;
-    if (t.id === "db_y" || t.id === "fy") inputY.value = t.value ? t.value : "todos";
-    if (t.id === "db_m" || t.id === "fm") inputM.value = t.value ? t.value : "todos";
-    if (t.id === "db_d" || t.id === "fd") inputD.value = t.value ? t.value : "todos";
-    var built = inputsToQuery();
-    if (built) {
-      writeStorageTime({
-        y: displayToken(inputY.value, built.y),
-        m: displayToken(inputM.value, built.m),
-        d: displayToken(inputD.value, built.d),
-      });
-      updateStatus(urlToDisplay({ y: built.y, m: built.m, d: built.d, range: false }));
+    if (t.id === "db_y" || t.id === "fy") inputY.value = t.value ? t.value : "";
+    if (t.id === "db_m" || t.id === "fm") inputM.value = t.value ? t.value : "";
+    if (t.id === "db_d" || t.id === "fd") inputD.value = t.value ? t.value : "";
+    if (
+      t.id === "site-filter-y" ||
+      t.id === "site-filter-m" ||
+      t.id === "site-filter-d" ||
+      t.id === "db_y" ||
+      t.id === "fy" ||
+      t.id === "db_m" ||
+      t.id === "fm" ||
+      t.id === "db_d" ||
+      t.id === "fd"
+    ) {
+      onTimeFilterChange();
     }
   });
 

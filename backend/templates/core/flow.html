@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Flujo - RetailStart</title>
-    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=18" />
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=24" />
       {% include "core/includes/tailwind_head.html" %}
   </head>
   <body class="appShell">
@@ -22,7 +22,7 @@
       </header>
 
       <!-- Banner Informativo -->
-      <div class="bg-orange-50/80 border border-orange-200 rounded-xl p-4 mb-8 flex items-start gap-4 shadow-sm">
+      <div class="bg-orange-50/80 dark:bg-orange-950/35 border border-orange-200 dark:border-orange-800/50 rounded-xl p-4 mb-8 flex items-start gap-4 shadow-sm">
         <i class="fa-solid fa-circle-info text-mars-accent text-xl mt-0.5"></i>
         <div>
           <h2 class="text-sm font-bold text-mars-accent mb-1 uppercase tracking-wide">Checklist (lo que pide la guía)</h2>
@@ -42,30 +42,30 @@
           <code class="bg-stone-100 dark:bg-[#2d1a24] text-mars-secondary border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">_YYYYMMDD</code> (fecha de ingesta) para auditoría.
         </p>
 
-        <div class="bg-white border-l-4 border-mars-accent rounded-r-lg p-4 text-sm text-stone-600 dark:text-slate-300 mb-6 shadow-sm">
+        <div class="bg-white dark:bg-[#2d1a24] border-l-4 border-mars-accent rounded-r-lg p-4 text-sm text-stone-600 dark:text-slate-200 mb-6 shadow-sm">
           Tu diagrama Lakehouse separa <strong>streaming</strong> y <strong>batch</strong>. En este proyecto la ingesta al lake está
           <strong>simulada en batch</strong> (ELT por comando). El streaming lo podés describir en la reflexión de la actividad como evolución
           (p. ej. Kafka, CDC) sin que falte una tabla en la app: esta grilla cubre el camino <code class="bg-stone-100 dark:bg-[#2d1a24] text-stone-600 dark:text-slate-300 border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">data_sources</code> &rarr; <code class="bg-stone-100 dark:bg-[#2d1a24] text-stone-600 dark:text-slate-300 border border-stone-200 font-mono text-[11px] px-1.5 py-0.5 rounded">raw</code>.
         </div>
 
-        <div class="border border-stone-200 rounded-xl overflow-x-auto bg-white shadow-sm">
+        <div class="border border-stone-200 dark:border-white/10 rounded-xl overflow-x-auto bg-white dark:bg-[#1a0f14] shadow-sm">
           <table class="w-full text-left border-collapse min-w-[600px]">
-            <thead class="bg-stone-50 dark:bg-[#1a0f14]/80 border-b border-stone-200">
+            <thead class="bg-stone-50 dark:bg-[#2d1a24] border-b border-stone-200 dark:border-white/10">
               <tr>
-                <th class="text-[10px] font-bold uppercase tracking-widest text-stone-500 dark:text-slate-400 py-3 px-4">Rol (anexo / simulación)</th>
-                <th class="text-[10px] font-bold uppercase tracking-widest text-stone-500 dark:text-slate-400 py-3 px-4">Ruta bajo <code class="bg-stone-200 text-stone-600 dark:text-slate-300 font-mono text-[10px] px-1 py-0.5 rounded">data_sources/</code></th>
-                <th class="text-[10px] font-bold uppercase tracking-widest text-stone-500 dark:text-slate-400 py-3 px-4">Nombre en <code class="bg-stone-200 text-stone-600 dark:text-slate-300 font-mono text-[10px] px-1 py-0.5 rounded">data_lake/raw/</code></th>
-                <th class="text-[10px] font-bold uppercase tracking-widest text-stone-500 dark:text-slate-400 py-3 px-4">Formato</th>
+                <th class="text-[10px] font-bold uppercase tracking-widest text-stone-500 dark:text-slate-300 py-3 px-4">Rol (anexo / simulación)</th>
+                <th class="text-[10px] font-bold uppercase tracking-widest text-stone-500 dark:text-slate-300 py-3 px-4">Ruta bajo <code class="bg-stone-200 dark:bg-[#1a0f14] text-stone-600 dark:text-slate-200 font-mono text-[10px] px-1 py-0.5 rounded border border-stone-300/60 dark:border-white/10">data_sources/</code></th>
+                <th class="text-[10px] font-bold uppercase tracking-widest text-stone-500 dark:text-slate-300 py-3 px-4">Nombre en <code class="bg-stone-200 dark:bg-[#1a0f14] text-stone-600 dark:text-slate-200 font-mono text-[10px] px-1 py-0.5 rounded border border-stone-300/60 dark:border-white/10">data_lake/raw/</code></th>
+                <th class="text-[10px] font-bold uppercase tracking-widest text-stone-500 dark:text-slate-300 py-3 px-4">Formato</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-stone-100">
+            <tbody class="divide-y divide-stone-100 dark:divide-white/10">
               {% for row in lake_route_rows %}
-                <tr class="hover:bg-orange-50/30 transition-colors">
-                  <td class="py-3 px-4 text-sm text-stone-700 dark:text-slate-200 font-medium">{{ row.rol }}</td>
-                  <td class="py-3 px-4"><code class="bg-stone-50 dark:bg-[#1a0f14] text-mars-secondary border border-stone-200 font-mono text-[11px] px-2 py-0.5 rounded">{{ row.sources_path }}</code></td>
-                  <td class="py-3 px-4"><code class="bg-stone-50 dark:bg-[#1a0f14] text-mars-secondary border border-stone-200 font-mono text-[11px] px-2 py-0.5 rounded">{{ row.raw_landing }}</code></td>
-                  <td class="py-3 px-4 text-sm text-stone-600 dark:text-slate-300">
-                    <span class="bg-stone-100 dark:bg-[#2d1a24] text-stone-500 dark:text-slate-400 border border-stone-200 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase">{{ row.formato }}</span>
+                <tr class="hover:bg-orange-50/30 dark:hover:bg-white/5 transition-colors">
+                  <td class="py-3 px-4 text-sm text-stone-700 dark:text-slate-100 font-medium">{{ row.rol }}</td>
+                  <td class="py-3 px-4"><code class="bg-stone-50 dark:bg-[#2d1a24] text-mars-secondary dark:text-pink-300 border border-stone-200 dark:border-white/10 font-mono text-[11px] px-2 py-0.5 rounded">{{ row.sources_path }}</code></td>
+                  <td class="py-3 px-4"><code class="bg-stone-50 dark:bg-[#2d1a24] text-mars-secondary dark:text-pink-300 border border-stone-200 dark:border-white/10 font-mono text-[11px] px-2 py-0.5 rounded">{{ row.raw_landing }}</code></td>
+                  <td class="py-3 px-4 text-sm text-stone-600 dark:text-slate-200">
+                    <span class="bg-stone-100 dark:bg-[#2d1a24] text-stone-600 dark:text-slate-200 border border-stone-200 dark:border-white/10 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase">{{ row.formato }}</span>
                   </td>
                 </tr>
               {% endfor %}

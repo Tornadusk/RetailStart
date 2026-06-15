@@ -1101,6 +1101,307 @@ aside .analyticsCollapsible:not(.card) {
   margin-top: 0;
 }
 
+/* Evidence: badges legibles en modo día (bone) y modo noche */
+.evidenceFileMeta .badge.evidenceBadge {
+  color: #1c1917 !important; /* stone-900 */
+  background: rgba(125, 211, 252, 0.55) !important;
+  border-color: rgba(14, 116, 144, 0.45) !important;
+  font-weight: 600;
+}
+
+html.dark .evidenceFileMeta .badge.evidenceBadge {
+  color: #f1f5f9 !important; /* slate-100 */
+  background: rgba(12, 74, 110, 0.55) !important;
+  border-color: rgba(56, 189, 248, 0.4) !important;
+}
+
+/* Avisos y pipeline: contraste fiable en modo oscuro (Tailwind CDN no siempre aplica dark:bg-[#…]) */
+.analyticsLocalHint {
+  background: #fff7ed;
+  border: 1px solid rgba(251, 146, 60, 0.45);
+  color: #44403c;
+}
+
+.analyticsLocalHint strong {
+  color: #1c1917;
+}
+
+.analyticsLocalHint code {
+  background: #f5f5f4;
+  color: #be185d;
+  border: 1px solid #e7e5e4;
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+html.dark .analyticsLocalHint {
+  background: rgba(67, 20, 7, 0.62);
+  border-color: rgba(251, 146, 60, 0.38);
+  color: #fde68a;
+}
+
+html.dark .analyticsLocalHint strong {
+  color: #fff7ed;
+}
+
+html.dark .analyticsLocalHint code {
+  background: #2d1a24;
+  color: #f9a8d4;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.pipelineDayBadge {
+  display: inline-block;
+  margin-bottom: 1rem;
+  padding: 0.375rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.35;
+  background: #ffffff;
+  color: #1c1917;
+  border: 1px solid #d6d3d1;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+html.dark .pipelineDayBadge {
+  background: #2d1a24;
+  color: #f8fafc;
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.pipelineRoutesBox {
+  padding: 1.25rem;
+  border-radius: 1rem;
+  border: 1px solid #d6d3d1;
+  background: #ffffff;
+  color: #1c1917;
+  box-shadow: 0 2px 10px rgba(28, 25, 23, 0.07);
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.pipelineRoutesBox p {
+  margin: 0 0 0.5rem;
+  font-size: 0.875rem;
+  color: #1c1917;
+}
+
+.pipelineRoutesBox__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.pipelineRoutesBox code {
+  display: inline-block;
+  max-width: 100%;
+  font-size: 0.8125rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  border: 1px solid #e7e5e4;
+  background: #fafaf9;
+  color: #292524;
+  word-break: break-all;
+  overflow-wrap: anywhere;
+  white-space: normal;
+  box-sizing: border-box;
+}
+
+.pipelineRoutesBox .pipelineRoutesBox__label {
+  font-weight: 700;
+}
+
+html.dark .pipelineRoutesBox {
+  background: #2d1a24;
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #f8fafc;
+}
+
+html.dark .pipelineRoutesBox p,
+html.dark .pipelineRoutesBox .pipelineRoutesBox__label {
+  color: #f8fafc;
+}
+
+html.dark .pipelineRoutesBox code {
+  background: #1a0f14;
+  color: #e2e8f0;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* Pipeline Docker (home, analytics, evidence, flow) — contraste modo noche */
+.pipelineCollapsibleCard--wrapped {
+  margin-top: 1rem;
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  background: #f8f5f2;
+  border: 1px solid #d6d3d1;
+  box-shadow: 0 4px 14px rgba(28, 25, 23, 0.08);
+}
+
+html.dark .pipelineCollapsibleCard--wrapped {
+  background: #20131a;
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+  color: #e2e8f0;
+}
+
+html.dark .pipelineCollapsibleCard .analyticsCollapsible__heading {
+  color: #f8fafc;
+}
+
+.pipelineDocker {
+  color: #292524;
+}
+
+.pipelineDocker__lead,
+.pipelineDocker__summary,
+.pipelineDocker__note {
+  color: inherit;
+}
+
+.pipelineDocker strong {
+  color: #1c1917;
+}
+
+.pipelineDocker__optionTitle {
+  color: #e91e63;
+}
+
+.pipelineDocker__optionTitle--b {
+  color: #292524;
+  font-size: 1.25rem;
+}
+
+.pipelineDocker__dayTitle {
+  color: #1c1917;
+}
+
+.pipelineDocker code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.8125rem;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  border: 1px solid #e7e5e4;
+  background: #f5f5f4;
+  color: #be185d;
+}
+
+.pipelineDocker__chain {
+  background: #eae4dd;
+  border: 1px solid #d6d3d1;
+  box-shadow: inset 0 1px 3px rgba(28, 25, 23, 0.06);
+}
+
+.pipelineDocker__step {
+  background: #ffffff;
+  border: 1px solid #d6d3d1;
+  box-shadow: 0 2px 8px rgba(28, 25, 23, 0.07);
+}
+
+.pipelineDocker__path {
+  background: #fafaf9;
+  border: 1px solid #e7e5e4;
+  color: #57534e;
+}
+
+.pipelineDocker__arrow {
+  color: #a8a29e;
+}
+
+.pipelineDocker__timeline {
+  border-left: 2px solid rgba(168, 162, 158, 0.65);
+}
+
+.pipelineDocker__divider {
+  border: 0;
+  border-top: 1px solid #d6d3d1;
+}
+
+.pipelineDocker__stepNum {
+  background: #ffffff;
+  color: #57534e;
+  border: 2px solid #d6d3d1;
+  box-shadow: 0 1px 4px rgba(28, 25, 23, 0.08);
+}
+
+.pipelineDocker__cmdComment {
+  color: #78716c;
+}
+
+html.dark .pipelineDocker {
+  color: #e2e8f0;
+}
+
+html.dark .pipelineDocker strong,
+html.dark .pipelineDocker__dayTitle,
+html.dark .pipelineDocker__optionTitle--b {
+  color: #f8fafc;
+}
+
+html.dark .pipelineDocker code {
+  background: #2d1a24;
+  color: #f9a8d4;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+html.dark .pipelineDocker__chain {
+  background: #1a0f14;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+html.dark .pipelineDocker__step {
+  background: #2d1a24;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+html.dark .pipelineDocker__path {
+  background: #1a0f14;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+}
+
+html.dark .pipelineDocker__arrow {
+  color: #94a3b8;
+}
+
+html.dark .pipelineDocker__timeline {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+html.dark .pipelineDocker__divider {
+  border-top-color: rgba(255, 255, 255, 0.15);
+}
+
+html.dark .pipelineDocker__stepNum {
+  background: #2d1a24;
+  color: #f8fafc;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+html.dark .pipelineDocker__cmdComment {
+  color: #94a3b8;
+}
+
+html.dark .appShell__main .muted {
+  color: #cbd5e1 !important;
+}
+
+html.dark .appShell__main .card ul,
+html.dark .appShell__main .card li,
+html.dark .appShell__main .homeLakeList {
+  color: #e2e8f0;
+}
+
+.homeLakeList {
+  color: #44403c;
+}
+
 /* --- App shell: barra lateral colapsable + dashboard --- */
 :root {
   --sidebar-w: 260px;
@@ -1299,6 +1600,11 @@ body.appShell {
 .siteSidebar__input:disabled {
   opacity: 0.55;
   cursor: not-allowed;
+}
+
+.siteSidebar__input option {
+  color: #0f172a;
+  background: #f8fafc;
 }
 
 .siteSidebar__filterActions {

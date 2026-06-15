@@ -10,8 +10,9 @@ def sidebar_dw_options(request) -> dict:
         {y for y in FactVentas.objects.values_list("fecha__anio", flat=True).distinct() if y}
     )
     years_for_select = sorted(set(range(2000, 2036)) | set(years_with_sales))
-    dias_labels = [label for val, label in DIAS_SEMANA_CHOICES if val]
+    months_for_select = [(i, f"{i:02d}") for i in range(1, 13)]
     return {
         "sidebar_years": years_for_select,
-        "sidebar_dias": dias_labels,
+        "sidebar_months": months_for_select,
+        "sidebar_dias": DIAS_SEMANA_CHOICES,
     }
