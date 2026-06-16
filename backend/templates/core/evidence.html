@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Evidencia - RetailStart</title>
-    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=24" />
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=27" />
       {% include "core/includes/tailwind_head.html" %}
   </head>
   <body class="appShell">
@@ -21,18 +21,56 @@
         {% include "core/includes/site_quick_nav.html" %}
       </header>
 
-      <div class="stack">
-          <section class="card bg-bone-light dark:bg-[#20131A] border border-stone-300/40 dark:border-white/10 rounded-xl shadow-sm p-5">
-            <h2 class="text-xl font-bold text-stone-900 dark:text-white mb-4">Gráficos (PNG)</h2>
+      <nav class="evidenceSectionNav" aria-label="Ir a sección de evidencia">
+        <p class="evidenceSectionNav__hint">
+          <i class="fa-solid fa-arrow-down evidenceSectionNav__hintIcon" aria-hidden="true"></i>
+          Saltar a sección en esta página
+        </p>
+        <div class="evidenceSectionNav__links">
+          <a class="evidenceSectionNav__link" href="#evidence-graficos">
+            <i class="fa-solid fa-image evidenceSectionNav__icon" aria-hidden="true"></i>
+            <span class="evidenceSectionNav__text">Gráficos (PNG)</span>
+            <i class="fa-solid fa-chevron-down evidenceSectionNav__chevron" aria-hidden="true"></i>
+          </a>
+          <a class="evidenceSectionNav__link" href="#evidence-csv">
+            <i class="fa-solid fa-file-csv evidenceSectionNav__icon" aria-hidden="true"></i>
+            <span class="evidenceSectionNav__text">Archivos procesados (CSV)</span>
+            <i class="fa-solid fa-chevron-down evidenceSectionNav__chevron" aria-hidden="true"></i>
+          </a>
+          <a class="evidenceSectionNav__link" href="#evidence-estado">
+            <i class="fa-solid fa-gauge-high evidenceSectionNav__icon" aria-hidden="true"></i>
+            <span class="evidenceSectionNav__text">Estado del flujo</span>
+            <i class="fa-solid fa-chevron-down evidenceSectionNav__chevron" aria-hidden="true"></i>
+          </a>
+          <a class="evidenceSectionNav__link" href="#evidence-pipeline">
+            <i class="fa-solid fa-terminal evidenceSectionNav__icon" aria-hidden="true"></i>
+            <span class="evidenceSectionNav__text">Pipeline y comandos Docker</span>
+            <i class="fa-solid fa-chevron-down evidenceSectionNav__chevron" aria-hidden="true"></i>
+          </a>
+        </div>
+      </nav>
+
+      <div class="stack evidenceSections">
+        <details
+          class="analyticsCollapsible evidenceSectionCollapsible card bg-bone-light dark:bg-[#20131A] border border-stone-300/40 dark:border-white/10 rounded-xl shadow-sm"
+          id="evidence-graficos"
+          data-storage-key="evidence-section-graficos"
+          data-default-open="true"
+          open
+          tabindex="-1"
+        >
+          <summary class="analyticsCollapsible__summary evidenceSectionCollapsible__summary flex items-center cursor-pointer group">
+            <span class="analyticsCollapsible__toggle evidenceSectionCollapsible__toggle" aria-hidden="true"></span>
+            <h2 class="analyticsCollapsible__heading text-xl font-bold text-stone-900 dark:text-white m-0">Gráficos (PNG)</h2>
+          </summary>
+          <div class="analyticsCollapsible__body evidenceSectionCollapsible__body">
             {% if images %}
               <div class="charts">
                 {% for img in images %}
                   <figure class="tile chartTile bg-bone-light dark:bg-[#20131A] border border-stone-300/40 dark:border-white/10 rounded-xl shadow-sm">
-                    <a class="chartLink" href="{{ img.url }}">
-                      <div class="chartFrame">
-                        <img class="chartImg" src="{{ img.url }}" alt="{{ img.name }}" loading="lazy" />
-                      </div>
-                    </a>
+                    <div class="chartFrame">
+                      <img class="chartImg" src="{{ img.url }}" alt="{{ img.name }}" loading="lazy" />
+                    </div>
                     <figcaption class="muted text-stone-500 dark:text-slate-400">{{ img.name }}</figcaption>
                   </figure>
                 {% endfor %}
@@ -40,10 +78,22 @@
             {% else %}
               <p class="muted text-stone-500 dark:text-slate-400">No hay gráficos aún. Ejecuta: <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">python manage.py analyze_dw</code></p>
             {% endif %}
-          </section>
+          </div>
+        </details>
 
-          <section class="card bg-bone-light dark:bg-[#20131A] border border-stone-300/40 dark:border-white/10 rounded-xl shadow-sm p-5 cardStack">
-            <h2 class="text-xl font-bold text-stone-900 dark:text-white mb-4">Archivos procesados (CSV)</h2>
+        <details
+          class="analyticsCollapsible evidenceSectionCollapsible card bg-bone-light dark:bg-[#20131A] border border-stone-300/40 dark:border-white/10 rounded-xl shadow-sm cardStack"
+          id="evidence-csv"
+          data-storage-key="evidence-section-csv"
+          data-default-open="true"
+          open
+          tabindex="-1"
+        >
+          <summary class="analyticsCollapsible__summary evidenceSectionCollapsible__summary flex items-center cursor-pointer group">
+            <span class="analyticsCollapsible__toggle evidenceSectionCollapsible__toggle" aria-hidden="true"></span>
+            <h2 class="analyticsCollapsible__heading text-xl font-bold text-stone-900 dark:text-white m-0">Archivos procesados (CSV)</h2>
+          </summary>
+          <div class="analyticsCollapsible__body evidenceSectionCollapsible__body">
             {% if files %}
               <div class="tableWrap">
                 <table class="table">
@@ -66,11 +116,22 @@
             {% else %}
               <p class="muted text-stone-500 dark:text-slate-400">No hay CSV procesados aún. Ejecutá <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">run_elt_ingest</code> si usás <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">data_sources/</code>, luego <code class="bg-mars-bg border border-mars-border text-mars-textMain font-mono rounded px-1 py-0.5 text-sm">run_etl</code>.</p>
             {% endif %}
-          </section>
+          </div>
+        </details>
 
-          <section class="card bg-bone-light dark:bg-[#20131A] border border-stone-300/40 dark:border-white/10 rounded-xl shadow-sm p-5">
-            <h2 class="text-xl font-bold text-stone-900 dark:text-white mb-4">Estado del flujo</h2>
-
+        <details
+          class="analyticsCollapsible evidenceSectionCollapsible card bg-bone-light dark:bg-[#20131A] border border-stone-300/40 dark:border-white/10 rounded-xl shadow-sm"
+          id="evidence-estado"
+          data-storage-key="evidence-section-estado"
+          data-default-open="true"
+          open
+          tabindex="-1"
+        >
+          <summary class="analyticsCollapsible__summary evidenceSectionCollapsible__summary flex items-center cursor-pointer group">
+            <span class="analyticsCollapsible__toggle evidenceSectionCollapsible__toggle" aria-hidden="true"></span>
+            <h2 class="analyticsCollapsible__heading text-xl font-bold text-stone-900 dark:text-white m-0">Estado del flujo</h2>
+          </summary>
+          <div class="analyticsCollapsible__body evidenceSectionCollapsible__body">
             <div class="kpiGrid">
               <div class="kpi bg-white dark:bg-[#2d1a24] border-l-4 border-l-mars-secondary border-y border-r border-stone-300/40 rounded-r-xl shadow-sm p-4">
                 <div class="kpiLabel">DW FactVentas</div>
@@ -94,25 +155,40 @@
               </div>
             </div>
 
-            <div class="divider"></div>
-
-            {% include "core/includes/pipeline_docker_commands_collapsible.html" with storage_key="evidence-pipeline" pipeline_aside=True default_open='true' %}
-
             <div class="evidenceFileMeta">
               <p class="muted text-stone-500 dark:text-slate-400">
                 Último CSV:
-                <span class="badge evidenceBadge text-stone-900 dark:text-slate-100 bg-sky-200/90 dark:bg-sky-900/45 border-sky-400/70 dark:border-sky-500/40">{% if latest_processed %}{{ latest_processed }}{% else %}—{% endif %}</span>
+                <span class="badge evidenceBadge{% if day_filter_active %} evidenceBadge--dayFilter{% endif %}">{% if latest_processed %}{{ latest_processed }}{% else %}—{% endif %}</span>
               </p>
               <p class="muted text-stone-500 dark:text-slate-400">
                 Último gráfico:
-                <span class="badge evidenceBadge text-stone-900 dark:text-slate-100 bg-sky-200/90 dark:bg-sky-900/45 border-sky-400/70 dark:border-sky-500/40">{% if latest_chart %}{{ latest_chart }}{% else %}—{% endif %}</span>
+                <span class="badge evidenceBadge{% if day_filter_active %} evidenceBadge--dayFilter{% endif %}">{% if latest_chart %}{{ latest_chart }}{% else %}—{% endif %}</span>
               </p>
             </div>
-          </section>
+          </div>
+        </details>
+
+        <details
+          class="analyticsCollapsible evidenceSectionCollapsible card bg-bone-light dark:bg-[#20131A] border border-stone-300/40 dark:border-white/10 rounded-xl shadow-sm"
+          id="evidence-pipeline"
+          data-storage-key="evidence-section-pipeline"
+          data-default-open="true"
+          open
+          tabindex="-1"
+        >
+          <summary class="analyticsCollapsible__summary evidenceSectionCollapsible__summary flex items-center cursor-pointer group">
+            <span class="analyticsCollapsible__toggle evidenceSectionCollapsible__toggle" aria-hidden="true"></span>
+            <h2 class="analyticsCollapsible__heading text-xl font-bold text-stone-900 dark:text-white m-0">Pipeline y comandos Docker</h2>
+          </summary>
+          <div class="analyticsCollapsible__body evidenceSectionCollapsible__body">
+            {% include "core/includes/pipeline_docker_commands.html" with pipeline_aside=True %}
+          </div>
+        </details>
       </div>
     </main>
     {% include "core/includes/site_shell_scripts.html" %}
-    <script src="{% static 'js/analytics-collapsibles.js' %}?v=2" defer></script>
+    <script src="{% static 'js/analytics-collapsibles.js' %}?v=3" defer></script>
+    <script src="{% static 'js/evidence-section-nav.js' %}?v=2" defer></script>
     </div>
   </body>
 </html>

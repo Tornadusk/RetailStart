@@ -1,7 +1,6 @@
 /**
- * analytics-collapsibles.js — solo en /analytics/.
- * Recuerda en localStorage si cada <details> está abierto o cerrado (+/−).
- * Plegar la UI no modifica Postgres; solo afecta la vista en el navegador.
+ * Bloques plegables (+/−) en /analytics/ y /evidence/.
+ * Recuerda en localStorage si cada <details> está abierto o cerrado.
  */
 (function () {
   var PREFIX = "retailstart.analytics.details.";

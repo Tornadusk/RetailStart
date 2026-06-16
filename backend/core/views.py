@@ -81,6 +81,9 @@ def evidence(request: HttpRequest) -> HttpResponse:
         latest_img = max(images, key=lambda img: int(img["url"].split("v=")[-1]))
         latest_chart = Path(latest_img["name"]).stem
 
+    raw_d = request.GET.get("d")
+    day_filter_active = not _is_filter_todos_token(raw_d) and bool((raw_d or "").strip())
+
     dw_counts = {
         "dim_cliente": DimCliente.objects.count(),
         "dim_producto": DimProducto.objects.count(),
@@ -97,6 +100,7 @@ def evidence(request: HttpRequest) -> HttpResponse:
             "files": file_rows,
             "latest_processed": latest_processed,
             "latest_chart": latest_chart,
+            "day_filter_active": day_filter_active,
             "dw_counts": dw_counts,
         },
     )

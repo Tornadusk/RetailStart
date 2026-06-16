@@ -147,6 +147,9 @@
     if (path.indexOf("/dashboard") !== -1) {
       return { base: "/dashboard/", hash: "#dashboard-filters", page: "dashboard" };
     }
+    if (path.indexOf("/evidence") !== -1) {
+      return { base: "/evidence/", hash: "", page: "evidence" };
+    }
     var last = "dashboard";
     try {
       last = localStorage.getItem(STORAGE_PAGE) || "dashboard";
@@ -217,7 +220,7 @@
     var qs = q.toString();
     document.querySelectorAll(".siteSidebar__nav a").forEach(function (a) {
       var href = a.getAttribute("href") || "";
-      if (href.indexOf("/dashboard") === -1 && href.indexOf("/analytics") === -1) return;
+      if (href.indexOf("/dashboard") === -1 && href.indexOf("/analytics") === -1 && href.indexOf("/evidence") === -1) return;
       var base = href.split("?")[0];
       a.setAttribute("href", base + (qs ? "?" + qs : ""));
     });
