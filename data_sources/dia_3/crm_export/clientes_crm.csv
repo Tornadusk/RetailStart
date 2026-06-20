@@ -1,0 +1,6 @@
+id_cliente,nombre,apellido,email,segmento,ciudad
+111,Felipe,Vargas,felipe@email.com,Premium,Santiago
+112,Valentina,Reyes,valentina@email.com,Nuevo,Temuco
+113,Matias,Contreras,matias@email.com,Regular,Valdivia
+114,Isidora,Fuentes,isidora@email.com,Premium,La Serena
+115,Sebastian,Tapia,sebastian@email.com,Regular,Arica

@@ -1,0 +1,6 @@
+id_venta,fecha,id_cliente,id_producto,cantidad,precio_unitario,tienda
+60501,2026-06-05,121,2021,3,75000,San Bernardo
+60502,2026-06-05,122,2022,1,40000,Quilicura
+60503,2026-06-05,123,2023,2,55000,Santiago
+60504,2026-06-05,124,2024,1,15000,Providencia
+60505,2026-06-05,125,2025,1,20000,Maipu

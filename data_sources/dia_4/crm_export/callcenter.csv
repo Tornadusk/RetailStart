@@ -1,0 +1,6 @@
+id_llamada,id_cliente,fecha,motivo,duracion
+7060401,116,2026-06-04,Consulta,3
+7060402,117,2026-06-04,Reclamo,6
+7060403,118,2026-06-04,Soporte,9
+7060404,119,2026-06-04,Devolucion,12
+7060405,120,2026-06-04,Consulta,15

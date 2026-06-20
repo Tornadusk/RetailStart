@@ -1,7 +1,32 @@
 [
-{"id_evento":6,"id_cliente":106,"tipo":"busqueda","producto":2005},
-{"id_evento":7,"id_cliente":107,"tipo":"click","producto":2003},
-{"id_evento":8,"id_cliente":108,"tipo":"compra","producto":2006},
-{"id_evento":9,"id_cliente":109,"tipo":"click","producto":2001},
-{"id_evento":10,"id_cliente":110,"tipo":"busqueda","producto":2004}
+{
+"id_evento": 8060201,
+"id_cliente": 106,
+"tipo": "click",
+"producto": 2006
+},
+{
+"id_evento": 8060202,
+"id_cliente": 107,
+"tipo": "busqueda",
+"producto": 2007
+},
+{
+"id_evento": 8060203,
+"id_cliente": 108,
+"tipo": "click",
+"producto": 2008
+},
+{
+"id_evento": 8060204,
+"id_cliente": 109,
+"tipo": "compra",
+"producto": 2009
+},
+{
+"id_evento": 8060205,
+"id_cliente": 110,
+"tipo": "click",
+"producto": 2010
+}
 ]

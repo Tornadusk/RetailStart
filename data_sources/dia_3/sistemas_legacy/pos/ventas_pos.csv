@@ -1,0 +1,6 @@
+id_venta,fecha,id_cliente,id_producto,cantidad,precio_unitario,tienda
+60301,2026-06-03,111,2011,1,350000,Puente Alto
+60302,2026-06-03,112,2012,2,95000,Ñuñoa
+60303,2026-06-03,113,2013,1,180000,Las Condes
+60304,2026-06-03,114,2014,3,45000,Vitacura
+60305,2026-06-03,115,2015,1,200000,San Bernardo

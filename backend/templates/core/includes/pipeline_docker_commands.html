@@ -211,6 +211,82 @@ Incluida desde analytics, home, evidence y flow.
     </div>
   </div>
 
+  <h4 class="pipelineDocker__optionTitle pipelineDocker__optionTitle--c font-bold text-xl mb-4">Opción C — Generador Automático (5 Días)</h4>
+  <p class="pipelineDocker__summary mb-6 leading-relaxed text-sm">
+    Crea archivos fuente ficticios y ejecuta el pipeline en un solo paso. Genera ventas de Junio 2026.
+  </p>
+
+  <div class="mb-10">
+    <p class="pipelineDayBadge">Carga de Semana Completa</p>
+    <div class="space-y-3 pl-4 pipelineDocker__timeline border-l-2 mb-8">
+      <div class="relative bg-mars-bg text-stone-300 font-mono p-4 rounded-xl overflow-x-auto text-sm border border-mars-border/30 hover:border-mars-border transition-colors cursor-pointer group/code"
+           data-cmd="docker compose exec backend python manage.py seed_week"
+           onclick="navigator.clipboard.writeText(this.dataset.cmd); const m = this.querySelector('.copy-msg'); m.classList.remove('opacity-0'); setTimeout(()=>m.classList.add('opacity-0'), 2000);">
+        <div class="absolute top-2 right-2 flex items-center gap-2">
+          <span class="copy-msg opacity-0 text-[10px] text-mars-accent transition-opacity bg-mars-surface px-1.5 py-0.5 rounded">Copiado</span>
+          <svg class="w-4 h-4 text-stone-500 dark:text-slate-400 group-hover/code:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+        </div>
+        <span class="text-white">docker compose exec backend python manage.py</span> <span class="text-[#ff5722]">seed_week</span>  <span class="pipelineDocker__cmdComment"># Carga los 5 días en orden continuo</span>
+      </div>
+    </div>
+
+    <p class="pipelineDayBadge">Carga Día por Día</p>
+    <div class="space-y-3 pl-4 pipelineDocker__timeline border-l-2">
+      <!-- seed_day_1 -->
+      <div class="relative bg-mars-bg text-stone-300 font-mono p-4 rounded-xl overflow-x-auto text-sm border border-mars-border/30 hover:border-mars-border transition-colors cursor-pointer group/code"
+           data-cmd="docker compose exec backend python manage.py seed_day_1"
+           onclick="navigator.clipboard.writeText(this.dataset.cmd); const m = this.querySelector('.copy-msg'); m.classList.remove('opacity-0'); setTimeout(()=>m.classList.add('opacity-0'), 2000);">
+        <div class="absolute top-2 right-2 flex items-center gap-2">
+          <span class="copy-msg opacity-0 text-[10px] text-mars-accent transition-opacity bg-mars-surface px-1.5 py-0.5 rounded">Copiado</span>
+          <svg class="w-4 h-4 text-stone-500 dark:text-slate-400 group-hover/code:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+        </div>
+        <span class="text-white">docker compose exec backend python manage.py</span> <span class="text-[#ff5722]">seed_day_1</span>
+      </div>
+      <!-- seed_day_2 -->
+      <div class="relative bg-mars-bg text-stone-300 font-mono p-4 rounded-xl overflow-x-auto text-sm border border-mars-border/30 hover:border-mars-border transition-colors cursor-pointer group/code"
+           data-cmd="docker compose exec backend python manage.py seed_day_2"
+           onclick="navigator.clipboard.writeText(this.dataset.cmd); const m = this.querySelector('.copy-msg'); m.classList.remove('opacity-0'); setTimeout(()=>m.classList.add('opacity-0'), 2000);">
+        <div class="absolute top-2 right-2 flex items-center gap-2">
+          <span class="copy-msg opacity-0 text-[10px] text-mars-accent transition-opacity bg-mars-surface px-1.5 py-0.5 rounded">Copiado</span>
+          <svg class="w-4 h-4 text-stone-500 dark:text-slate-400 group-hover/code:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+        </div>
+        <span class="text-white">docker compose exec backend python manage.py</span> <span class="text-[#ff5722]">seed_day_2</span>
+      </div>
+      <!-- seed_day_3 -->
+      <div class="relative bg-mars-bg text-stone-300 font-mono p-4 rounded-xl overflow-x-auto text-sm border border-mars-border/30 hover:border-mars-border transition-colors cursor-pointer group/code"
+           data-cmd="docker compose exec backend python manage.py seed_day_3"
+           onclick="navigator.clipboard.writeText(this.dataset.cmd); const m = this.querySelector('.copy-msg'); m.classList.remove('opacity-0'); setTimeout(()=>m.classList.add('opacity-0'), 2000);">
+        <div class="absolute top-2 right-2 flex items-center gap-2">
+          <span class="copy-msg opacity-0 text-[10px] text-mars-accent transition-opacity bg-mars-surface px-1.5 py-0.5 rounded">Copiado</span>
+          <svg class="w-4 h-4 text-stone-500 dark:text-slate-400 group-hover/code:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+        </div>
+        <span class="text-white">docker compose exec backend python manage.py</span> <span class="text-[#ff5722]">seed_day_3</span>
+      </div>
+      <!-- seed_day_4 -->
+      <div class="relative bg-mars-bg text-stone-300 font-mono p-4 rounded-xl overflow-x-auto text-sm border border-mars-border/30 hover:border-mars-border transition-colors cursor-pointer group/code"
+           data-cmd="docker compose exec backend python manage.py seed_day_4"
+           onclick="navigator.clipboard.writeText(this.dataset.cmd); const m = this.querySelector('.copy-msg'); m.classList.remove('opacity-0'); setTimeout(()=>m.classList.add('opacity-0'), 2000);">
+        <div class="absolute top-2 right-2 flex items-center gap-2">
+          <span class="copy-msg opacity-0 text-[10px] text-mars-accent transition-opacity bg-mars-surface px-1.5 py-0.5 rounded">Copiado</span>
+          <svg class="w-4 h-4 text-stone-500 dark:text-slate-400 group-hover/code:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+        </div>
+        <span class="text-white">docker compose exec backend python manage.py</span> <span class="text-[#ff5722]">seed_day_4</span>
+      </div>
+      <!-- seed_day_5 -->
+      <div class="relative bg-mars-bg text-stone-300 font-mono p-4 rounded-xl overflow-x-auto text-sm border border-mars-border/30 hover:border-mars-border transition-colors cursor-pointer group/code"
+           data-cmd="docker compose exec backend python manage.py seed_day_5"
+           onclick="navigator.clipboard.writeText(this.dataset.cmd); const m = this.querySelector('.copy-msg'); m.classList.remove('opacity-0'); setTimeout(()=>m.classList.add('opacity-0'), 2000);">
+        <div class="absolute top-2 right-2 flex items-center gap-2">
+          <span class="copy-msg opacity-0 text-[10px] text-mars-accent transition-opacity bg-mars-surface px-1.5 py-0.5 rounded">Copiado</span>
+          <svg class="w-4 h-4 text-stone-500 dark:text-slate-400 group-hover/code:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+        </div>
+        <span class="text-white">docker compose exec backend python manage.py</span> <span class="text-[#ff5722]">seed_day_5</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="pipelineDocker__divider my-14">
+
   <h4 class="pipelineDocker__optionTitle pipelineDocker__optionTitle--b font-bold text-xl mb-4">Opcional — gráficos de respaldo</h4>
   <div class="space-y-3 pl-4 border-l-2 border-stone-300/60 mb-10">
     <div class="relative bg-mars-bg text-stone-300 font-mono p-4 rounded-xl overflow-x-auto text-sm border border-mars-border/30 hover:border-mars-border transition-colors cursor-pointer group/code"

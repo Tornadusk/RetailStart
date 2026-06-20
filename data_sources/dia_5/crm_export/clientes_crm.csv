@@ -1,0 +1,6 @@
+id_cliente,nombre,apellido,email,segmento,ciudad
+121,Ignacio,Aravena,ignacio@email.com,Premium,Copiapo
+122,Antonia,Gutierrez,antonia@email.com,Nuevo,Santiago
+123,Benjamin,Salazar,benjamin@email.com,Regular,Valparaiso
+124,Constanza,Rios,constanza@email.com,Premium,Concepcion
+125,Martin,Campos,martin@email.com,Regular,Puerto Montt

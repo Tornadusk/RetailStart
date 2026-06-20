@@ -1,0 +1,6 @@
+id_cliente,nombre,apellido,email,segmento,ciudad
+116,Francisca,Navarro,francisca@email.com,Nuevo,Iquique
+117,Tomas,Bravo,tomas@email.com,Premium,Santiago
+118,Catalina,Pino,catalina@email.com,Regular,Osorno
+119,Nicolas,Vera,nicolas@email.com,Premium,Talca
+120,Javiera,Espinoza,javiera@email.com,Regular,Chillan

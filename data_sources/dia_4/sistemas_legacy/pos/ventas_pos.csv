@@ -1,0 +1,6 @@
+id_venta,fecha,id_cliente,id_producto,cantidad,precio_unitario,tienda
+60401,2026-06-04,116,2016,2,90000,Las Condes
+60402,2026-06-04,117,2017,1,25000,Vitacura
+60403,2026-06-04,118,2018,1,150000,San Bernardo
+60404,2026-06-04,119,2019,2,60000,Quilicura
+60405,2026-06-04,120,2020,1,45000,Santiago

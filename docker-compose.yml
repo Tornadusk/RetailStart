@@ -31,7 +31,7 @@ services:
       # Código en vivo: sin esto, las plantillas/CSS solo cambian tras docker compose build.
       - ./backend:/app
       - ./data_lake:/data_lake
-      - ./data_sources:/data_sources:ro
+      - ./data_sources:/data_sources
       - staticfiles:/app/staticfiles
     command:
       - sh

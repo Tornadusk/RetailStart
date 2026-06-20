@@ -1,6 +1,6 @@
 id_llamada,id_cliente,fecha,motivo,duracion
-6,106,2026-04-02,Consulta,6
-7,107,2026-04-02,Reclamo,8
-8,108,2026-04-02,Soporte,5
-9,109,2026-04-02,Consulta,9
-10,110,2026-04-02,Reclamo,11
+7060201,106,2026-06-02,Consulta,3
+7060202,107,2026-06-02,Reclamo,6
+7060203,108,2026-06-02,Soporte,9
+7060204,109,2026-06-02,Devolucion,12
+7060205,110,2026-06-02,Consulta,15
