@@ -29,6 +29,7 @@ urlpatterns = [
     path("analytics/", views.analytics, name="analytics"),
     path("evidence/", views.evidence, name="evidence"),
     path("evidence/file/<str:filename>", views.evidence_file, name="evidence_file"),
+    path("guide/", views.powerbi_guide, name="guide"),
     # BI Dashboard (Power BI style)
     path("bi/", views_bi.bi_dashboard, name="bi_dashboard"),
     path("bi/api/", views_bi.bi_api_data, name="bi_api_data"),

@@ -1090,6 +1090,11 @@ def dashboard_export(request: HttpRequest, fmt: str) -> HttpResponse:
     )
 
 
+def powerbi_guide(request: HttpRequest) -> HttpResponse:
+    """Renders the Markdown guide for Power BI setup."""
+    return render(request, "core/powerbi_guide.html")
+
+
 def evidence_file(request: HttpRequest, filename: str) -> FileResponse:
     processed_dir = Path("/data_lake/processed")
     evidence_dir = processed_dir / "evidence"

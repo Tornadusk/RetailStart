@@ -5,7 +5,7 @@
   
   <!-- 1. Cabecera del Menú -->
   <div class="siteSidebar__head border-b border-mars-border flex items-center justify-between pb-4" style="padding-top: 18px; padding-left: 20px; padding-right: 16px;">
-    <span class="siteSidebar__brand text-mars-accent font-bold tracking-wide text-lg uppercase">RETAILSTART</span>
+    <a href="{% url 'guide' %}" class="siteSidebar__brand text-mars-accent font-bold tracking-wide text-lg uppercase hover:text-mars-secondary transition-colors" title="Ver guía de configuración">RETAILSTART</a>
     <button type="button" id="site-nav-switch-to-navbar" class="flex items-center justify-center w-8 h-8 rounded-md border border-[rgba(192,132,252,0.45)] bg-[#121b2f] hover:border-[rgba(192,132,252,0.75)] transition-colors text-[#94a3b8] hover:text-white shadow-sm" aria-label="Cerrar menú y volver a franja" title="Cambiar a Franja Superior">
       <i class="fa-solid fa-xmark text-sm"></i>
     </button>
