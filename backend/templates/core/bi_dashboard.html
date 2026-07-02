@@ -1,0 +1,724 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dashboard BI — RetailStart</title>
+    <meta name="description" content="Dashboard de Business Intelligence estilo Power BI para RetailStart Chile SA" />
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=17" />
+    {% include "core/includes/tailwind_head.html" %}
+    <style>
+      .bi-kpi-card {
+        border-radius: 16px;
+        padding: 24px;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.2s, border-color 0.3s, background-color 0.3s;
+      }
+      .bi-kpi-card:hover {
+        transform: translateY(-2px);
+      }
+      .bi-kpi-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #c084fc, #f472b6, #fb923c);
+        border-radius: 16px 16px 0 0;
+      }
+      .bi-kpi-value {
+        font-size: 2.2rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #c084fc 0%, #f472b6 50%, #fb923c 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .bi-kpi-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #94a3b8;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+      .bi-kpi-sub {
+        font-size: 0.8rem;
+        color: #64748b;
+        margin-top: 4px;
+      }
+      .bi-tab { display: none; }
+      .bi-tab.active { display: block; }
+      .bi-tab-btn {
+        padding: 10px 24px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        transition: all 0.25s;
+        border: 1px solid transparent;
+        cursor: pointer;
+      }
+      .bi-tab-btn.active {
+        background: rgba(192,132,252,0.15);
+        border-color: rgba(192,132,252,0.5);
+        color: #c084fc;
+      }
+      .bi-tab-btn:not(.active) {
+        color: #94a3b8;
+      }
+      .bi-tab-btn:not(.active):hover {
+        color: #e2e8f0;
+        background: rgba(255,255,255,0.05);
+      }
+      .bi-chart-card {
+        border-radius: 16px;
+        padding: 24px;
+      }
+      .bi-chart-title {
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #c084fc;
+        margin-bottom: 16px;
+      }
+      .bi-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+      .bi-table th {
+        text-align: left;
+        padding: 10px 12px;
+        border-bottom: 2px solid rgba(192,132,252,0.3);
+        color: #c084fc;
+        font-weight: 700;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .bi-table td {
+        padding: 8px 12px;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        color: #cbd5e1;
+      }
+      .bi-table tr:hover td { background: rgba(192,132,252,0.05); }
+      .bi-table .right { text-align: right; }
+      .bi-badge {
+        display: inline-block;
+        padding: 2px 10px;
+        border-radius: 100px;
+        font-size: 0.7rem;
+        font-weight: 700;
+      }
+      .bi-badge--premium { background: rgba(251,146,60,0.2); color: #fb923c; }
+      .bi-badge--regular { background: rgba(96,165,250,0.2); color: #60a5fa; }
+      .bi-badge--nuevo { background: rgba(74,222,128,0.2); color: #4ade80; }
+      .bi-gauge {
+        width: 120px; height: 120px;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.4rem; font-weight: 800;
+        margin: 0 auto;
+      }
+      .bi-answer-card {
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 16px;
+      }
+      .bi-answer-num {
+        display: inline-flex;
+        align-items: center; justify-content: center;
+        width: 32px; height: 32px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #c084fc, #f472b6);
+        color: white;
+        font-weight: 800;
+        font-size: 0.85rem;
+        margin-right: 12px;
+        flex-shrink: 0;
+      }
+      .bi-dax-card {
+        background: #1a0a12;
+        border: 1px solid rgba(192,132,252,0.2);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 12px;
+      }
+      .bi-dax-code {
+        font-family: 'Cascadia Code', 'Fira Code', monospace;
+        background: #0d0a0e;
+        color: #c084fc;
+        padding: 8px 14px;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        display: block;
+        margin: 8px 0;
+        overflow-x: auto;
+      }
+      .bi-filter-pill {
+        background: rgba(192,132,252,0.12);
+        border: 1px solid rgba(192,132,252,0.3);
+        border-radius: 100px;
+        padding: 6px 16px;
+        font-size: 0.8rem;
+        color: #e2e8f0;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .bi-filter-pill .remove {
+        cursor: pointer;
+        color: #f87171;
+        font-weight: bold;
+      }
+      @keyframes countUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+      .bi-kpi-value { animation: countUp 0.6s ease-out; }
+    </style>
+  </head>
+  <body class="appShell">
+    {% include "core/includes/site_navbar.html" %}
+    {% include "core/includes/site_sidebar.html" %}
+    <div class="appShell__main bg-bone-darker dark:bg-[#120A0E] font-sans text-stone-800 dark:text-slate-200 min-h-screen transition-colors">
+      <main class="container" style="max-width: 1400px; margin: 0 auto; padding: 24px;">
+
+        <!-- Header -->
+        <header class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
+          <div>
+            <h1 class="font-extrabold tracking-tight text-3xl text-slate-900 dark:text-white mb-1">
+              <span style="background:linear-gradient(135deg,#c084fc,#f472b6,#fb923c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Dashboard BI</span>
+            </h1>
+            <p class="text-slate-500 dark:text-slate-400 text-sm">Análisis estilo Power BI · Modelo Estrella · RetailStart Chile SA</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-3">
+            <details class="dashboardDownload dashboardDownload--mega" style="position: relative;">
+              <summary class="px-4 py-2 rounded-lg border border-slate-300 dark:border-[rgba(192,132,252,0.4)] text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:border-[rgba(192,132,252,0.7)] transition-colors cursor-pointer list-none dashboardDownload__summary">
+                Descargar ▾
+              </summary>
+              {% include "core/includes/dashboard_global_download.html" with export_querystring=request.GET.urlencode %}
+            </details>
+            <button onclick="document.getElementById('dax-modal').classList.toggle('hidden')" class="px-4 py-2 rounded-lg border border-slate-300 dark:border-[rgba(192,132,252,0.4)] text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:border-[rgba(192,132,252,0.7)] transition-colors">
+              📐 Fórmulas DAX
+            </button>
+            <div class="text-xs text-slate-500 bg-slate-100 dark:bg-transparent px-3 py-2 rounded-lg dark:p-0">
+              DW: {{ star_model.fact_ventas }} hechos · {{ star_model.dim_tienda }} tiendas
+            </div>
+          </div>
+        </header>
+
+        <!-- Active Filters -->
+        {% if active_filters %}
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+          <span class="text-xs text-slate-400 font-medium uppercase tracking-wider">Filtros activos:</span>
+          {% for key, val in active_filters.items %}
+            <span class="bi-filter-pill">{{ key }}: {{ val }} <a href="?tab={{ tab }}" class="remove">×</a></span>
+          {% endfor %}
+          <a href="?tab={{ tab }}" class="text-xs text-slate-400 hover:text-white ml-2 underline">Quitar todos</a>
+        </div>
+        {% endif %}
+
+        <!-- Filters Bar -->
+        <section class="bi-chart-card bg-bone-light dark:bg-[#20131a] border border-stone-300/40 dark:border-white/10 mb-6 transition-colors shadow-sm">
+          <form method="get" class="flex flex-wrap items-end gap-4">
+            <input type="hidden" name="tab" value="{{ tab }}" />
+            <div class="flex flex-col">
+              <label class="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider mb-1">Año</label>
+              <select name="y" class="bg-white dark:bg-[#1a0a12] border border-slate-300 dark:border-[rgba(192,132,252,0.3)] text-slate-800 dark:text-white rounded-lg px-3 py-2 text-sm focus:border-[#c084fc] focus:outline-none">
+                <option value="todos">Todos</option>
+                {% for yr in filter_years %}
+                  <option value="{{ yr }}" {% if active_filters.y == yr %}selected{% endif %}>{{ yr }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="flex flex-col">
+              <label class="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider mb-1">Mes</label>
+              <select name="m" class="bg-white dark:bg-[#1a0a12] border border-slate-300 dark:border-[rgba(192,132,252,0.3)] text-slate-800 dark:text-white rounded-lg px-3 py-2 text-sm focus:border-[#c084fc] focus:outline-none">
+                <option value="todos">Todos</option>
+                {% for mo in "123456789" %}
+                  <option value="{{ mo }}" {% if active_filters.m == mo|add:"0" %}selected{% endif %}>{{ mo }}</option>
+                {% endfor %}
+                <option value="10" {% if active_filters.m == 10 %}selected{% endif %}>10</option>
+                <option value="11" {% if active_filters.m == 11 %}selected{% endif %}>11</option>
+                <option value="12" {% if active_filters.m == 12 %}selected{% endif %}>12</option>
+              </select>
+            </div>
+            <div class="flex flex-col">
+              <label class="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider mb-1">Canal</label>
+              <select name="canal" class="bg-white dark:bg-[#1a0a12] border border-slate-300 dark:border-[rgba(192,132,252,0.3)] text-slate-800 dark:text-white rounded-lg px-3 py-2 text-sm focus:border-[#c084fc] focus:outline-none">
+                <option value="todos">Todos</option>
+                {% for c in filter_canales %}
+                  <option value="{{ c }}" {% if active_filters.canal == c %}selected{% endif %}>{{ c }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="flex flex-col">
+              <label class="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider mb-1">Región</label>
+              <select name="region" class="bg-white dark:bg-[#1a0a12] border border-slate-300 dark:border-[rgba(192,132,252,0.3)] text-slate-800 dark:text-white rounded-lg px-3 py-2 text-sm focus:border-[#c084fc] focus:outline-none">
+                <option value="todos">Todas</option>
+                {% for r in filter_regiones %}
+                  <option value="{{ r }}" {% if active_filters.region == r %}selected{% endif %}>{{ r }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <button type="submit" class="px-5 py-2 rounded-lg font-semibold text-sm text-white transition-all" style="background:linear-gradient(135deg,#c084fc,#f472b6);border:none;">
+              Aplicar
+            </button>
+            <a href="?tab={{ tab }}" class="text-sm text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white underline ml-1">Limpiar</a>
+          </form>
+        </section>
+
+        <!-- KPI Cards -->
+        <section class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
+          <div class="bi-kpi-card bg-bone-light dark:bg-[#1a0a12] border border-stone-300/40 dark:border-[rgba(192,132,252,0.25)] shadow-sm dark:shadow-none hover:border-mars-accent dark:hover:border-[rgba(192,132,252,0.55)]">
+            <div class="bi-kpi-label">Ventas Totales</div>
+            <div class="bi-kpi-value">${{ measures.ventas_totales|floatformat:0 }}</div>
+          </div>
+          <div class="bi-kpi-card bg-bone-light dark:bg-[#1a0a12] border border-stone-300/40 dark:border-[rgba(192,132,252,0.25)] shadow-sm dark:shadow-none hover:border-mars-accent dark:hover:border-[rgba(192,132,252,0.55)]">
+            <div class="bi-kpi-label">Cantidad Ventas</div>
+            <div class="bi-kpi-value">{{ measures.cantidad_ventas }}</div>
+          </div>
+          <div class="bi-kpi-card bg-bone-light dark:bg-[#1a0a12] border border-stone-300/40 dark:border-[rgba(192,132,252,0.25)] shadow-sm dark:shadow-none hover:border-mars-accent dark:hover:border-[rgba(192,132,252,0.55)]">
+            <div class="bi-kpi-label">Venta Promedio</div>
+            <div class="bi-kpi-value">${{ measures.venta_promedio|floatformat:0 }}</div>
+          </div>
+          <div class="bi-kpi-card bg-bone-light dark:bg-[#1a0a12] border border-stone-300/40 dark:border-[rgba(192,132,252,0.25)] shadow-sm dark:shadow-none hover:border-mars-accent dark:hover:border-[rgba(192,132,252,0.55)]">
+            <div class="bi-kpi-label">Clientes Activos</div>
+            <div class="bi-kpi-value">{{ measures.clientes_activos }}</div>
+          </div>
+          <div class="bi-kpi-card bg-bone-light dark:bg-[#1a0a12] border border-stone-300/40 dark:border-[rgba(192,132,252,0.25)] shadow-sm dark:shadow-none hover:border-mars-accent dark:hover:border-[rgba(192,132,252,0.55)]">
+            <div class="bi-kpi-label">Part. Online</div>
+            <div class="bi-kpi-value">{{ measures.participacion_online }}%</div>
+            <div class="bi-kpi-sub">${{ measures.ventas_online|floatformat:0 }}</div>
+          </div>
+          <div class="bi-kpi-card bg-bone-light dark:bg-[#1a0a12] border border-stone-300/40 dark:border-[rgba(192,132,252,0.25)] shadow-sm dark:shadow-none hover:border-mars-accent dark:hover:border-[rgba(192,132,252,0.55)]">
+            <div class="bi-kpi-label">Part. Presencial</div>
+            <div class="bi-kpi-value">{{ measures.participacion_presencial }}%</div>
+            <div class="bi-kpi-sub">${{ measures.ventas_presenciales|floatformat:0 }}</div>
+          </div>
+        </section>
+
+        <!-- Tab Navigation -->
+        <div class="flex items-center gap-2 mb-6 p-1 rounded-xl bg-slate-200 dark:bg-[rgba(255,255,255,0.03)] transition-colors">
+          <a href="?tab=ejecutivo{% for k,v in active_filters.items %}&{{ k }}={{ v }}{% endfor %}"
+             class="bi-tab-btn {% if tab == 'ejecutivo' %}active{% endif %}">📊 Ejecutivo</a>
+          <a href="?tab=comercial{% for k,v in active_filters.items %}&{{ k }}={{ v }}{% endfor %}"
+             class="bi-tab-btn {% if tab == 'comercial' %}active{% endif %}">🛒 Comercial</a>
+          <a href="?tab=analisis{% for k,v in active_filters.items %}&{{ k }}={{ v }}{% endfor %}"
+             class="bi-tab-btn {% if tab == 'analisis' %}active{% endif %}">📈 Análisis</a>
+        </div>
+
+        <!-- TAB: Ejecutivo -->
+        {% if tab == "ejecutivo" %}
+        <div class="bi-tab active" id="tab-ejecutivo">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <!-- Ventas por Mes -->
+            <div class="bi-chart-card bg-bone-light dark:bg-[#20131a] border border-stone-300/40 dark:border-white/10 shadow-sm transition-colors">
+              <div class="flex justify-between items-start mb-4">
+                <div class="bi-chart-title mb-0">📅 Ventas por Mes</div>
+                {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-mes" export_panel="mes" export_stem="retailstart_bi_mes" chart_export_title="Ventas por Mes" view_mode="charts" export_querystring=request.GET.urlencode %}
+              </div>
+              <div style="height:280px;"><canvas id="chart-mes"></canvas></div>
+            </div>
+            <!-- Ventas por Trimestre -->
+            <div class="bi-chart-card bg-bone-light dark:bg-[#20131a] border border-stone-300/40 dark:border-white/10 shadow-sm transition-colors">
+              <div class="flex justify-between items-start mb-4">
+                <div class="bi-chart-title mb-0">📊 Ventas por Trimestre</div>
+                {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-trimestre" export_panel="trimestre" export_stem="retailstart_bi_trimestre" chart_export_title="Ventas por Trimestre" view_mode="charts" export_querystring=request.GET.urlencode %}
+              </div>
+              <div style="height:280px;"><canvas id="chart-trimestre"></canvas></div>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            <!-- Ventas por Canal -->
+            <div class="bi-chart-card bg-bone-light dark:bg-[#20131a] border border-stone-300/40 dark:border-white/10 shadow-sm transition-colors">
+              <div class="flex justify-between items-start mb-4">
+                <div class="bi-chart-title mb-0">📡 Ventas por Canal</div>
+                {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-canal-bi" export_panel="canal" export_stem="retailstart_bi_canal" chart_export_title="Ventas por Canal" view_mode="charts" export_querystring=request.GET.urlencode %}
+              </div>
+              <div style="height:280px;"><canvas id="chart-canal-bi"></canvas></div>
+            </div>
+            <!-- Ventas por Región -->
+            <div class="bi-chart-card bg-bone-light dark:bg-[#20131a] border border-stone-300/40 dark:border-white/10 shadow-sm transition-colors">
+              <div class="flex justify-between items-start mb-4">
+                <div class="bi-chart-title mb-0">🗺️ Ventas por Región</div>
+                {% include "core/includes/dashboard_card_download.html" with table_wrap_id="table-region" export_panel="region" export_stem="retailstart_bi_region" chart_export_title="Ventas por Región" view_mode="tables" export_querystring=request.GET.urlencode %}
+              </div>
+              {% if exec_data.ventas_region %}
+              <div id="table-region" class="dashboardTableWrap tableWrap overflow-x-auto">
+                <table class="bi-table min-w-full">
+                  <thead><tr><th>Región</th><th class="right">Total</th><th class="right">Tx</th></tr></thead>
+                  <tbody>
+                    {% for r in exec_data.ventas_region %}
+                    <tr><td>{{ r.tienda__region }}</td><td class="right">${{ r.total|floatformat:0 }}</td><td class="right">{{ r.tx }}</td></tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              {% else %}
+              <p class="text-slate-500 text-sm">Sin datos de región (ventas sin tienda asignada).</p>
+              {% endif %}
+            </div>
+            <!-- Ventas por Tienda -->
+            <div class="bi-chart-card bg-bone-light dark:bg-[#20131a] border border-stone-300/40 dark:border-white/10 shadow-sm transition-colors">
+              <div class="flex justify-between items-start mb-4">
+                <div class="bi-chart-title mb-0">🏪 Ventas por Tienda</div>
+                {% include "core/includes/dashboard_card_download.html" with table_wrap_id="table-tienda" export_panel="tienda" export_stem="retailstart_bi_tienda" chart_export_title="Ventas por Tienda" view_mode="tables" export_querystring=request.GET.urlencode %}
+              </div>
+              {% if exec_data.ventas_tienda %}
+              <div id="table-tienda" class="dashboardTableWrap tableWrap overflow-x-auto">
+                <table class="bi-table min-w-full">
+                  <thead><tr><th>Tienda</th><th>Región</th><th class="right">Total</th></tr></thead>
+                  <tbody>
+                    {% for r in exec_data.ventas_tienda %}
+                    <tr><td>{{ r.tienda__nombre_tienda }}</td><td>{{ r.tienda__region }}</td><td class="right">${{ r.total|floatformat:0 }}</td></tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              {% else %}
+              <p class="text-slate-500 text-sm">Sin datos de tienda.</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- TAB: Comercial -->
+        {% if tab == "comercial" %}
+        <div class="bi-tab active" id="tab-comercial">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <!-- Top 10 Productos -->
+            <div class="bi-chart-card bg-bone-light dark:bg-[#20131a] border border-stone-300/40 dark:border-white/10 shadow-sm transition-colors">
+              <div class="flex justify-between items-start mb-4">
+                <div class="bi-chart-title mb-0">🏆 Top 10 Productos Más Vendidos</div>
+                {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-top-productos" export_panel="productos" export_stem="retailstart_bi_productos" chart_export_title="Top 10 Productos" view_mode="charts" export_querystring=request.GET.urlencode %}
+              </div>
+              <div style="height:320px;"><canvas id="chart-top-productos"></canvas></div>
+            </div>
+            <!-- Ventas por Categoría -->
+            <div class="bi-chart-card bg-bone-light dark:bg-[#20131a] border border-stone-300/40 dark:border-white/10 shadow-sm transition-colors">
+              <div class="flex justify-between items-start mb-4">
+                <div class="bi-chart-title mb-0">📦 Ventas por Categoría</div>
+                {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-categorias" export_panel="categoria" export_stem="retailstart_bi_categoria" chart_export_title="Ventas por Categoría" view_mode="charts" export_querystring=request.GET.urlencode %}
+              </div>
+              <div style="height:320px;"><canvas id="chart-categorias"></canvas></div>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            <!-- Ventas por Segmento -->
+            <div class="bi-chart-card bg-bone-light dark:bg-[#20131a] border border-stone-300/40 dark:border-white/10 shadow-sm transition-colors">
+              <div class="flex justify-between items-start mb-4">
+                <div class="bi-chart-title mb-0">👥 Ventas por Segmento de Clientes</div>
+                {% include "core/includes/dashboard_card_download.html" with chart_canvas_id="chart-segmentos" export_panel="segmento" export_stem="retailstart_bi_segmento" chart_export_title="Ventas por Segmento" view_mode="charts" export_querystring=request.GET.urlencode %}
+              </div>
+              <div style="height:280px;"><canvas id="chart-segmentos"></canvas></div>
+            </div>
+            <!-- Ventas por Ciudad -->
+            <div class="bi-chart-card bg-bone-light dark:bg-[#20131a] border border-stone-300/40 dark:border-white/10 shadow-sm transition-colors">
+              <div class="flex justify-between items-start mb-4">
+                <div class="bi-chart-title mb-0">🌆 Ventas por Ciudad</div>
+                {% include "core/includes/dashboard_card_download.html" with table_wrap_id="table-ciudad" export_panel="ciudad" export_stem="retailstart_bi_ciudad" chart_export_title="Ventas por Ciudad" view_mode="tables" export_querystring=request.GET.urlencode %}
+              </div>
+              <div id="table-ciudad" class="dashboardTableWrap tableWrap overflow-x-auto">
+                <table class="bi-table min-w-full">
+                  <thead><tr><th>Ciudad</th><th class="right">Total</th><th class="right">Tx</th></tr></thead>
+                  <tbody>
+                    {% for r in comm_data.ventas_ciudad %}
+                    <tr><td>{{ r.cliente__ciudad }}</td><td class="right">${{ r.total|floatformat:0 }}</td><td class="right">{{ r.tx }}</td></tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- Comparación Canales -->
+            <div class="bi-chart-card bg-bone-light dark:bg-[#20131a] border border-stone-300/40 dark:border-white/10 shadow-sm transition-colors">
+              <div class="flex justify-between items-start mb-4">
+                <div class="bi-chart-title mb-0">⚖️ Comparación entre Canales</div>
+                {% include "core/includes/dashboard_card_download.html" with table_wrap_id="table-canales-comp" export_panel="canal" export_stem="retailstart_bi_canales_comp" chart_export_title="Comparación entre Canales" view_mode="tables" export_querystring=request.GET.urlencode %}
+              </div>
+              <div id="table-canales-comp" class="dashboardTableWrap tableWrap overflow-x-auto">
+                <table class="bi-table min-w-full">
+                  <thead><tr><th>Canal</th><th class="right">Total</th><th class="right">Tx</th><th class="right">Ticket Prom.</th><th class="right">Clientes</th></tr></thead>
+                  <tbody>
+                    {% for r in comm_data.canales_comparacion %}
+                    <tr>
+                      <td>{{ r.canal_display }}</td>
+                      <td class="right">${{ r.total|floatformat:0 }}</td>
+                      <td class="right">{{ r.tx }}</td>
+                      <td class="right">${{ r.ticket_promedio|floatformat:0 }}</td>
+                      <td class="right">{{ r.n_clientes }}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- TAB: Análisis -->
+        {% if tab == "analisis" %}
+        <div class="bi-tab active" id="tab-analisis">
+          <div class="mb-6">
+            <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Análisis de Negocio</h2>
+            <p class="text-slate-500 dark:text-slate-400 text-sm mb-6">Respuestas basadas en evidencia obtenida desde los dashboards.</p>
+            {% for a in analysis %}
+            <div class="bi-answer-card bg-bone-light dark:bg-[#20131a] border border-stone-300/40 dark:border-white/10 transition-colors shadow-sm">
+              <div class="flex items-start gap-3">
+                <span class="bi-answer-num">{{ a.numero }}</span>
+                <div class="flex-1">
+                  <h3 class="font-bold text-slate-800 dark:text-white text-base mb-2">{{ a.pregunta }}</h3>
+                  <p class="text-slate-700 dark:text-slate-300 text-sm mb-3">{{ a.respuesta|safe }}</p>
+                  <p class="text-xs text-slate-500">📊 Evidencia: {{ a.evidencia }}</p>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Modelo Estrella Summary -->
+        <section class="bi-chart-card mt-6 bg-bone-light dark:bg-[#20131a] border border-stone-300/40 dark:border-white/10 transition-colors shadow-sm">
+          <div class="bi-chart-title">⭐ Modelo Estrella — Estado del Data Warehouse</div>
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div class="text-center">
+              <div class="text-2xl font-bold text-white">{{ star_model.dim_cliente }}</div>
+              <div class="text-xs text-slate-400 mt-1">DimCliente</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-white">{{ star_model.dim_producto }}</div>
+              <div class="text-xs text-slate-400 mt-1">DimProducto</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-white">{{ star_model.dim_tiempo }}</div>
+              <div class="text-xs text-slate-400 mt-1">DimTiempo</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-white">{{ star_model.dim_canal }}</div>
+              <div class="text-xs text-slate-400 mt-1">DimCanal</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-white">{{ star_model.dim_tienda }}</div>
+              <div class="text-xs text-slate-400 mt-1">DimTienda</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl font-bold" style="color:#f472b6;">{{ star_model.fact_ventas }}</div>
+              <div class="text-xs text-slate-400 mt-1">FactVentas</div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+
+    <!-- DAX Formulas Modal -->
+    <div id="dax-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 dark:bg-black/70 px-4">
+      <div class="bg-white dark:bg-[#1a0a12] border border-slate-200 dark:border-[rgba(192,132,252,0.3)] rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-8 shadow-2xl">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-bold text-slate-900 dark:text-white">📐 Medidas DAX</h2>
+          <button onclick="document.getElementById('dax-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-800 dark:hover:text-white text-2xl">&times;</button>
+        </div>
+        <p class="text-slate-500 dark:text-slate-400 text-sm mb-6">Fórmulas DAX equivalentes utilizadas en el modelo analítico. Implementadas server-side con Django ORM.</p>
+        {% for f in dax_formulas %}
+        <div class="bi-dax-card bg-slate-50 dark:bg-[#1a0a12] border border-slate-200 dark:border-[rgba(192,132,252,0.2)] transition-colors">
+          <div class="font-bold text-slate-800 dark:text-white text-sm mb-1">{{ f.nombre }}</div>
+          <code class="bi-dax-code bg-slate-100 dark:bg-[#0d0a0e] text-[#c084fc]">{{ f.dax }}</code>
+          <p class="text-slate-600 dark:text-slate-400 text-xs">{{ f.descripcion }}</p>
+          <p class="text-slate-500 text-xs mt-1">ORM: <code class="text-[#c084fc] text-xs">{{ f.orm }}</code></p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
+    {% include "core/includes/site_shell_scripts.html" %}
+    <script id="dashboard-bundle-manifest" type="application/json">
+      [
+        {"canvasId": "chart-mes", "stem": "retailstart_bi_mes", "title": "Ventas por Mes", "tableWrapId": ""},
+        {"canvasId": "chart-trimestre", "stem": "retailstart_bi_trimestre", "title": "Ventas por Trimestre", "tableWrapId": ""},
+        {"canvasId": "chart-canal-bi", "stem": "retailstart_bi_canal", "title": "Ventas por Canal", "tableWrapId": ""},
+        {"canvasId": "", "stem": "retailstart_bi_region", "title": "Ventas por Región", "tableWrapId": "table-region"},
+        {"canvasId": "", "stem": "retailstart_bi_tienda", "title": "Ventas por Tienda", "tableWrapId": "table-tienda"},
+        {"canvasId": "chart-top-productos", "stem": "retailstart_bi_productos", "title": "Top 10 Productos", "tableWrapId": ""},
+        {"canvasId": "chart-categorias", "stem": "retailstart_bi_categoria", "title": "Ventas por Categoría", "tableWrapId": ""},
+        {"canvasId": "chart-segmentos", "stem": "retailstart_bi_segmento", "title": "Ventas por Segmento", "tableWrapId": ""},
+        {"canvasId": "", "stem": "retailstart_bi_ciudad", "title": "Ventas por Ciudad", "tableWrapId": "table-ciudad"},
+        {"canvasId": "", "stem": "retailstart_bi_canales_comp", "title": "Comparación Canales", "tableWrapId": "table-canales-comp"}
+      ]
+    </script>
+    <script src="{% static 'js/dashboard-panel-download.js' %}?v=11" defer></script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const palette = ['#c084fc','#f472b6','#fb923c','#4ade80','#60a5fa','#fbbf24','#a78bfa','#f87171','#34d399','#818cf8'];
+      const gridColor = 'rgba(255,255,255,0.06)';
+      const tickColor = '#64748b';
+
+      const defaultOpts = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { labels: { color: '#94a3b8', font: { size: 11 } } },
+        },
+        scales: {
+          x: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 10 } } },
+          y: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 10 } } },
+        },
+      };
+
+      {% if tab == "ejecutivo" and exec_data %}
+      // Ventas por Mes
+      (function(){
+        const data = {{ exec_data.ventas_mes|safe }};
+        if (!data || !data.length) return;
+        const labels = data.map(r => (r.fecha__nombre_mes || '') + ' ' + (r.fecha__anio || ''));
+        const values = data.map(r => r.total || 0);
+        new Chart(document.getElementById('chart-mes'), {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Ventas ($)',
+              data: values,
+              borderColor: '#c084fc',
+              backgroundColor: 'rgba(192,132,252,0.15)',
+              fill: true,
+              tension: 0.4,
+              pointRadius: 5,
+              pointBackgroundColor: '#c084fc',
+            }]
+          },
+          options: {...defaultOpts, plugins: {...defaultOpts.plugins, legend: {display: false}}},
+        });
+      })();
+
+      // Ventas por Trimestre
+      (function(){
+        const data = {{ exec_data.ventas_trimestre|safe }};
+        if (!data || !data.length) return;
+        const labels = data.map(r => 'Q' + r.fecha__trimestre + ' ' + r.fecha__anio);
+        const values = data.map(r => r.total || 0);
+        new Chart(document.getElementById('chart-trimestre'), {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Ventas ($)',
+              data: values,
+              backgroundColor: palette.slice(0, values.length),
+              borderRadius: 8,
+              borderSkipped: false,
+            }]
+          },
+          options: {...defaultOpts, plugins: {...defaultOpts.plugins, legend: {display: false}}},
+        });
+      })();
+
+      // Ventas por Canal
+      (function(){
+        const data = {{ exec_data.ventas_canal|safe }};
+        if (!data || !data.length) return;
+        const labels = data.map(r => r.canal_display || r.canal__canal);
+        const values = data.map(r => r.total || 0);
+        new Chart(document.getElementById('chart-canal-bi'), {
+          type: 'doughnut',
+          data: {
+            labels: labels,
+            datasets: [{
+              data: values,
+              backgroundColor: ['#c084fc','#f472b6','#fb923c'],
+              borderWidth: 0,
+              hoverOffset: 12,
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 12 }, padding: 16 } },
+            },
+          },
+        });
+      })();
+      {% endif %}
+
+      {% if tab == "comercial" and comm_data %}
+      // Top 10 Productos
+      (function(){
+        const data = {{ comm_data.top_productos|safe }};
+        if (!data || !data.length) return;
+        const labels = data.map(r => (r.producto__nombre_producto || 'Sin producto').substring(0, 30));
+        const values = data.map(r => r.total || 0);
+        new Chart(document.getElementById('chart-top-productos'), {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Ventas ($)',
+              data: values,
+              backgroundColor: palette.slice(0, values.length),
+              borderRadius: 8,
+              borderSkipped: false,
+            }]
+          },
+          options: {
+            ...defaultOpts,
+            indexAxis: 'y',
+            plugins: {...defaultOpts.plugins, legend: {display: false}},
+          },
+        });
+      })();
+
+      // Ventas por Categoría
+      (function(){
+        const data = {{ comm_data.ventas_categoria|safe }};
+        if (!data || !data.length) return;
+        const labels = data.map(r => r.producto__categoria);
+        const values = data.map(r => r.total || 0);
+        new Chart(document.getElementById('chart-categorias'), {
+          type: 'pie',
+          data: {
+            labels: labels,
+            datasets: [{
+              data: values,
+              backgroundColor: ['#c084fc','#f472b6','#fb923c','#4ade80','#60a5fa'],
+              borderWidth: 0,
+              hoverOffset: 12,
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 12 }, padding: 16 } },
+            },
+          },
+        });
+      })();
+
+      // Ventas por Segmento
+      (function(){
+        const data = {{ comm_data.ventas_segmento|safe }};
+        if (!data || !data.length) return;
+        const labels = data.map(r => r.cliente__segmento);
+        const values = data.map(r => r.total || 0);
+        new Chart(document.getElementById('chart-segmentos'), {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Ventas ($)',
+              data: values,
+              backgroundColor: ['#fb923c','#60a5fa','#4ade80'],
+              borderRadius: 8,
+              borderSkipped: false,
+            }]
+          },
+          options: {...defaultOpts, plugins: {...defaultOpts.plugins, legend: {display: false}}},
+        });
+      })();
+      {% endif %}
+    });
+    </script>
+  </body>
+</html>

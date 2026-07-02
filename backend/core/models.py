@@ -45,6 +45,17 @@ class DimTiempo(models.Model):
         return f"{self.id_tiempo} ({self.fecha_completa})"
 
 
+class DimTienda(models.Model):
+    """Dimensión tienda / punto de venta físico."""
+
+    nombre_tienda = models.CharField(max_length=100, unique=True)
+    region = models.CharField(max_length=100)
+    ciudad = models.CharField(max_length=100)
+
+    def __str__(self) -> str:
+        return self.nombre_tienda
+
+
 class DimCanal(models.Model):
     canal = models.CharField(max_length=30, unique=True)
 
@@ -58,6 +69,7 @@ class FactVentas(models.Model):
     cliente = models.ForeignKey(DimCliente, on_delete=models.PROTECT)
     producto = models.ForeignKey(DimProducto, on_delete=models.PROTECT, null=True, blank=True)
     canal = models.ForeignKey(DimCanal, on_delete=models.PROTECT)
+    tienda = models.ForeignKey(DimTienda, on_delete=models.PROTECT, null=True, blank=True)
 
     cantidad = models.IntegerField()
     precio_unitario = models.IntegerField()
@@ -68,6 +80,7 @@ class FactVentas(models.Model):
             models.Index(fields=["cliente", "fecha"]),
             models.Index(fields=["canal", "fecha"]),
             models.Index(fields=["producto", "fecha"]),
+            models.Index(fields=["tienda", "fecha"]),
         ]
 
     def __str__(self) -> str:

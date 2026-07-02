@@ -1,0 +1,436 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cargador de Datos — RetailStart</title>
+    <meta name="description" content="Cargador masivo web para ingestar datos al Data Warehouse de RetailStart" />
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=17" />
+    {% include "core/includes/tailwind_head.html" %}
+    <style>
+      .loader-drop-zone {
+        border: 2px dashed rgba(192,132,252,0.35);
+        border-radius: 16px;
+        padding: 48px 32px;
+        text-align: center;
+        transition: all 0.3s;
+        background: rgba(192,132,252,0.03);
+        cursor: pointer;
+      }
+      .loader-drop-zone:hover,
+      .loader-drop-zone.dragover {
+        border-color: rgba(192,132,252,0.7);
+        background: rgba(192,132,252,0.08);
+      }
+      .loader-file-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(192,132,252,0.12);
+        border: 1px solid rgba(192,132,252,0.3);
+        border-radius: 100px;
+        padding: 4px 14px;
+        font-size: 0.8rem;
+        color: #e2e8f0;
+      }
+      .loader-file-chip .remove {
+        cursor: pointer;
+        color: #f87171;
+        font-weight: bold;
+        font-size: 1rem;
+      }
+      .loader-progress {
+        height: 6px;
+        border-radius: 3px;
+        background: rgba(255,255,255,0.08);
+        overflow: hidden;
+      }
+      .loader-progress-bar {
+        height: 100%;
+        border-radius: 3px;
+        background: linear-gradient(90deg, #c084fc, #f472b6);
+        transition: width 0.5s ease;
+      }
+      .loader-log {
+        background: #0d0a0e;
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 12px;
+        padding: 16px;
+        font-family: 'Cascadia Code', 'Fira Code', monospace;
+        font-size: 0.8rem;
+        color: #4ade80;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+      .loader-log .error { color: #f87171; }
+      .loader-history-card {
+        background: #20131a;
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 10px;
+      }
+      .dw-count-card {
+        background: linear-gradient(135deg, #1a0a12 0%, #2d1a24 100%);
+        border: 1px solid rgba(192,132,252,0.2);
+        border-radius: 12px;
+        padding: 16px;
+        text-align: center;
+      }
+      .dw-count-value {
+        font-size: 1.8rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #c084fc, #f472b6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+    </style>
+  </head>
+  <body class="appShell">
+    {% include "core/includes/site_navbar.html" %}
+    {% include "core/includes/site_sidebar.html" %}
+    <div class="appShell__main bg-[#120A0E] font-sans text-slate-200 min-h-screen">
+      <main class="container" style="max-width: 1000px; margin: 0 auto; padding: 24px;">
+
+        <header class="mb-8">
+          <h1 class="font-extrabold tracking-tight text-3xl text-white mb-2">
+            <span style="background:linear-gradient(135deg,#c084fc,#f472b6,#fb923c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">📁 Cargador de Datos</span>
+          </h1>
+          <p class="text-slate-400 text-sm">
+            Sube archivos CSV para cargar nuevos días al Data Warehouse. Sin necesidad de Docker CLI.
+            <br>Pipeline completo: archivos → ELT (raw/) → ETL (processed/) → DW (Postgres).
+          </p>
+        </header>
+
+        <!-- DW Current State -->
+        <section class="mb-8">
+          <h2 class="text-sm font-bold text-[#c084fc] uppercase tracking-wider mb-4">Estado actual del Data Warehouse</h2>
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3" id="dw-counts">
+            <div class="dw-count-card">
+              <div class="dw-count-value">{{ dw_counts.dim_cliente }}</div>
+              <div class="text-xs text-slate-400 mt-1">DimCliente</div>
+            </div>
+            <div class="dw-count-card">
+              <div class="dw-count-value">{{ dw_counts.dim_producto }}</div>
+              <div class="text-xs text-slate-400 mt-1">DimProducto</div>
+            </div>
+            <div class="dw-count-card">
+              <div class="dw-count-value">{{ dw_counts.dim_tiempo }}</div>
+              <div class="text-xs text-slate-400 mt-1">DimTiempo</div>
+            </div>
+            <div class="dw-count-card">
+              <div class="dw-count-value">{{ dw_counts.dim_canal }}</div>
+              <div class="text-xs text-slate-400 mt-1">DimCanal</div>
+            </div>
+            <div class="dw-count-card">
+              <div class="dw-count-value">{{ dw_counts.dim_tienda }}</div>
+              <div class="text-xs text-slate-400 mt-1">DimTienda</div>
+            </div>
+            <div class="dw-count-card">
+              <div class="dw-count-value">{{ dw_counts.fact_ventas }}</div>
+              <div class="text-xs text-slate-400 mt-1">FactVentas</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Upload Form -->
+        <section class="bg-[#20131a] border border-[rgba(255,255,255,0.08)] rounded-2xl p-8 mb-8">
+          <h2 class="text-sm font-bold text-[#c084fc] uppercase tracking-wider mb-6">Cargar Nuevo Lote</h2>
+
+          <form id="loader-form" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <div>
+                <label class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1 block">Fecha de ingesta</label>
+                <input type="date" name="ingest_date" value="{{ today }}" class="w-full bg-[#1a0a12] border border-[rgba(192,132,252,0.3)] text-white rounded-lg px-4 py-2.5 text-sm focus:border-[#c084fc] focus:outline-none" />
+              </div>
+              <div>
+                <label class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1 block">Nombre del lote</label>
+                <input type="text" name="batch_name" placeholder="ej: dia_6, semana_2, carga_julio" class="w-full bg-[#1a0a12] border border-[rgba(192,132,252,0.3)] text-white rounded-lg px-4 py-2.5 text-sm focus:border-[#c084fc] focus:outline-none placeholder-slate-600" />
+              </div>
+            </div>
+
+            <!-- Drop Zone -->
+            <div class="loader-drop-zone mb-4" id="drop-zone" onclick="document.getElementById('file-input').click()">
+              <div class="text-4xl mb-3">📂</div>
+              <div class="text-slate-300 font-medium mb-2">Arrastra archivos aquí o haz clic para seleccionar</div>
+              <div class="text-slate-500 text-xs">
+                Obligatorios: ventas_pos.csv, ventas_online.csv, clientes_crm.csv, productos_erp.csv
+                <br>Opcionales: eventos_app.json, logistica.xml, logs_sistema.txt, callcenter.csv, redes_sociales.json, proveedores.csv, multimedia.csv
+              </div>
+              <input type="file" id="file-input" name="files" multiple accept=".csv,.json,.xml,.txt" class="hidden" />
+            </div>
+
+            <!-- Selected Files -->
+            <div id="selected-files" class="flex flex-wrap gap-2 mb-6" style="min-height: 32px;"></div>
+
+            <!-- Progress -->
+            <div id="loader-progress-wrap" class="mb-4 hidden">
+              <div class="loader-progress">
+                <div class="loader-progress-bar" id="loader-progress-bar" style="width: 0%"></div>
+              </div>
+              <div class="text-xs text-slate-400 mt-2" id="loader-status">Procesando…</div>
+            </div>
+
+            <button type="submit" id="loader-submit" class="w-full py-3 rounded-xl font-bold text-white text-sm transition-all" style="background:linear-gradient(135deg,#c084fc,#f472b6);border:none;">
+              🚀 Cargar y Procesar
+            </button>
+          </form>
+
+          <!-- Log Output -->
+          <div id="loader-log-wrap" class="mt-6 hidden">
+            <h3 class="text-sm font-bold text-slate-300 mb-2">Log del proceso</h3>
+            <div class="loader-log" id="loader-log"></div>
+          </div>
+        </section>
+
+        <!-- Command Runner -->
+        <section class="bg-[#20131a] border border-[rgba(255,255,255,0.08)] rounded-2xl p-8 mb-8">
+          <h2 class="text-sm font-bold text-[#c084fc] uppercase tracking-wider mb-6">Ejecutar Comandos (CLI Web)</h2>
+          
+          <div class="mb-4">
+            <input type="text" id="command-search" placeholder="Buscar comando... (ej: seed_day_6)" class="w-full bg-[#1a0a12] border border-[rgba(192,132,252,0.3)] text-white rounded-lg px-4 py-2.5 text-sm focus:border-[#c084fc] focus:outline-none placeholder-slate-600" />
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mb-6" id="command-list" style="max-height: 250px; overflow-y: auto;">
+            {% for cmd in commands %}
+            <div class="command-item bg-white dark:bg-[#1a0a12] border border-slate-200 dark:border-[rgba(255,255,255,0.08)] rounded-xl p-3 flex justify-between items-center hover:border-[rgba(192,132,252,0.5)] transition-colors" data-name="{{ cmd.name|lower }}">
+              <div class="flex items-center gap-2 overflow-hidden">
+                <span class="font-mono text-sm text-slate-800 dark:text-slate-300 truncate" title="{{ cmd.name }}">{{ cmd.name }}</span>
+                <button type="button" class="text-slate-400 hover:text-[#c084fc] transition-colors" onclick="showHelpModal('{{ cmd.name }}', '{{ cmd.help|escapejs }}')" title="Ver descripción">
+                  <i class="fa-solid fa-circle-info"></i>
+                </button>
+              </div>
+              <button type="button" class="run-cmd-btn px-3 py-1 rounded-lg text-xs font-bold text-slate-800 dark:text-white transition-all bg-[rgba(192,132,252,0.15)] hover:bg-[rgba(192,132,252,0.3)] whitespace-nowrap ml-2" data-cmd="{{ cmd.name }}">Ejecutar</button>
+            </div>
+            {% endfor %}
+          </div>
+          
+          <!-- Command output -->
+          <div id="cmd-output-wrap" class="hidden">
+            <h3 class="text-sm font-bold text-slate-800 dark:text-slate-300 mb-2">Salida del Comando</h3>
+            <div class="loader-log" id="cmd-log"></div>
+          </div>
+        </section>
+
+        <!-- History -->
+        {% if history %}
+        <section>
+          <h2 class="text-sm font-bold text-[#c084fc] uppercase tracking-wider mb-4">Historial de Cargas Web</h2>
+          {% for h in history %}
+          <div class="loader-history-card bg-white dark:bg-[#20131a] border border-slate-200 dark:border-[rgba(255,255,255,0.08)]">
+            <div class="flex items-center justify-between mb-2">
+              <div>
+                <span class="font-bold text-slate-800 dark:text-white text-sm">{{ h.batch_name }}</span>
+                <span class="text-xs text-slate-500 ml-2">{{ h.ingest_date }}</span>
+              </div>
+              <span class="text-xs text-slate-500">{{ h.timestamp }}</span>
+            </div>
+            <div class="flex flex-wrap gap-4 text-xs text-slate-600 dark:text-slate-400">
+              <span>Archivos: {{ h.files|length }}</span>
+              <span>Nuevos hechos: <strong class="text-[#4ade80]">+{{ h.new_facts }}</strong></span>
+              <span>DW después: {{ h.counts_after.fact_ventas }} FactVentas</span>
+            </div>
+          </div>
+          {% endfor %}
+        </section>
+        {% endif %}
+
+      </main>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="help-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 dark:bg-black/70 px-4">
+      <div class="bg-white dark:bg-[#1a0a12] border border-slate-200 dark:border-[rgba(192,132,252,0.3)] rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
+        <button onclick="document.getElementById('help-modal').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-800 dark:hover:text-white">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+        <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-2" id="help-modal-title">Comando</h3>
+        <p class="text-sm text-slate-600 dark:text-slate-400" id="help-modal-desc"></p>
+      </div>
+    </div>
+
+    {% include "core/includes/site_shell_scripts.html" %}
+    <script>
+    function showHelpModal(title, desc) {
+      document.getElementById('help-modal-title').textContent = title;
+      document.getElementById('help-modal-desc').innerHTML = desc;
+      document.getElementById('help-modal').classList.remove('hidden');
+    }
+    
+    (function() {
+      const dropZone = document.getElementById('drop-zone');
+      const fileInput = document.getElementById('file-input');
+      const selectedFiles = document.getElementById('selected-files');
+      const form = document.getElementById('loader-form');
+      const progressWrap = document.getElementById('loader-progress-wrap');
+      const progressBar = document.getElementById('loader-progress-bar');
+      const statusEl = document.getElementById('loader-status');
+      const logWrap = document.getElementById('loader-log-wrap');
+      const logEl = document.getElementById('loader-log');
+      const submitBtn = document.getElementById('loader-submit');
+
+      let files = new DataTransfer();
+
+      function updateChips() {
+        selectedFiles.innerHTML = '';
+        for (const f of files.files) {
+          const chip = document.createElement('span');
+          chip.className = 'loader-file-chip';
+          chip.innerHTML = `📄 ${f.name} <span class="remove" data-name="${f.name}">&times;</span>`;
+          selectedFiles.appendChild(chip);
+        }
+        selectedFiles.querySelectorAll('.remove').forEach(btn => {
+          btn.addEventListener('click', e => {
+            const name = e.target.dataset.name;
+            const dt = new DataTransfer();
+            for (const f of files.files) {
+              if (f.name !== name) dt.items.add(f);
+            }
+            files = dt;
+            fileInput.files = files.files;
+            updateChips();
+          });
+        });
+      }
+
+      fileInput.addEventListener('change', () => {
+        for (const f of fileInput.files) {
+          let exists = false;
+          for (const ex of files.files) { if (ex.name === f.name) { exists = true; break; } }
+          if (!exists) files.items.add(f);
+        }
+        updateChips();
+      });
+
+      ['dragenter','dragover'].forEach(ev => {
+        dropZone.addEventListener(ev, e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+      });
+      ['dragleave','drop'].forEach(ev => {
+        dropZone.addEventListener(ev, e => { e.preventDefault(); dropZone.classList.remove('dragover'); });
+      });
+      dropZone.addEventListener('drop', e => {
+        for (const f of e.dataTransfer.files) {
+          let exists = false;
+          for (const ex of files.files) { if (ex.name === f.name) { exists = true; break; } }
+          if (!exists) files.items.add(f);
+        }
+        fileInput.files = files.files;
+        updateChips();
+      });
+
+      form.addEventListener('submit', async e => {
+        e.preventDefault();
+        if (files.files.length === 0) { alert('Selecciona al menos los 4 archivos obligatorios.'); return; }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Procesando…';
+        progressWrap.classList.remove('hidden');
+        progressBar.style.width = '30%';
+        statusEl.textContent = 'Subiendo archivos…';
+        logWrap.classList.remove('hidden');
+        logEl.innerHTML = '<div>Iniciando pipeline…</div>';
+
+        const formData = new FormData(form);
+        // Clear old files and add current ones
+        formData.delete('files');
+        for (const f of files.files) {
+          formData.append('files', f);
+        }
+
+        progressBar.style.width = '60%';
+        statusEl.textContent = 'Ejecutando pipeline ELT → ETL → DW…';
+
+        try {
+          const resp = await fetch('{% url "loader_process" %}', { method: 'POST', body: formData });
+          const data = await resp.json();
+          progressBar.style.width = '100%';
+
+          if (data.ok) {
+            statusEl.textContent = '✅ Carga completada con éxito';
+            logEl.innerHTML = data.log.map(l => `<div>${l}</div>`).join('');
+            logEl.innerHTML += `<div style="color:#c084fc;margin-top:8px;">Nuevos hechos: +${data.new_facts} | Total FactVentas: ${data.counts_after.fact_ventas}</div>`;
+            submitBtn.textContent = '✅ Completado — Recargar para nueva carga';
+            setTimeout(() => location.reload(), 3000);
+          } else {
+            statusEl.textContent = '❌ Error en la carga';
+            logEl.innerHTML = `<div class="error">${data.error}</div>`;
+            if (data.log) logEl.innerHTML += data.log.map(l => `<div>${l}</div>`).join('');
+            submitBtn.disabled = false;
+            submitBtn.textContent = '🚀 Cargar y Procesar';
+          }
+        } catch (err) {
+          statusEl.textContent = '❌ Error de conexión';
+          logEl.innerHTML = `<div class="error">${err.message}</div>`;
+          submitBtn.disabled = false;
+          submitBtn.textContent = '🚀 Cargar y Procesar';
+        }
+      });
+      
+      // Command Runner Logic
+      const cmdSearch = document.getElementById('command-search');
+      const cmdItems = document.querySelectorAll('.command-item');
+      
+      if(cmdSearch) {
+        cmdSearch.addEventListener('input', e => {
+          const val = e.target.value.toLowerCase();
+          cmdItems.forEach(item => {
+            if(item.dataset.name.includes(val)) {
+              item.style.display = 'flex';
+            } else {
+              item.style.display = 'none';
+            }
+          });
+        });
+      }
+
+      document.querySelectorAll('.run-cmd-btn').forEach(btn => {
+        btn.addEventListener('click', async e => {
+          const cmd = e.target.dataset.cmd;
+          if(!confirm(`¿Estás seguro de ejecutar el comando: ${cmd}?`)) return;
+          
+          const cmdLogWrap = document.getElementById('cmd-output-wrap');
+          const cmdLog = document.getElementById('cmd-log');
+          
+          cmdLogWrap.classList.remove('hidden');
+          cmdLog.innerHTML = `<div style="color:#60a5fa;">Ejecutando ${cmd}... por favor espera.</div>`;
+          e.target.disabled = true;
+          e.target.textContent = '...';
+          
+          const fd = new FormData();
+          fd.append('command', cmd);
+          fd.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+          
+          try {
+            const resp = await fetch('{% url "loader_run_command" %}', {method: 'POST', body: fd});
+            const data = await resp.json();
+            if(data.ok) {
+              cmdLog.innerHTML = `<div style="color:#4ade80;">✅ Éxito</div>`;
+              if (data.stdout) cmdLog.innerHTML += `<div>${data.stdout.replace(/\n/g, '<br>')}</div>`;
+              if (data.stderr) cmdLog.innerHTML += `<div class="error">${data.stderr.replace(/\n/g, '<br>')}</div>`;
+            } else {
+              cmdLog.innerHTML = `<div class="error">❌ Error: ${data.error}</div>`;
+              if (data.stderr) cmdLog.innerHTML += `<div class="error">${data.stderr.replace(/\n/g, '<br>')}</div>`;
+              if (data.stdout) cmdLog.innerHTML += `<div>${data.stdout.replace(/\n/g, '<br>')}</div>`;
+            }
+          } catch(err) {
+            cmdLog.innerHTML = `<div class="error">❌ Error de conexión: ${err.message}</div>`;
+          } finally {
+            e.target.disabled = false;
+            e.target.textContent = 'Ejecutar';
+            
+            // Reload page if it's a seed or load command to update counts
+            if (cmd.includes('seed_') || cmd.includes('load_') || cmd.includes('ingest_')) {
+              cmdLog.innerHTML += `<div style="color:#fbbf24; margin-top:10px;">Recargando página para actualizar contadores...</div>`;
+              setTimeout(() => location.reload(), 2500);
+            }
+          }
+        });
+      });
+      
+    })();
+    </script>
+  </body>
+</html>

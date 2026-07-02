@@ -38,6 +38,10 @@ class Command(BaseCommand):
             help="Raíz del data lake (default: /data_lake).",
         )
         parser.add_argument(
+            "--skip-generate", action="store_true",
+            help="No regenerar CSV/JSON en data_sources; usar dia_N existente.",
+        )
+        parser.add_argument(
             "--skip-audit", action="store_true",
             help="No ejecutar audit_pipeline en ningún día.",
         )
@@ -73,6 +77,7 @@ class Command(BaseCommand):
                 stdout=self.stdout,
                 style=self.style,
                 skip_audit=skip,
+                skip_generate=options["skip_generate"],
             )
 
         self.stdout.write(self.style.SUCCESS(

@@ -1,0 +1,6 @@
+id_llamada,id_cliente,fecha,motivo,duracion
+7060701,131,2026-06-07,Consulta,3
+7060702,132,2026-06-07,Reclamo,6
+7060703,133,2026-06-07,Soporte,9
+7060704,134,2026-06-07,Devolucion,12
+7060705,135,2026-06-07,Consulta,15

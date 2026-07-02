@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.urls import path
 
 from core import views
+from core import views_bi
+from core import views_loader
 
 urlpatterns = [
     path("", views.home, name="home"),
@@ -27,5 +29,12 @@ urlpatterns = [
     path("analytics/", views.analytics, name="analytics"),
     path("evidence/", views.evidence, name="evidence"),
     path("evidence/file/<str:filename>", views.evidence_file, name="evidence_file"),
+    # BI Dashboard (Power BI style)
+    path("bi/", views_bi.bi_dashboard, name="bi_dashboard"),
+    path("bi/api/", views_bi.bi_api_data, name="bi_api_data"),
+    # Data Loader (web upload)
+    path("loader/", views_loader.loader, name="loader"),
+    path("loader/process/", views_loader.loader_process, name="loader_process"),
+    path("loader/run_command/", views_loader.loader_run_command, name="loader_run_command"),
     path('admin/', admin.site.urls),
 ]

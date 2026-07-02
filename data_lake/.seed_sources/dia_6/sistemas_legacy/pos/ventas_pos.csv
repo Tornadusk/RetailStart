@@ -1,0 +1,6 @@
+id_venta,fecha,id_cliente,id_producto,cantidad,precio_unitario,tienda
+60601,2026-06-06,126,2026,2,150000,Santiago
+60602,2026-06-06,127,2027,1,300000,Providencia
+60603,2026-06-06,128,2028,1,50000,Maipu
+60604,2026-06-06,129,2029,3,20000,La Florida
+60605,2026-06-06,130,2030,1,80000,Puente Alto

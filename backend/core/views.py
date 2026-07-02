@@ -16,7 +16,7 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from core.etl.elt_ingest import DEFAULT_SCATTERED_SOURCES
-from core.models import DimCanal, DimCliente, DimProducto, DimTiempo, FactVentas
+from core.models import DimCanal, DimCliente, DimProducto, DimTiempo, DimTienda, FactVentas
 
 # Etiquetas para la tabla de ingesta → raw (alineado con DEFAULT_SCATTERED_SOURCES en elt_ingest.py).
 _LAKE_SOURCE_ROLE: dict[str, str] = {
@@ -89,6 +89,7 @@ def evidence(request: HttpRequest) -> HttpResponse:
         "dim_producto": DimProducto.objects.count(),
         "dim_tiempo": DimTiempo.objects.count(),
         "dim_canal": DimCanal.objects.count(),
+        "dim_tienda": DimTienda.objects.count(),
         "fact_ventas": FactVentas.objects.count(),
     }
 
@@ -386,6 +387,7 @@ def flow(request: HttpRequest) -> HttpResponse:
         "dim_producto": DimProducto.objects.count(),
         "dim_tiempo": DimTiempo.objects.count(),
         "dim_canal": DimCanal.objects.count(),
+        "dim_tienda": DimTienda.objects.count(),
         "fact_ventas": FactVentas.objects.count(),
     }
 
@@ -501,6 +503,7 @@ def analytics(request: HttpRequest) -> HttpResponse:
         "dim_producto": DimProducto.objects.count(),
         "dim_tiempo": DimTiempo.objects.count(),
         "dim_canal": DimCanal.objects.count(),
+        "dim_tienda": DimTienda.objects.count(),
         "fact_ventas": FactVentas.objects.count(),
         "hechos_filtrados": qs.count(),
     }
@@ -853,6 +856,7 @@ def dashboard(request: HttpRequest) -> HttpResponse:
         "dim_producto": DimProducto.objects.count(),
         "dim_tiempo": DimTiempo.objects.count(),
         "dim_canal": DimCanal.objects.count(),
+        "dim_tienda": DimTienda.objects.count(),
         "fact_ventas": FactVentas.objects.count(),
         "hechos_filtrados": qs.count(),
     }

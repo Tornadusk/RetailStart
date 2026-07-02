@@ -91,6 +91,41 @@ CLIENTES_POR_DIA: dict[int, list[dict]] = {
         {"id_cliente": 124, "nombre": "Constanza", "apellido": "Rios", "email": "constanza@email.com", "segmento": "Premium", "ciudad": "Concepcion"},
         {"id_cliente": 125, "nombre": "Martin", "apellido": "Campos", "email": "martin@email.com", "segmento": "Regular", "ciudad": "Puerto Montt"},
     ],
+    6: [
+        {"id_cliente": 126, "nombre": "Daniela", "apellido": "Vega", "email": "daniela@email.com", "segmento": "Premium", "ciudad": "Santiago"},
+        {"id_cliente": 127, "nombre": "Esteban", "apellido": "Paredes", "email": "esteban@email.com", "segmento": "Nuevo", "ciudad": "Valparaiso"},
+        {"id_cliente": 128, "nombre": "Loreto", "apellido": "Araya", "email": "loreto@email.com", "segmento": "Regular", "ciudad": "Antofagasta"},
+        {"id_cliente": 129, "nombre": "Patricio", "apellido": "Guzman", "email": "patricio@email.com", "segmento": "Premium", "ciudad": "Viña del Mar"},
+        {"id_cliente": 130, "nombre": "Macarena", "apellido": "Olivares", "email": "macarena@email.com", "segmento": "Regular", "ciudad": "Santiago"},
+    ],
+    7: [
+        {"id_cliente": 131, "nombre": "Vicente", "apellido": "Maldonado", "email": "vicente@email.com", "segmento": "Premium", "ciudad": "La Serena"},
+        {"id_cliente": 132, "nombre": "Belen", "apellido": "Leiva", "email": "belen@email.com", "segmento": "Nuevo", "ciudad": "Concepcion"},
+        {"id_cliente": 133, "nombre": "Joaquin", "apellido": "Cortes", "email": "joaquin@email.com", "segmento": "Regular", "ciudad": "Temuco"},
+        {"id_cliente": 134, "nombre": "Fernanda", "apellido": "Aguilar", "email": "fernanda@email.com", "segmento": "Premium", "ciudad": "Valdivia"},
+        {"id_cliente": 135, "nombre": "Gonzalo", "apellido": "Peña", "email": "gonzalo@email.com", "segmento": "Regular", "ciudad": "Santiago"},
+    ],
+    8: [
+        {"id_cliente": 136, "nombre": "Carolina", "apellido": "Mendez", "email": "carolina@email.com", "segmento": "Premium", "ciudad": "Rancagua"},
+        {"id_cliente": 137, "nombre": "Rodrigo", "apellido": "Valenzuela", "email": "rodrigo@email.com", "segmento": "Nuevo", "ciudad": "Talca"},
+        {"id_cliente": 138, "nombre": "Daniel", "apellido": "Sanhueza", "email": "daniel@email.com", "segmento": "Regular", "ciudad": "Santiago"},
+        {"id_cliente": 139, "nombre": "Paola", "apellido": "Cardenas", "email": "paola@email.com", "segmento": "Premium", "ciudad": "Puerto Montt"},
+        {"id_cliente": 140, "nombre": "Claudio", "apellido": "Orellana", "email": "claudio@email.com", "segmento": "Regular", "ciudad": "Iquique"},
+    ],
+    9: [
+        {"id_cliente": 141, "nombre": "Valeria", "apellido": "Lagos", "email": "valeria@email.com", "segmento": "Premium", "ciudad": "Copiapo"},
+        {"id_cliente": 142, "nombre": "Eduardo", "apellido": "Figueroa", "email": "eduardo@email.com", "segmento": "Nuevo", "ciudad": "Arica"},
+        {"id_cliente": 143, "nombre": "Pia", "apellido": "Carrasco", "email": "pia@email.com", "segmento": "Regular", "ciudad": "Santiago"},
+        {"id_cliente": 144, "nombre": "Alejandro", "apellido": "Saavedra", "email": "alejandro@email.com", "segmento": "Premium", "ciudad": "Viña del Mar"},
+        {"id_cliente": 145, "nombre": "Monica", "apellido": "Vidal", "email": "monica@email.com", "segmento": "Regular", "ciudad": "Concepcion"},
+    ],
+    10: [
+        {"id_cliente": 146, "nombre": "Ricardo", "apellido": "Poblete", "email": "ricardo@email.com", "segmento": "Premium", "ciudad": "Antofagasta"},
+        {"id_cliente": 147, "nombre": "Carmen", "apellido": "Zuñiga", "email": "carmen@email.com", "segmento": "Nuevo", "ciudad": "Santiago"},
+        {"id_cliente": 148, "nombre": "Victor", "apellido": "Castro", "email": "victor@email.com", "segmento": "Regular", "ciudad": "Temuco"},
+        {"id_cliente": 149, "nombre": "Paulina", "apellido": "Gallardo", "email": "paulina@email.com", "segmento": "Premium", "ciudad": "Valdivia"},
+        {"id_cliente": 150, "nombre": "Hugo", "apellido": "Alvarez", "email": "hugo@email.com", "segmento": "Regular", "ciudad": "Osorno"},
+    ],
 }
 
 PRODUCTOS_POR_DIA: dict[int, list[dict]] = {
@@ -129,6 +164,41 @@ PRODUCTOS_POR_DIA: dict[int, list[dict]] = {
         {"id_producto": 2024, "nombre_producto": "Pendrive 128GB", "categoria": "Tecnologia", "precio_base": 15000, "proveedor": "Kingston"},
         {"id_producto": 2025, "nombre_producto": "Manta Polar", "categoria": "Hogar", "precio_base": 20000, "proveedor": "Cannon"},
     ],
+    6: [
+        {"id_producto": 2026, "nombre_producto": "Microfono USB", "categoria": "Tecnologia", "precio_base": 85000, "proveedor": "Blue"},
+        {"id_producto": 2027, "nombre_producto": "Sudadera Hoodie", "categoria": "Vestuario", "precio_base": 35000, "proveedor": "Nike"},
+        {"id_producto": 2028, "nombre_producto": "Licuadora", "categoria": "Hogar", "precio_base": 45000, "proveedor": "Oster"},
+        {"id_producto": 2029, "nombre_producto": "Memoria RAM 16GB", "categoria": "Tecnologia", "precio_base": 65000, "proveedor": "Corsair"},
+        {"id_producto": 2030, "nombre_producto": "Toallas Algodon", "categoria": "Hogar", "precio_base": 25000, "proveedor": "Cannon"},
+    ],
+    7: [
+        {"id_producto": 2031, "nombre_producto": "Camara Web 4K", "categoria": "Tecnologia", "precio_base": 130000, "proveedor": "Logitech"},
+        {"id_producto": 2032, "nombre_producto": "Gorro Lana", "categoria": "Vestuario", "precio_base": 15000, "proveedor": "Columbia"},
+        {"id_producto": 2033, "nombre_producto": "Plancha Vapor", "categoria": "Hogar", "precio_base": 30000, "proveedor": "Philips"},
+        {"id_producto": 2034, "nombre_producto": "Teclado Bluetooth", "categoria": "Tecnologia", "precio_base": 45000, "proveedor": "Apple"},
+        {"id_producto": 2035, "nombre_producto": "Juego Sabanas", "categoria": "Hogar", "precio_base": 35000, "proveedor": "Rosen"},
+    ],
+    8: [
+        {"id_producto": 2036, "nombre_producto": "Monitor Curvo", "categoria": "Tecnologia", "precio_base": 180000, "proveedor": "Samsung"},
+        {"id_producto": 2037, "nombre_producto": "Shorts Deporte", "categoria": "Vestuario", "precio_base": 20000, "proveedor": "Adidas"},
+        {"id_producto": 2038, "nombre_producto": "Horno Microondas", "categoria": "Hogar", "precio_base": 75000, "proveedor": "LG"},
+        {"id_producto": 2039, "nombre_producto": "Auriculares InEar", "categoria": "Tecnologia", "precio_base": 35000, "proveedor": "JBL"},
+        {"id_producto": 2040, "nombre_producto": "Almohada Viscoelastica", "categoria": "Hogar", "precio_base": 28000, "proveedor": "Rosen"},
+    ],
+    9: [
+        {"id_producto": 2041, "nombre_producto": "Router WiFi 6", "categoria": "Tecnologia", "precio_base": 95000, "proveedor": "TP-Link"},
+        {"id_producto": 2042, "nombre_producto": "Calcetines Pack", "categoria": "Vestuario", "precio_base": 12000, "proveedor": "Puma"},
+        {"id_producto": 2043, "nombre_producto": "Freidora Aire", "categoria": "Hogar", "precio_base": 65000, "proveedor": "Philips"},
+        {"id_producto": 2044, "nombre_producto": "Bateria Externa", "categoria": "Tecnologia", "precio_base": 25000, "proveedor": "Anker"},
+        {"id_producto": 2045, "nombre_producto": "Sarten Antiadherente", "categoria": "Hogar", "precio_base": 22000, "proveedor": "Tefal"},
+    ],
+    10: [
+        {"id_producto": 2046, "nombre_producto": "Tarjeta Video RTX", "categoria": "Tecnologia", "precio_base": 450000, "proveedor": "Nvidia"},
+        {"id_producto": 2047, "nombre_producto": "Parka Invierno", "categoria": "Vestuario", "precio_base": 110000, "proveedor": "NorthFace"},
+        {"id_producto": 2048, "nombre_producto": "Hervidor Electrico", "categoria": "Hogar", "precio_base": 18000, "proveedor": "Thomas"},
+        {"id_producto": 2049, "nombre_producto": "Cable HDMI 8K", "categoria": "Tecnologia", "precio_base": 15000, "proveedor": "Belkin"},
+        {"id_producto": 2050, "nombre_producto": "Set Cubiertos", "categoria": "Hogar", "precio_base": 32000, "proveedor": "Tramontina"},
+    ],
 }
 
 TIENDAS = ["Santiago", "Providencia", "Maipu", "La Florida", "Puente Alto",
@@ -155,6 +225,57 @@ def _date_str(day: int) -> str:
     return f"{BASE_DATE_PREFIX}{day:02d}"
 
 
+def sources_root_writable(sources_root: Path) -> bool:
+    """False cuando el volumen Docker monta el host como solo lectura (p. ej. unidad V:)."""
+    probe = sources_root / ".write_probe"
+    try:
+        probe.write_text("", encoding="utf-8")
+        probe.unlink(missing_ok=True)
+        return True
+    except OSError:
+        return False
+
+
+def day_sources_ready(day_dir: Path) -> bool:
+    required = (
+        day_dir / "sistemas_legacy" / "pos" / "ventas_pos.csv",
+        day_dir / "marketplace" / "ventas_online.csv",
+        day_dir / "crm_export" / "clientes_crm.csv",
+    )
+    return all(p.is_file() for p in required)
+
+
+def resolve_day_sources(
+    day: int,
+    sources_root: Path,
+    lake_root: Path,
+    *,
+    skip_generate: bool = False,
+) -> tuple[Path, str]:
+    """
+    Devuelve (carpeta del día, modo) para ELT.
+    modo: generated | existing | staged
+    """
+    day_dir = sources_root / f"dia_{day}"
+    staging_root = lake_root / ".seed_sources"
+
+    if skip_generate:
+        if not day_sources_ready(day_dir):
+            raise FileNotFoundError(
+                f"--skip-generate: faltan archivos en {day_dir}"
+            )
+        return day_dir, "existing"
+
+    if sources_root_writable(sources_root):
+        return generate_day_sources(day, sources_root), "generated"
+
+    if day_sources_ready(day_dir):
+        return day_dir, "existing"
+
+    staging_root.mkdir(parents=True, exist_ok=True)
+    return generate_day_sources(day, staging_root), "staged"
+
+
 def generate_day_sources(day: int, sources_root: Path) -> Path:
     """
     Genera la carpeta data_sources/dia_{day} con 11 archivos fuente
@@ -162,8 +283,8 @@ def generate_day_sources(day: int, sources_root: Path) -> Path:
 
     Retorna el path de la carpeta creada.
     """
-    if day < 1 or day > 5:
-        raise ValueError(f"day debe estar entre 1 y 5, recibido: {day}")
+    if day < 1 or day > 10:
+        raise ValueError(f"day debe estar entre 1 y 10, recibido: {day}")
 
     fecha = _date_str(day)
     day_dir = sources_root / f"dia_{day}"
@@ -222,8 +343,8 @@ def generate_day_sources(day: int, sources_root: Path) -> Path:
                    120000, 50000, 80000, 120000, 25000,
                    350000, 95000, 180000, 45000, 200000,
                    90000, 25000, 150000, 60000, 45000,
-                   75000, 40000, 55000, 15000, 20000]
-    cantidades_pos = [2, 1, 1, 3, 1, 1, 2, 1, 1, 3, 1, 2, 1, 3, 1, 2, 1, 1, 2, 1, 3, 1, 2, 1, 1]
+                   75000, 40000, 55000, 15000, 20000] * 2
+    cantidades_pos = [2, 1, 1, 3, 1, 1, 2, 1, 1, 3, 1, 2, 1, 3, 1, 2, 1, 1, 2, 1, 3, 1, 2, 1, 1] * 2
     tiendas = TIENDAS[(day - 1) * 2: (day - 1) * 2 + 5]
     if len(tiendas) < 5:
         tiendas = (tiendas + TIENDAS)[:5]
@@ -251,7 +372,7 @@ def generate_day_sources(day: int, sources_root: Path) -> Path:
                       80000, 100000, 120000, 150000, 25000,
                       400000, 70000, 200000, 90000, 250000,
                       100000, 45000, 180000, 75000, 55000,
-                      80000, 60000, 70000, 20000, 35000]
+                      80000, 60000, 70000, 20000, 35000] * 2
     _write_csv(
         day_dir / "marketplace" / "ventas_online.csv",
         ["id_orden", "fecha", "id_cliente", "total", "canal"],
@@ -348,7 +469,16 @@ def generate_day_sources(day: int, sources_root: Path) -> Path:
     return day_dir
 
 
-def run_day_pipeline(day: int, sources_root: Path, lake_root: Path, stdout, style, *, skip_audit: bool = False) -> None:
+def run_day_pipeline(
+    day: int,
+    sources_root: Path,
+    lake_root: Path,
+    stdout,
+    style,
+    *,
+    skip_audit: bool = False,
+    skip_generate: bool = False,
+) -> None:
     """
     Ejecuta la pipeline completa para un día:
       1) Genera archivos fuente en data_sources/dia_{day}
@@ -372,11 +502,26 @@ def run_day_pipeline(day: int, sources_root: Path, lake_root: Path, stdout, styl
         f"\n{'='*60}\n=== Día {day}: {fecha} ({day_folder}) ===\n{'='*60}"
     ))
 
-    # 0) Generar archivos fuente
-    day_dir = generate_day_sources(day, sources_root)
-    stdout.write(style.SUCCESS(f"[0/4] Datos fuente generados en {day_dir}"))
+    # 0) Generar o reutilizar archivos fuente
+    try:
+        day_source, source_mode = resolve_day_sources(
+            day, sources_root, lake_root, skip_generate=skip_generate,
+        )
+    except FileNotFoundError as exc:
+        raise SystemExit(str(exc)) from exc
 
-    day_source = sources_root / day_folder
+    if source_mode == "generated":
+        stdout.write(style.SUCCESS(f"[0/4] Datos fuente generados en {day_source}"))
+    elif source_mode == "existing":
+        stdout.write(style.WARNING(
+            f"[0/4] Usando fuentes existentes en {day_source} "
+            "(data_sources montado solo lectura en Docker)"
+        ))
+    else:
+        stdout.write(style.SUCCESS(
+            f"[0/4] Datos fuente generados en {day_source} "
+            "(staging en data_lake; data_sources no escribible)"
+        ))
     lake_raw = lake_root / "raw"
 
     # 1) ELT → raw/
@@ -388,7 +533,7 @@ def run_day_pipeline(day: int, sources_root: Path, lake_root: Path, stdout, styl
         stdout.write(f"      - {p.name}")
 
     # 2) ETL → processed/ + maestro acumulativo
-    outputs = run_pipeline(lake_root, append_master=True)
+    outputs = run_pipeline(lake_root, append_master=True, ingest_day=ingest_day)
     stdout.write(style.SUCCESS(
         f"[2/4] ETL: {len(outputs)} salidas (incl. ventas_unificadas_maestro.csv)"
     ))

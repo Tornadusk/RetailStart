@@ -86,7 +86,7 @@ class Command(BaseCommand):
             self.stdout.write(f"      - {p.name}")
 
         # 2) ETL → processed/ + maestro acumulativo
-        outputs = run_pipeline(lake_root, append_master=True)
+        outputs = run_pipeline(lake_root, append_master=True, ingest_day=ingest_day)
         self.stdout.write(
             self.style.SUCCESS(f"[2/4] ETL: {len(outputs)} salidas (incl. ventas_unificadas_maestro.csv)")
         )

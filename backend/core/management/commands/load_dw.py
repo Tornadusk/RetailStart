@@ -9,7 +9,36 @@ from django.db import transaction
 
 from core.dw_calendar import fecha_a_id_tiempo, seed_dim_tiempo_calendar
 from core.etl.ingest_transform import MASTER_VENTAS_NAME
-from core.models import DimCanal, DimCliente, DimProducto, DimTiempo, FactVentas
+from core.models import DimCanal, DimCliente, DimProducto, DimTiempo, DimTienda, FactVentas
+
+# Mapeo tienda → región para análisis geográfico.
+_TIENDA_REGION: dict[str, str] = {
+    "Santiago": "Metropolitana",
+    "Providencia": "Metropolitana",
+    "Maipu": "Metropolitana",
+    "Las Condes": "Metropolitana",
+    "La Florida": "Metropolitana",
+    "Puente Alto": "Metropolitana",
+    "Ñuñoa": "Metropolitana",
+    "Vitacura": "Metropolitana",
+    "San Bernardo": "Metropolitana",
+    "Quilicura": "Metropolitana",
+    "Valparaiso": "Valparaíso",
+    "Viña del Mar": "Valparaíso",
+    "Concepcion": "Biobío",
+    "Temuco": "Araucanía",
+    "Antofagasta": "Antofagasta",
+    "La Serena": "Coquimbo",
+    "Rancagua": "O'Higgins",
+    "Talca": "Maule",
+    "Chillan": "Ñuble",
+    "Valdivia": "Los Ríos",
+    "Osorno": "Los Lagos",
+    "Puerto Montt": "Los Lagos",
+    "Iquique": "Tarapacá",
+    "Arica": "Arica y Parinacota",
+    "Copiapo": "Atacama",
+}
 
 
 @dataclass(frozen=True)
@@ -154,6 +183,21 @@ class Command(BaseCommand):
         for c in sorted(set(ventas["canal"].dropna().astype(str))):
             DimCanal.objects.update_or_create(canal=c)
 
+        # Tienda dim (from 'tienda' column in ventas, if present)
+        tienda_by_name: dict[str, DimTienda] = {}
+        if "tienda" in ventas.columns:
+            tiendas_raw = set(ventas["tienda"].dropna().astype(str)) - {""}
+            for t_name in sorted(tiendas_raw):
+                region = _TIENDA_REGION.get(t_name, "Otra")
+                obj, _ = DimTienda.objects.update_or_create(
+                    nombre_tienda=t_name,
+                    defaults={"region": region, "ciudad": t_name},
+                )
+                tienda_by_name[t_name] = obj
+        # Also load any pre-existing DimTienda rows.
+        for dt in DimTienda.objects.all():
+            tienda_by_name.setdefault(dt.nombre_tienda, dt)
+
         # Facts: full reload (delete + bulk) o incremental (upsert por venta+canal).
         if not incremental:
             FactVentas.objects.all().delete()
@@ -185,10 +229,17 @@ class Command(BaseCommand):
             if not pd.isna(id_producto_val):
                 producto = producto_by_id.get(int(id_producto_val))
 
+            # Resolve tienda FK
+            tienda_obj = None
+            tienda_val = r.get("tienda")
+            if pd.notna(tienda_val) and str(tienda_val).strip():
+                tienda_obj = tienda_by_name.get(str(tienda_val).strip())
+
             campos = {
                 "fecha": tiempo_by_id[id_tiempo],
                 "cliente": cliente_by_id[id_cliente],
                 "producto": producto,
+                "tienda": tienda_obj,
                 "cantidad": int(r.get("cantidad", 0)),
                 "precio_unitario": int(r.get("precio_unitario", 0)),
                 "monto": int(r.get("monto", 0)),
@@ -227,5 +278,6 @@ class Command(BaseCommand):
         self.stdout.write(f"- DimProducto: {DimProducto.objects.count()}")
         self.stdout.write(f"- DimTiempo: {DimTiempo.objects.count()}")
         self.stdout.write(f"- DimCanal: {DimCanal.objects.count()}")
+        self.stdout.write(f"- DimTienda: {DimTienda.objects.count()}")
         self.stdout.write(f"- FactVentas: {FactVentas.objects.count()}")
 

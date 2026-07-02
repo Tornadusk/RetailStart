@@ -44,6 +44,12 @@
     <a href="{% url 'analytics' %}" class="flex items-center px-3 py-2 text-sm font-semibold transition-colors rounded-lg {% if request.resolver_match.url_name == 'analytics' %}bg-[rgba(192,132,252,0.14)] border border-[rgba(192,132,252,0.45)] text-white shadow-[inset_0_0_0_1px_rgba(192,132,252,0.12)]{% else %}text-slate-400 hover:text-white hover:bg-[rgba(192,132,252,0.08)] border border-transparent hover:border-[rgba(192,132,252,0.18)]{% endif %}">
       <i class="fa-solid fa-magnifying-glass-chart w-5 text-center mr-1"></i> Analytics
     </a>
+    <a href="{% url 'bi_dashboard' %}" class="flex items-center px-3 py-2 text-sm font-semibold transition-colors rounded-lg {% if request.resolver_match.url_name == 'bi_dashboard' %}bg-[rgba(192,132,252,0.14)] border border-[rgba(192,132,252,0.45)] text-white shadow-[inset_0_0_0_1px_rgba(192,132,252,0.12)]{% else %}text-slate-400 hover:text-white hover:bg-[rgba(192,132,252,0.08)] border border-transparent hover:border-[rgba(192,132,252,0.18)]{% endif %}">
+      <i class="fa-solid fa-chart-pie w-5 text-center mr-1"></i> BI
+    </a>
+    <a href="{% url 'loader' %}" class="flex items-center px-3 py-2 text-sm font-semibold transition-colors rounded-lg {% if request.resolver_match.url_name == 'loader' %}bg-[rgba(192,132,252,0.14)] border border-[rgba(192,132,252,0.45)] text-white shadow-[inset_0_0_0_1px_rgba(192,132,252,0.12)]{% else %}text-slate-400 hover:text-white hover:bg-[rgba(192,132,252,0.08)] border border-transparent hover:border-[rgba(192,132,252,0.18)]{% endif %}">
+      <i class="fa-solid fa-upload w-5 text-center mr-1"></i> Cargador
+    </a>
     <a href="{% url 'evidence' %}" class="flex items-center px-3 py-2 text-sm font-semibold transition-colors rounded-lg {% if request.resolver_match.url_name == 'evidence' or request.resolver_match.url_name == 'evidence_file' %}bg-[rgba(192,132,252,0.14)] border border-[rgba(192,132,252,0.45)] text-white shadow-[inset_0_0_0_1px_rgba(192,132,252,0.12)]{% else %}text-slate-400 hover:text-white hover:bg-[rgba(192,132,252,0.08)] border border-transparent hover:border-[rgba(192,132,252,0.18)]{% endif %}">
       <i class="fa-solid fa-file-contract w-5 text-center mr-1"></i> Evidencia
     </a>

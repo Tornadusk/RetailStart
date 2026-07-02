@@ -33,6 +33,16 @@
       <span class="font-medium">Analytics</span>
     </a>
     
+    <a href="{% url 'bi_dashboard' %}" class="flex items-center px-3 py-2.5 transition-colors group {% if request.resolver_match.url_name == 'bi_dashboard' %}bg-[#3a1d24] rounded-lg text-mars-accent{% else %}bg-transparent rounded-lg hover:bg-white dark:bg-[#2d1a24]/5 text-mars-textMuted{% endif %}" {% if request.resolver_match.url_name == 'bi_dashboard' %}aria-current="page"{% endif %}>
+      <i class="fa-solid fa-chart-pie w-6 text-center mr-2 {% if request.resolver_match.url_name != 'bi_dashboard' %}group-hover:text-mars-secondary{% endif %}"></i>
+      <span class="font-medium">Dashboard BI</span>
+    </a>
+    
+    <a href="{% url 'loader' %}" class="flex items-center px-3 py-2.5 transition-colors group {% if request.resolver_match.url_name == 'loader' %}bg-[#3a1d24] rounded-lg text-mars-accent{% else %}bg-transparent rounded-lg hover:bg-white dark:bg-[#2d1a24]/5 text-mars-textMuted{% endif %}" {% if request.resolver_match.url_name == 'loader' %}aria-current="page"{% endif %}>
+      <i class="fa-solid fa-upload w-6 text-center mr-2 {% if request.resolver_match.url_name != 'loader' %}group-hover:text-mars-secondary{% endif %}"></i>
+      <span class="font-medium">Cargador</span>
+    </a>
+    
     <a href="{% url 'evidence' %}" class="flex items-center px-3 py-2.5 transition-colors group {% if request.resolver_match.url_name == 'evidence' or request.resolver_match.url_name == 'evidence_file' %}bg-[#3a1d24] rounded-lg text-mars-accent{% else %}bg-transparent rounded-lg hover:bg-white dark:bg-[#2d1a24]/5 text-mars-textMuted{% endif %}" {% if request.resolver_match.url_name == 'evidence' or request.resolver_match.url_name == 'evidence_file' %}aria-current="page"{% endif %}>
       <i class="fa-solid fa-file-contract w-6 text-center mr-2 {% if request.resolver_match.url_name != 'evidence' and request.resolver_match.url_name != 'evidence_file' %}group-hover:text-mars-secondary{% endif %}"></i>
       <span class="font-medium">Evidencia</span>

@@ -1,0 +1,32 @@
+[
+{
+"id_evento": 8060601,
+"id_cliente": 126,
+"tipo": "click",
+"producto": 2026
+},
+{
+"id_evento": 8060602,
+"id_cliente": 127,
+"tipo": "busqueda",
+"producto": 2027
+},
+{
+"id_evento": 8060603,
+"id_cliente": 128,
+"tipo": "click",
+"producto": 2028
+},
+{
+"id_evento": 8060604,
+"id_cliente": 129,
+"tipo": "compra",
+"producto": 2029
+},
+{
+"id_evento": 8060605,
+"id_cliente": 130,
+"tipo": "click",
+"producto": 2030
+}
+]

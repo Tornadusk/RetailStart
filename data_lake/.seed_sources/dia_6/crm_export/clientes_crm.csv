@@ -1,0 +1,6 @@
+id_cliente,nombre,apellido,email,segmento,ciudad
+126,Daniela,Vega,daniela@email.com,Premium,Santiago
+127,Esteban,Paredes,esteban@email.com,Nuevo,Valparaiso
+128,Loreto,Araya,loreto@email.com,Regular,Antofagasta
+129,Patricio,Guzman,patricio@email.com,Premium,Viña del Mar
+130,Macarena,Olivares,macarena@email.com,Regular,Santiago

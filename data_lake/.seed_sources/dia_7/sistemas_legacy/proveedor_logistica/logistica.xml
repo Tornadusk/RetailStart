@@ -1,0 +1,7 @@
+<pedidos>
+  <pedido><id>9060701</id><cliente>131</cliente><estado>Enviado</estado></pedido>
+  <pedido><id>9060702</id><cliente>132</cliente><estado>Entregado</estado></pedido>
+  <pedido><id>9060703</id><cliente>133</cliente><estado>Pendiente</estado></pedido>
+  <pedido><id>9060704</id><cliente>134</cliente><estado>En tránsito</estado></pedido>
+  <pedido><id>9060705</id><cliente>135</cliente><estado>Entregado</estado></pedido>
+</pedidos>

@@ -34,7 +34,7 @@ Invocación: `python manage.py run_etl` (Docker: `docker compose exec backend py
 
 import json
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 from typing import Any
 
@@ -49,6 +49,22 @@ class LakePaths:
 
 def _read_csv(path: Path) -> pd.DataFrame:
     return pd.read_csv(path)
+
+
+def _raw_sidecar_for_date(raw_dir: Path, stem: str, ext: str, ingest_day: date) -> Path:
+    """Archivo landed para un lote concreto: `{stem}_YYYYMMDD{ext}`."""
+    path = raw_dir / f"{stem}_{ingest_day:%Y%m%d}{ext}"
+    if path.is_file():
+        return path
+    raise FileNotFoundError(
+        f"ETL: no hay {path.name} en {raw_dir} para la fecha {ingest_day.isoformat()}."
+    )
+
+
+def _pick_raw_sidecar(raw_dir: Path, stem: str, ext: str, ingest_day: date | None) -> Path:
+    if ingest_day is not None:
+        return _raw_sidecar_for_date(raw_dir, stem, ext, ingest_day)
+    return _latest_raw_sidecar(raw_dir, stem, ext)
 
 
 def _latest_raw_sidecar(raw_dir: Path, stem: str, ext: str) -> Path:
@@ -97,20 +113,21 @@ def _read_logs_txt(path: Path) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def extract_from_lake(lake: LakePaths) -> dict[str, pd.DataFrame]:
+def extract_from_lake(lake: LakePaths, *, ingest_day: date | None = None) -> dict[str, pd.DataFrame]:
     r = lake.raw
+    pick = lambda stem, ext: _pick_raw_sidecar(r, stem, ext, ingest_day)
     return {
-        "ventas_pos": _read_csv(_latest_raw_sidecar(r, "ventas_pos", ".csv")),
-        "ventas_online": _read_csv(_latest_raw_sidecar(r, "ventas_online", ".csv")),
-        "clientes": _read_csv(_latest_raw_sidecar(r, "clientes_crm", ".csv")),
-        "productos": _read_csv(_latest_raw_sidecar(r, "productos_erp", ".csv")),
-        "eventos_app": _read_json(_latest_raw_sidecar(r, "eventos_app", ".json")),
-        "logistica": _read_xml_logistica(_latest_raw_sidecar(r, "logistica", ".xml")),
-        "logs_sistema": _read_logs_txt(_latest_raw_sidecar(r, "logs_sistema", ".txt")),
-        "callcenter": _read_csv(_latest_raw_sidecar(r, "callcenter", ".csv")),
-        "redes_sociales": _read_json(_latest_raw_sidecar(r, "redes_sociales", ".json")),
-        "proveedores": _read_csv(_latest_raw_sidecar(r, "proveedores", ".csv")),
-        "multimedia": _read_csv(_latest_raw_sidecar(r, "multimedia", ".csv")),
+        "ventas_pos": _read_csv(pick("ventas_pos", ".csv")),
+        "ventas_online": _read_csv(pick("ventas_online", ".csv")),
+        "clientes": _read_csv(pick("clientes_crm", ".csv")),
+        "productos": _read_csv(pick("productos_erp", ".csv")),
+        "eventos_app": _read_json(pick("eventos_app", ".json")),
+        "logistica": _read_xml_logistica(pick("logistica", ".xml")),
+        "logs_sistema": _read_logs_txt(pick("logs_sistema", ".txt")),
+        "callcenter": _read_csv(pick("callcenter", ".csv")),
+        "redes_sociales": _read_json(pick("redes_sociales", ".json")),
+        "proveedores": _read_csv(pick("proveedores", ".csv")),
+        "multimedia": _read_csv(pick("multimedia", ".csv")),
     }
 
 
@@ -275,7 +292,7 @@ def append_to_master(processed_dir: Path, ventas: pd.DataFrame) -> Path:
     return master
 
 
-def run_pipeline(lake_root: Path, *, append_master: bool = False) -> list[Path]:
+def run_pipeline(lake_root: Path, *, append_master: bool = False, ingest_day: date | None = None) -> list[Path]:
     """
     Ejecuta extract → transform → load (a archivos processed).
 
@@ -283,7 +300,7 @@ def run_pipeline(lake_root: Path, *, append_master: bool = False) -> list[Path]:
     maestro `ventas_unificadas_maestro.csv` (carga incremental lote a lote).
     """
     lake = LakePaths(raw=lake_root / "raw", processed=lake_root / "processed")
-    dfs = extract_from_lake(lake)
+    dfs = extract_from_lake(lake, ingest_day=ingest_day)
     transformed = transform(dfs)
     out_paths = load_to_processed(lake, transformed)
     if append_master:

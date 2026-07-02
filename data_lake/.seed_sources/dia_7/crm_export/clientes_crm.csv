@@ -1,0 +1,6 @@
+id_cliente,nombre,apellido,email,segmento,ciudad
+131,Vicente,Maldonado,vicente@email.com,Premium,La Serena
+132,Belen,Leiva,belen@email.com,Nuevo,Concepcion
+133,Joaquin,Cortes,joaquin@email.com,Regular,Temuco
+134,Fernanda,Aguilar,fernanda@email.com,Premium,Valdivia
+135,Gonzalo,Peña,gonzalo@email.com,Regular,Santiago
