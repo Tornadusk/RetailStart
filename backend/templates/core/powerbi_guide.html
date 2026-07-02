@@ -85,20 +85,21 @@
         <p>Nuestro modelo estrella está alojado dentro de tu servidor local en Docker usando <strong>PostgreSQL</strong>. Para que Power BI vea los datos, usa exactamente esta información:</p>
         <ul>
           <li><strong>Servidor:</strong> <code>localhost</code> (o <code>127.0.0.1</code>)</li>
-          <li><strong>Puerto:</strong> <code>5432</code></li>
+          <li><strong>Puerto:</strong> <code>5433</code> (Docker expone Postgres en el puerto <strong>5433</strong> de tu PC, no en 5432)</li>
           <li><strong>Base de Datos:</strong> <code>retailstart</code></li>
-          <li><strong>Usuario:</strong> <code>retail_user</code></li>
-          <li><strong>Contraseña:</strong> <code>retail_pass</code></li>
+          <li><strong>Usuario:</strong> <code>retailstart</code></li>
+          <li><strong>Contraseña:</strong> <code>retailstart</code></li>
         </ul>
+        <p><strong>Importante:</strong> antes de conectar, verifica que Docker esté corriendo con <code>docker compose up</code>. Si el puerto 5433 no responde, la conexión fallará con “el equipo de destino denegó expresamente la conexión”.</p>
 
         <h2>2. Conectar Power BI a PostgreSQL</h2>
         <ol>
           <li>En la pantalla de inicio de Power BI, ve a la cinta de opciones (Inicio) y selecciona <strong>Obtener datos</strong> &gt; <strong>Más...</strong>.</li>
           <li>Busca y selecciona <strong>Base de datos PostgreSQL</strong>. Haz clic en <strong>Conectar</strong>.</li>
           <li>Si te aparece un aviso sobre "Npgsql", dale a "Aceptar" o "Aceptar riesgos" (es porque estamos conectando de forma local).</li>
-          <li>En la ventana emergente, ingresa el servidor (<code>localhost:5432</code>) y la base de datos (<code>retailstart</code>).</li>
+          <li>En la ventana emergente, ingresa el servidor (<code>localhost:5433</code>) y la base de datos (<code>retailstart</code>).</li>
           <li>En la sección Modo de conectividad de datos, selecciona <strong>Importar</strong> (te cargará los datos a la memoria RAM de Power BI, ideal para este volumen de datos). Haz clic en Aceptar.</li>
-          <li>Al pedir credenciales, ingresa tu usuario (<code>retail_user</code>) y contraseña (<code>retail_pass</code>) creados en el Docker. Selecciona el nivel inferior (la base de datos) para aplicar las credenciales.</li>
+          <li>Al pedir credenciales, ingresa tu usuario (<code>retailstart</code>) y contraseña (<code>retailstart</code>). Selecciona el nivel inferior (la base de datos) para aplicar las credenciales.</li>
         </ol>
 
         <h2>3. Seleccionar las Tablas del Modelo Estrella</h2>
