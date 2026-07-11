@@ -125,37 +125,37 @@ def _compute_measures(qs) -> dict[str, Any]:
 DAX_FORMULAS: list[dict[str, str]] = [
     {
         "nombre": "Ventas Totales",
-        "dax": "Ventas Totales = SUM(FactVentas[monto])",
+        "dax": "Ventas Totales = SUM('public core_factventas'[monto])",
         "descripcion": "Suma del campo monto de todas las transacciones de venta. Representa el ingreso total generado.",
         "orm": "FactVentas.objects.aggregate(Sum('monto'))",
     },
     {
         "nombre": "Cantidad de Ventas",
-        "dax": "Cantidad de Ventas = COUNTROWS(FactVentas)",
+        "dax": "Cantidad de Ventas = COUNTROWS('public core_factventas')",
         "descripcion": "Cuenta el número total de transacciones registradas en la tabla de hechos.",
         "orm": "FactVentas.objects.count()",
     },
     {
         "nombre": "Venta Promedio",
-        "dax": "Venta Promedio = AVERAGE(FactVentas[monto])",
+        "dax": "Venta Promedio = AVERAGE('public core_factventas'[monto])",
         "descripcion": "Promedio del monto por transacción. Equivalente a DIVIDE(Ventas Totales, Cantidad de Ventas).",
         "orm": "FactVentas.objects.aggregate(Avg('monto'))",
     },
     {
         "nombre": "Clientes Activos",
-        "dax": "Clientes Activos = DISTINCTCOUNT(FactVentas[cliente_id])",
+        "dax": "Clientes Activos = DISTINCTCOUNT('public core_factventas'[cliente_id])",
         "descripcion": "Cantidad de clientes únicos que registran al menos una compra en el período filtrado.",
         "orm": "FactVentas.objects.aggregate(Count('cliente_id', distinct=True))",
     },
     {
         "nombre": "Ventas Online",
-        "dax": 'Ventas Online = CALCULATE(SUM(FactVentas[monto]), DimCanal[canal] IN {"web", "app"})',
+        "dax": "Ventas Online = CALCULATE(SUM('public core_factventas'[monto]), 'public core_dimcanal'[canal] IN {\"web\", \"app\"})",
         "descripcion": "Total de ventas realizadas a través de canales digitales (Web y App).",
         "orm": "FactVentas.objects.filter(canal__canal__in=['web','app']).aggregate(Sum('monto'))",
     },
     {
         "nombre": "Ventas Presenciales",
-        "dax": 'Ventas Presenciales = CALCULATE(SUM(FactVentas[monto]), DimCanal[canal] = "pos")',
+        "dax": "Ventas Presenciales = CALCULATE(SUM('public core_factventas'[monto]), 'public core_dimcanal'[canal] = \"pos\")",
         "descripcion": "Total de ventas realizadas en tiendas físicas (punto de venta presencial).",
         "orm": "FactVentas.objects.filter(canal__canal='pos').aggregate(Sum('monto'))",
     },
