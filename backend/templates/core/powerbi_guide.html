@@ -115,17 +115,24 @@
         <p>Haz clic en <strong>Cargar</strong>. Las tablas se importarán a Power BI.</p>
 
         <h2>4. Validar las Relaciones (Modelo Analítico)</h2>
-        <p>Ve a la vista de <strong>Modelo</strong> (el ícono de relaciones en la barra lateral izquierda). Power BI probablemente detecte las relaciones automáticamente, pero debes validarlas:</p>
+        <p>El "Esquema Estrella" requiere que la tabla de hechos (ventas) esté conectada a todas las dimensiones. Ve a la vista de <strong>Modelo</strong> (el ícono con tres cuadritos conectados en la barra lateral izquierda). Power BI probablemente detecte las relaciones automáticamente, pero <strong>debes validarlas manualmente</strong>:</p>
+        <p>Si falta alguna relación, haz clic sobre el campo de ID en la tabla de dimensión y <strong>arrástralo sin soltar el clic</strong> hasta el campo correspondiente en <code>core_factventas</code>. Asegúrate de que las relaciones queden así:</p>
         <ul>
-          <li><code>core_factventas[cliente_id]</code> &#8594; <code>core_dimcliente[id]</code> (1 a varios)</li>
-          <li><code>core_factventas[producto_id]</code> &#8594; <code>core_dimproducto[id]</code> (1 a varios)</li>
-          <li><code>core_factventas[tiempo_id]</code> &#8594; <code>core_dimtiempo[id]</code> (1 a varios)</li>
-          <li><code>core_factventas[canal_id]</code> &#8594; <code>core_dimcanal[id]</code> (1 a varios)</li>
-          <li><code>core_factventas[tienda_id]</code> &#8594; <code>core_dimtienda[id]</code> (1 a varios)</li>
+          <li><strong>Cliente:</strong> Arrastra <code>core_dimcliente[id]</code> hacia <code>core_factventas[cliente_id]</code></li>
+          <li><strong>Producto:</strong> Arrastra <code>core_dimproducto[id]</code> hacia <code>core_factventas[producto_id]</code></li>
+          <li><strong>Tiempo:</strong> Arrastra <code>core_dimtiempo[id_tiempo]</code> hacia <code>core_factventas[fecha_id]</code></li>
+          <li><strong>Canal:</strong> Arrastra <code>core_dimcanal[id]</code> hacia <code>core_factventas[canal_id]</code></li>
+          <li><strong>Tienda:</strong> Arrastra <code>core_dimtienda[id]</code> hacia <code>core_factventas[tienda_id]</code></li>
         </ul>
+        <p><em>Nota:</em> Al crearse la línea, verás un <strong>1</strong> del lado de la dimensión y un asterisco (<strong>*</strong>) del lado de la tabla de hechos. Esto significa "1 a varios" y es la cardinalidad exacta que busca tu evaluación.</p>
 
         <h2>5. Crear las Medidas DAX</h2>
-        <p>Para crear medidas, haz clic derecho en la tabla <code>core_factventas</code> y selecciona <strong>Nueva medida</strong>. Aquí tienes las fórmulas exactas que necesitas (asegúrate de que los nombres de las columnas coincidan con los de tu importación):</p>
+        <p>Las <strong>Medidas</strong> son cálculos dinámicos (como fórmulas de Excel) que Power BI calcula al vuelo. Para crear una medida:</p>
+        <ol>
+          <li>En el panel lateral derecho de "Datos", despliega la tabla <code>core_factventas</code>.</li>
+          <li>Haz <strong>clic derecho</strong> sobre el nombre de la tabla y selecciona <strong>Nueva medida</strong>.</li>
+          <li>Aparecerá una barra de fórmulas en la parte superior. Copia y pega una a una las siguientes fórmulas. Dale a la tecla <strong>Enter</strong> o al ticket verde (✔) tras pegar cada una.</li>
+        </ol>
         
         <pre><code>Ventas Totales = SUM(core_factventas[monto])
 
@@ -144,14 +151,18 @@ Ventas Presenciales = CALCULATE(
     SUM(core_factventas[monto]),
     core_dimcanal[canal] = "pos"
 )</code></pre>
+        <p>Sabrás que funcionó porque verás aparecer un pequeño ícono de <strong>calculadora</strong> junto a "Ventas Totales" y al resto de las medidas que acabas de crear dentro de tu tabla.</p>
 
-        <h2>6. Armar los Dashboards</h2>
-        <p>Ahora puedes recrear la parte visual. Puedes guiarte mirando los tableros que armamos en la ruta <code>/bi/</code>:</p>
+        <h2>6. Armar los Dashboards (Visualizaciones)</h2>
+        <p>Vuelve a la <strong>Vista de Informe</strong> (el ícono superior izquierdo de gráfico de barras). Ahora recrearás la parte visual basándote en la rúbrica y nuestra aplicación web.</p>
+        <p>Para añadir cualquier gráfico, haz clic en el ícono deseado dentro del panel <strong>Visualizaciones</strong> (derecha) y luego arrastra tus campos hacia las cajas de "Eje X", "Eje Y", "Valores", etc.</p>
         <ul>
-          <li><strong>Dashboard Ejecutivo:</strong> Usa tarjetas para Ventas Totales y Clientes Activos. Usa un gráfico de líneas para Ventas por Mes (usando <code>core_dimtiempo[nombre_mes]</code>).</li>
-          <li><strong>Dashboard Comercial:</strong> Usa un gráfico de barras horizontales para el Top 10 Productos, usando <code>core_dimproducto[nombre_producto]</code> y la medida <code>Ventas Totales</code>.</li>
-          <li><strong>Filtros:</strong> Arrastra campos como <code>Año</code> y <code>Región</code> a objetos visuales de tipo "Segmentación de datos" (Slicer).</li>
+          <li><strong>KPIs y Resumen (Tarjetas):</strong> Selecciona el objeto visual "Tarjeta" (el ícono con un 123). Luego, arrastra tu medida <code>Ventas Totales</code> hacia el campo de datos. Repite el proceso para crear tarjetas de Clientes Activos, Ventas Promedio, etc.</li>
+          <li><strong>Análisis Temporal (Gráfico de líneas):</strong> Añade un gráfico de líneas. En el Eje X arrastra <code>core_dimtiempo[nombre_mes]</code> y en el Eje Y coloca <code>Ventas Totales</code>.</li>
+          <li><strong>Top Productos (Gráfico de barras):</strong> Usa un gráfico de barras apiladas. En Eje Y pon <code>core_dimproducto[nombre_producto]</code> y en Eje X pon <code>Ventas Totales</code>.</li>
+          <li><strong>Filtros (Segmentación):</strong> Haz clic en "Segmentación de datos" (Slicer, ícono de un embudo con una lista). Arrastra el campo <code>core_dimtiempo[anio]</code> o <code>core_dimtienda[region]</code>. Este objeto visual es clave para interactuar y filtrar todo tu reporte haciendo un solo clic.</li>
         </ul>
+        <p><em>Consejo pro:</em> Power BI te permite crear páginas nuevas (pestañas) abajo, igual que en Excel. Usa la "Página 1" para tu <strong>Dashboard Ejecutivo</strong> y añade otra página para el <strong>Dashboard Comercial</strong>.</p>
 
         <h2>7. Guardar y Exportar</h2>
         <p>Finalmente, guarda tu archivo desde <strong>Archivo &gt; Guardar como</strong> con la extensión <code>.pbix</code>. ¡Este es el archivo que debes entregar!</p>
